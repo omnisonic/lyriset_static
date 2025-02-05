@@ -1,6 +1,10 @@
 // Add this function at the beginning of the file
 async function loadDefaultSongs() {
     try {
+        // Check localStorage content before loading
+        const existingSongs = Object.keys(localStorage).filter(key => key !== 'lyrics-font-size');
+        console.log(`Current localStorage songs count: ${existingSongs.length}`);
+        
         const response = await fetch('../data/lyrics_data.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -9,10 +13,18 @@ async function loadDefaultSongs() {
         
         // Only load default songs if localStorage is empty (except for font size)
         if (localStorage.length <= 1) { // accounting for possible font-size setting
+            console.log('localStorage is empty, loading default songs from lyrics_data.json');
             Object.entries(songs).forEach(([song, data]) => {
+                // Add set property if not present
+                if (!data.set) {
+                    data.set = 1;
+                }
                 localStorage.setItem(song, JSON.stringify(data));
             });
-            console.log('Default songs loaded successfully');
+            console.log(`Loaded ${Object.keys(songs).length} default songs from lyrics_data.json`);
+        } else {
+            console.log('Using existing songs from localStorage');
+            console.log('Songs in localStorage:', existingSongs);
         }
     } catch (error) {
         console.error('Error loading default songs:', error);
