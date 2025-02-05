@@ -1,19 +1,47 @@
-window.updateSongDropdown = function() {
+// Add this function at the beginning of the file
+async function loadDefaultSongs() {
+    try {
+        const response = await fetch('../data/lyrics_data.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const songs = await response.json();
+        
+        // Only load default songs if localStorage is empty (except for font size)
+        if (localStorage.length <= 1) { // accounting for possible font-size setting
+            Object.entries(songs).forEach(([song, data]) => {
+                localStorage.setItem(song, JSON.stringify(data));
+            });
+            console.log('Default songs loaded successfully');
+        }
+    } catch (error) {
+        console.error('Error loading default songs:', error);
+    }
+}
+
+
+
+window.currentSetNumber = 1;
+
+window.updateSongDropdown = function(setNumber = 1) {
+    window.currentSetNumber = setNumber;
     const dropdown = document.getElementById('songDropdown');
     if (dropdown) {
         dropdown.innerHTML = ''; // Clear existing items
         const songs = [];
         
-        // Collect all songs
+        // Collect all songs for the specified set
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key !== 'lyrics-font-size') {
                 try {
                     const songData = JSON.parse(localStorage.getItem(key));
-                    songs.push({
-                        title: key,
-                        ...songData
-                    });
+                    if (songData.set === setNumber) {
+                        songs.push({
+                            title: key,
+                            ...songData
+                        });
+                    }
                 } catch (e) {
                     console.error(`Error parsing song: ${key}`, e);
                 }
@@ -22,6 +50,12 @@ window.updateSongDropdown = function() {
         
         // Sort songs alphabetically
         songs.sort((a, b) => a.title.localeCompare(b.title));
+        
+        // Update the set dropdown button text
+        const setDropdownButton = document.getElementById('setDropdownButton');
+        if (setDropdownButton) {
+            setDropdownButton.textContent = `Set ${setNumber}`;
+        }
         
         // Add songs to dropdown
         songs.forEach(song => {
@@ -34,17 +68,24 @@ window.updateSongDropdown = function() {
             // Add click event listener
             a.addEventListener('click', function(e) {
                 e.preventDefault();
-                displayLyrics(song.title, song.artist, song.lyrics); // Using the existing displayLyrics function
+                displayLyrics(song.title, song.artist, song.lyrics);
             });
             
             li.appendChild(a);
             dropdown.appendChild(li);
         });
+
+        // If there are songs in this set, display the first one
+        if (songs.length > 0) {
+            const firstSong = songs[0];
+            displayLyrics(firstSong.title, firstSong.artist, firstSong.lyrics);
+        } else {
+            displayLyrics('Select a Song', '', '');
+        }
     } else {
         console.error('Dropdown element not found');
     }
 };
-
 
 function exportSongData() {
     const exportData = {};
@@ -81,10 +122,14 @@ function importSongData(file) {
                 const importData = JSON.parse(e.target.result);
                 
                 Object.entries(importData).forEach(([song, data]) => {
+                    // Ensure imported songs have a set number, default to 1 if none
+                    if (!data.set) {
+                        data.set = 1;
+                    }
                     localStorage.setItem(song, JSON.stringify(data));
                 });
                 
-                window.updateSongDropdown();
+                window.updateSongDropdown(window.currentSetNumber);
                 resolve(Object.keys(importData).length);
             } catch (e) {
                 reject(new Error('Invalid file format'));

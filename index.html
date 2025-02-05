@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyriset</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/lyrics_app.css">
+</head>
+
+<body class="bg-dark text-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Lyriset</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="d-flex align-items-center ms-auto">
+
+                    <!-- Set Dropdown -->
+<div class="dropdown me-2">
+                <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
+                    id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
+                    <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(2)">Set 2</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(3)">Set 3</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(4)">Set 4</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(5)">Set 5</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(6)">Set 6</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(7)">Set 7</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(8)">Set 8</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(9)">Set 9</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(10)">Set 10</a></li>
+                    </ul>
+                </div>
+
+                    <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal"
+                        data-bs-target="#lyricsModal">Add Song</button>
+
+                    
+                    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark text-white">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="lyricsModalLabel">Submit Lyrics</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="lyricsForm">
+                                        <div class="mb-3">
+                                            <label for="songInput" class="form-label">Song</label>
+                                            <input type="text" class="form-control bg-secondary text-white border-0"
+                                                id="songInput" name="song" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="artistInput" class="form-label">Artist</label>
+                                            <input type="text" class="form-control bg-secondary text-white border-0"
+                                                id="artistInput" name="artist" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lyricsText" class="form-label">Lyrics</label>
+                                            <textarea class="form-control bg-secondary text-white border-0"
+                                                id="lyricsText" name="lyrics" rows="10" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-light">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown me-2">
+                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
+                            id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
+                        <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
+                    </div>
+                    <div class="btn-group me-2">
+                        <a href="#" class="btn btn-secondary border border-light" onclick="loadPrevSong()">◀</a>
+                        <a href="#" class="btn btn-secondary border border-light" onclick="loadNextSong()">▶</a>
+                        <button onclick="adjustFontSize(1)" class="btn btn-light border border-light">A+</button>
+                        <button onclick="adjustFontSize(-1)" class="btn btn-light border border-light">A-</button>
+                        <button class="btn btn-light border border-light" id="toggleCleanLyricsButton"
+                            onclick="toggleCleanLyrics()">
+                            <span id="toggleCleanLyricsText">✱</span>
+                        </button>
+                    </div>
+                    <div class="url-submit form-group me-2">
+                        <form id="urlForm" class="d-flex align-items-center">
+                            <div class="input-group mb-0 me-2">
+                                <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required
+                                    placeholder="Enter URL" />
+                                <button type="submit" class="btn btn-secondary border rounded-0">Submit</button>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div id="importExportContainer"></div>
+
+                    <button class="btn btn-danger border border-light" onclick="deleteSong()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="title-container">
+            <div class="song-title">
+                <h3 id="songTitle" class="text-light">Select a Song</h3>
+                <p class="artist text-secondary" id="songArtist"></p>
+            </div>
+        </div>
+        <div class="lyrics-main">
+            <div class="lyrics-container">
+                <div class="lyrics" id="lyricsDisplay">
+                    <!-- The lyrics will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/clean_lyrics.js"></script>
+    <script src="../js/lyrics_storage.js"></script>
+    <script src="../js/lyrics_app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.getElementById('importExportContainer');
+            if (container) {
+                container.appendChild(createImportExportButtons());
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

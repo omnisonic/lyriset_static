@@ -30,17 +30,21 @@ function toggleCleanLyrics() {
             toggleText.textContent = '✱';
             toggleButton.classList.remove('active');
             lyricsContainer.setAttribute('data-clean', 'true');
-    }
+        }
     }
 }
     
 function loadNextSong() {
     const currentSong = document.getElementById('songTitle').textContent;
     const songs = [];
-        for (let i = 0; i < localStorage.length; i++) {
+    
+    for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key !== 'lyrics-font-size') {
-            songs.push(key);
+            const songData = JSON.parse(localStorage.getItem(key));
+            if (songData.set === window.currentSetNumber) {
+                songs.push(key);
+            }
         }
     }
     
@@ -62,7 +66,10 @@ function loadPrevSong() {
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key !== 'lyrics-font-size') {
-            songs.push(key);
+            const songData = JSON.parse(localStorage.getItem(key));
+            if (songData.set === window.currentSetNumber) {
+                songs.push(key);
+            }
         }
     }
     
@@ -128,6 +135,12 @@ function displayLyrics(song, artist, lyrics) {
 document.addEventListener('DOMContentLoaded', function() {
     const urlInput = document.getElementById('lyrics_url');
     const lyricsContainer = document.getElementById('lyricsDisplay');
+
+
+    loadDefaultSongs().then(() => {
+        updateSongDropdown(window.currentSetNumber);
+    });
+    
     if (!urlInput) {
         console.error('Element with ID "lyrics_url" not found.');
         return;
@@ -160,11 +173,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             localStorage.setItem(song, JSON.stringify({
                 artist: artist,
-                lyrics: lyrics
+                lyrics: lyrics,
+                set: window.currentSetNumber
             }));
 
             displayLyrics(song, artist, lyrics);
-            updateSongDropdown(); // Add this line to update the dropdown after adding a new song
+            updateSongDropdown(window.currentSetNumber);
 
             e.target.reset();
             const modalInstance = bootstrap.Modal.getInstance(document.getElementById('lyricsModal'));
@@ -174,8 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Initialize the dropdown
-    updateSongDropdown();
+    // Initialize with Set 1
+    window.currentSetNumber = 1;
+    updateSongDropdown(1);
     
     if (lyricsContainer) {
         const resizeObserver = new ResizeObserver(entries => {
@@ -194,31 +209,26 @@ document.addEventListener('DOMContentLoaded', function() {
 function deleteSong() {
     const currentSong = document.getElementById('songTitle').textContent;
     
-    // Don't delete if no song is selected or if it's the default text
     if (!currentSong || currentSong === 'Select a Song') {
         return;
     }
 
-    // Confirm deletion
     if (!confirm(`Are you sure you want to delete "${currentSong}"?`)) {
         return;
     }
 
-    // Remove from localStorage
     localStorage.removeItem(currentSong);
-
-    // Update dropdown menu
-    updateSongDropdown();
-
-    // Clear the display
+    updateSongDropdown(window.currentSetNumber);
     displayLyrics('Select a Song', '', '');
 
-    // Optional: Load another song if available
     const remainingSongs = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key !== 'lyrics-font-size') {
-            remainingSongs.push(key);
+            const songData = JSON.parse(localStorage.getItem(key));
+            if (songData.set === window.currentSetNumber) {
+                remainingSongs.push(key);
+            }
         }
     }
 
