@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Column Test</title>
+    <style>
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #121212;
+            color: white;
+        }
+
+        /* Test Case 1: Basic Text */
+        .test1 {
+            column-count: 4;
+            column-gap: 40px;
+            column-rule: 1px solid #333;
+        }
+
+        /* Test Case 2: Pre-formatted Text */
+        .test2 {
+            column-count: 4;
+            column-gap: 40px;
+            column-rule: 1px solid #333;
+        }
+        .test2 pre {
+            white-space: pre-line;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Test Case 3: Paragraph-based */
+        .test3 {
+            column-count: 4;
+            column-gap: 40px;
+            column-rule: 1px solid #333;
+        }
+        .test3 p {
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #bb86fc;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body style="background: #000;">
+    <div class="container">
+        <h2>Test 1: Basic Text</h2>
+        <div class="test1">
+            [Sample lyrics with line breaks will go here]
+        </div>
+
+        <h2>Test 2: Pre-formatted</h2>
+        <div class="test2">
+            <pre>[Sample lyrics with line breaks will go here]</pre>
+        </div>
+
+        <h2>Test 3: Paragraphs</h2>
+        <div class="test3">
+            [Each line will be a paragraph element]
+        </div>
+
+        <script>
+            // Test data
+            const lyrics = `Intro:
+A A D A
+D A
+It's a Saturday afternoon romance
+Bm D
+between a cowboy and a fool
+A
+And a fool
+
+A
+A drunken meet up
+in a crude saloon
+D A
+A poor rocky mountain town
+D
+He's a scoundrel and
+A
+She's no pearl
+Bm D A
+And together they are two lovers cruel`;
+
+            // Test 1: Basic Text
+            document.querySelector('.test1').textContent = lyrics;
+
+            // Test 2: Pre-formatted
+            document.querySelector('.test2 pre').textContent = lyrics;
+
+            // Test 3: Paragraphs
+            const test3 = document.querySelector('.test3');
+            lyrics.split('\n').forEach(line => {
+                const p = document.createElement('p');
+                p.textContent = line;
+                test3.appendChild(p);
+            });
+        </script>
+    </div>
+</body>
+</html>
