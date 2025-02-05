@@ -17,6 +17,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <button class="btn btn-link nav-link" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            About
+                        </button>
+                    </li>
+                </ul>
                 <div class="d-flex align-items-center ms-auto">
 
                     <!-- Set Dropdown -->
@@ -105,6 +112,50 @@
             </div>
         </div>
     </nav>
+
+    <!-- Add About Modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aboutModalLabel">About Lyriset</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h4>Overview</h4>
+                <p>Lyriset is an app designed to let you view the entire song lyrics on a single screen.
+                    You can create your own sets of songs and navigate through them easily. </p><p> As a performaing artist I use a tablet as my songbook for practice and performance.  I wanted a way to view the entire song on a single screen and be able to navigate through the setlist easily.  I also wanted to be able to view the lyrics in a clean format.  I could not find a app that simply did this so I created my own.</p>
+                
+
+                <h4>Main Features</h4>
+                <ul>
+                    <li><strong>Sets:</strong> Organize songs into different sets (1-10) using the Set dropdown</li>
+                    <li><strong>Navigation:</strong> Use ◀ and ▶ buttons to move between songs in the current set</li>
+                    <li><strong>Text Size:</strong> Adjust text size with A+ and A- buttons</li>
+                    <li><strong>Clean Lyrics:</strong> Toggle between original and clean lyrics using the ✱ button</li>
+                </ul>
+
+                <h4>Managing Songs</h4>
+                <ul>
+                    <li><strong>Add Song:</strong> Click "Add Song" to manually enter a new song's details</li>
+                    <li><strong>Delete:</strong> Remove the current song using the Delete button</li>
+                    <li><strong>Import/Export:</strong> Backup or restore your song collection to your device or computer</li>
+                    <li>Set lists are stored in your browser's local storage only temporarily. To save your song data create permanant backups using the Export button.</li>
+                </ul>
+
+                <h4>Tips</h4>
+                <ul>
+    
+                    <li>Export your collection regularly as a backup</li>
+                    <li>The clean lyrics (* button) feature automatically can help format text for better viewing</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="container">
         <div class="title-container">
