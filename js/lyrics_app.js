@@ -95,7 +95,7 @@ function adjustFontSize(delta) {
     const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
     const newSize = Math.min(Math.max(currentSize + delta, 8), 32);
     lyricsContainer.style.fontSize = `${newSize}px`;
-    localStorage.setItem('lyrics-font-size', newSize);
+    // localStorage.setItem('lyrics-font-size', newSize);
 }
 
 function displayLyrics(song, artist, lyrics) {
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDefaultSongs().then(() => {
         updateSongDropdown(window.currentSetNumber);
     });
-    
+
     if (!urlInput) {
         console.error('Element with ID "lyrics_url" not found.');
         return;
@@ -151,10 +151,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    const savedFontSize = localStorage.getItem('lyrics-font-size');
-    if (savedFontSize) {
-        lyricsContainer.style.fontSize = `${savedFontSize}px`;
-    }
+    // const savedFontSize = localStorage.getItem('lyrics-font-size');
+    // if (savedFontSize) {
+    //     lyricsContainer.style.fontSize = `${savedFontSize}px`;
+    // }
 
     const lyricsDisplay = lyricsContainer.textContent;
     lyricsContainer.setAttribute('data-original-lyrics', lyricsDisplay);
@@ -188,6 +188,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+
+        // Add touch swipe handling
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const swipeThreshold = 50; // minimum distance for a swipe
+    
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+    
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+    
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (Math.abs(swipeDistance) > swipeThreshold) {
+                if (swipeDistance > 0) {
+                    // Swipe right - go to previous song
+                    loadPrevSong();
+                } else {
+                    // Swipe left - go to next song
+                    loadNextSong();
+                }
+            }
+        }
+
     // Initialize with Set 1
     window.currentSetNumber = 1;
     updateSongDropdown(1);

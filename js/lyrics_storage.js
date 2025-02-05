@@ -2,7 +2,7 @@
 async function loadDefaultSongs() {
     try {
         // Check localStorage content before loading
-        const existingSongs = Object.keys(localStorage).filter(key => key !== 'lyrics-font-size');
+        const existingSongs = Object.keys(localStorage);
         console.log(`Current localStorage songs count: ${existingSongs.length}`);
         
         const response = await fetch('../data/lyrics_data.json');
@@ -99,17 +99,17 @@ window.updateSongDropdown = function(setNumber = 1) {
     }
 };
 
+// In the exportSongData function, modify the localStorage check
 function exportSongData() {
     const exportData = {};
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key !== 'lyrics-font-size') {
-            try {
-                exportData[key] = JSON.parse(localStorage.getItem(key));
-            } catch (e) {
-                console.error(`Error parsing data for song: ${key}`, e);
-            }
+        // Remove font-size check since we're not storing it anymore
+        try {
+            exportData[key] = JSON.parse(localStorage.getItem(key));
+        } catch (e) {
+            console.error(`Error parsing data for song: ${key}`, e);
         }
     }
     

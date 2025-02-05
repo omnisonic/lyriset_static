@@ -13,9 +13,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Lyriset</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -24,12 +25,9 @@
                         </button>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center ms-auto">
-
-                    <!-- Set Dropdown -->
-<div class="dropdown me-2">
-                <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
-                    id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button" id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
                     <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
                         <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
                         <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(2)">Set 2</a></li>
@@ -44,120 +42,106 @@
                     </ul>
                 </div>
 
-                    <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal"
-                        data-bs-target="#lyricsModal">Add Song</button>
-
-                    
-                    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content bg-dark text-white">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="lyricsModalLabel">Submit Lyrics</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="lyricsForm">
-                                        <div class="mb-3">
-                                            <label for="songInput" class="form-label">Song</label>
-                                            <input type="text" class="form-control bg-secondary text-white border-0"
-                                                id="songInput" name="song" required />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="artistInput" class="form-label">Artist</label>
-                                            <input type="text" class="form-control bg-secondary text-white border-0"
-                                                id="artistInput" name="artist" required />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="lyricsText" class="form-label">Lyrics</label>
-                                            <textarea class="form-control bg-secondary text-white border-0"
-                                                id="lyricsText" name="lyrics" rows="10" required></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-light">Submit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dropdown me-2">
-                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
-                            id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
+                    <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal" data-bs-target="#lyricsModal">Add Song</button>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button" id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
                         <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
                     </div>
-                    <div class="btn-group me-2">
+                    <div class="btn-group">
                         <a href="#" class="btn btn-secondary border border-light" onclick="loadPrevSong()">◀</a>
                         <a href="#" class="btn btn-secondary border border-light" onclick="loadNextSong()">▶</a>
                         <button onclick="adjustFontSize(1)" class="btn btn-light border border-light">A+</button>
                         <button onclick="adjustFontSize(-1)" class="btn btn-light border border-light">A-</button>
-                        <button class="btn btn-light border border-light" id="toggleCleanLyricsButton"
-                            onclick="toggleCleanLyrics()">
+                        <button class="btn btn-light border border-light" id="toggleCleanLyricsButton" onclick="toggleCleanLyrics()">
                             <span id="toggleCleanLyricsText">✱</span>
                         </button>
                     </div>
-                    <div class="url-submit form-group me-2">
-                        <form id="urlForm" class="d-flex align-items-center">
-                            <div class="input-group mb-0 me-2">
-                                <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required
-                                    placeholder="Enter URL" />
+                    <div class="url-submit form-group flex-grow-1">
+                        <form id="urlForm" class="d-flex">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required placeholder="Enter URL" />
                                 <button type="submit" class="btn btn-secondary border rounded-0">Submit</button>
                             </div>
                         </form>
-
                     </div>
+
                     <div id="importExportContainer"></div>
 
                     <button class="btn btn-danger border border-light" onclick="deleteSong()">Delete</button>
                 </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Add About Modal -->
-<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white">
             <div class="modal-header">
-                <h5 class="modal-title" id="aboutModalLabel">About Lyriset</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title" id="lyricsModalLabel">Submit Lyrics</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h4>Overview</h4>
-                <p>Lyriset is an app designed to let you view the entire song lyrics on a single screen.
-                    You can create your own sets of songs and navigate through them easily. </p><p> As a performaing artist I use a tablet as my songbook for practice and performance.  I wanted a way to view the entire song on a single screen and be able to navigate through the setlist easily.  I also wanted to be able to view the lyrics in a clean format.  I could not find a app that simply did this so I created my own.</p>
-                
-
-                <h4>Main Features</h4>
-                <ul>
-                    <li><strong>Sets:</strong> Organize songs into different sets (1-10) using the Set dropdown</li>
-                    <li><strong>Navigation:</strong> Use ◀ and ▶ buttons to move between songs in the current set</li>
-                    <li><strong>Text Size:</strong> Adjust text size with A+ and A- buttons</li>
-                    <li><strong>Clean Lyrics:</strong> Toggle between original and clean lyrics using the ✱ button</li>
-                </ul>
-
-                <h4>Managing Songs</h4>
-                <ul>
-                    <li><strong>Add Song:</strong> Click "Add Song" to manually enter a new song's details</li>
-                    <li><strong>Delete:</strong> Remove the current song using the Delete button</li>
-                    <li><strong>Import/Export:</strong> Backup or restore your song collection to your device or computer</li>
-                    <li>Set lists are stored in your browser's local storage only temporarily. To save your song data create permanant backups using the Export button.</li>
-                </ul>
-
-                <h4>Tips</h4>
-                <ul>
-    
-                    <li>Export your collection regularly as a backup</li>
-                    <li>The clean lyrics (* button) feature automatically can help format text for better viewing</li>
-                    <li>The default songs that are loaded are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer" target="_blank">Tom lehrer</a> who released them to the public domain.  Thanks Tom!</li>
-                </ul>
-       
+                                <form id="lyricsForm">
+                                    <div class="mb-3">
+                                        <label for="songInput" class="form-label">Song</label>
+                                        <input type="text" class="form-control bg-secondary text-white border-0" id="songInput" name="song" required />
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <div class="mb-3">
+                                        <label for="artistInput" class="form-label">Artist</label>
+                                        <input type="text" class="form-control bg-secondary text-white border-0" id="artistInput" name="artist" required />
+            </div>
+                                    <div class="mb-3">
+                                        <label for="lyricsText" class="form-label">Lyrics</label>
+                                        <textarea class="form-control bg-secondary text-white border-0" id="lyricsText" name="lyrics" rows="10" required></textarea>
+        </div>
+                                    <button type="submit" class="btn btn-light">Submit</button>
+                                </form>
+    </div>
+</div>
+            </div>
+        </div>
+                </div>
+            </div>
+    </nav>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutModalLabel">About Lyriset</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+                <div class="modal-body">
+                    <h4>Overview</h4>
+                    <p>Lyriset is an app designed to let you view the entire song lyrics on a single screen.
+                        You can create your own sets of songs and navigate through them easily. </p><p> As a performaing artist I use a tablet as my songbook for practice and performance.  I wanted a way to view the entire song on a single screen and be able to navigate through the setlist easily.  I also wanted to be able to view the lyrics in a clean format.  I could not find a app that simply did this so I created my own.</p>
+                    
+                    <h4>Main Features</h4>
+                    <ul>
+                        <li><strong>Sets:</strong> Organize songs into different sets (1-10) using the Set dropdown</li>
+                        <li><strong>Navigation:</strong> Use ◀ and ▶ buttons to move between songs in the current set</li>
+                        <li><strong>Text Size:</strong> Adjust text size with A+ and A- buttons</li>
+                        <li><strong>Clean Lyrics:</strong> Toggle between original and clean lyrics using the ✱ button</li>
+                    </ul>
+
+                    <h4>Managing Songs</h4>
+                    <ul>
+                        <li><strong>Add Song:</strong> Click "Add Song" to manually enter a new song's details</li>
+                        <li><strong>Delete:</strong> Remove the current song using the Delete button</li>
+                        <li><strong>Import/Export:</strong> Backup or restore your song collection to your device or computer</li>
+                        <li>Set lists are stored in your browser's local storage only temporarily. To save your song data create permanant backups using the Export button.</li>
+                    </ul>
+
+                    <h4>Tips</h4>
+                    <ul>
+                        <li>Export your collection regularly as a backup</li>
+                        <li>The clean lyrics (* button) feature automatically can help format text for better viewing</li>
+                        <li>The default songs that are loaded are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer" target="_blank">Tom lehrer</a> who released them to the public domain.  Thanks Tom!</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <div class="container">
         <div class="title-container">
@@ -169,7 +153,6 @@
         <div class="lyrics-main">
             <div class="lyrics-container">
                 <div class="lyrics" id="lyricsDisplay">
-                    <!-- The lyrics will be inserted here -->
                 </div>
             </div>
         </div>
