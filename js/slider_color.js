@@ -1,4 +1,5 @@
 const themeSlider = document.getElementById('themeSlider');
+window.isColorSliderActive = false;
 
 // Helper functions for color calculations
 function getLuminance(r, g, b) {
@@ -127,8 +128,15 @@ function updateColors() {
     `;
 }
 
-themeSlider.addEventListener('input', updateColors);
-themeSlider.addEventListener('change', updateColors);
+themeSlider.addEventListener('input', () => {
+    window.isColorSliderActive = true;
+    updateColors();
+});
+
+themeSlider.addEventListener('change', () => {
+    window.isColorSliderActive = false;
+    updateColors();
+});
 
 window.addEventListener('DOMContentLoaded', () => {
     updateColors();

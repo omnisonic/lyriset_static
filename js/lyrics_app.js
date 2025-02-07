@@ -204,6 +204,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }, false);
     
         function handleSwipe() {
+            // Don't process swipes if color slider is active
+            if (window.isColorSliderActive) {
+                return;
+            }
+            
             const swipeDistance = touchEndX - touchStartX;
             
             if (Math.abs(swipeDistance) > swipeThreshold) {
