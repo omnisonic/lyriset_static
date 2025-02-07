@@ -111,8 +111,8 @@ function updateColors() {
         color: ${textColor} !important; /* Ensure the button text color is also readable */
         }
         /* Preserve specific exceptions */
-        .navbar,
-        .modal{
+        .navbar { background-color: ${secondaryColor}}
+        .modal {
             background-color: ${backgroundColor} !important;    
             color: ${textColor} !important;
         }
@@ -122,8 +122,17 @@ function updateColors() {
         }
                
         .modal-content {
-            background-color: ${backgroundColor} !important;  /* Set modal background */
-            color: ${textColor} !important;  /* Set modal text color */
+            background-color: ${secondaryColor} !important;  /* Set modal background */
+            color: ${backgroundColor} !important;  /* Set modal text color */
+        }
+        
+        /* Style all form inputs with a slightly darker/lighter shade */
+        input,
+        textarea,
+        select {
+            background-color: ${backgroundColor} !important;
+            color: ${textColor} !important;
+            border-color: ${buttonBorderColor} !important;
         }
     `;
 }

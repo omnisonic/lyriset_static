@@ -102,14 +102,14 @@ body {
 }
 
 .form-control {
-    background-color: #495057;
-    color: #fff;
+    /* background-color: #495057; */
+    /* color: #fff; */
     border: 1px solid #6c757d;
 }
 
 .form-control:focus {
-    background-color: #495057;
-    color: #fff;
+    /* background-color: #495057; */
+    /* color: #fff; */
     border-color: #86b7fe;
 }
 
@@ -279,7 +279,7 @@ body {
     appearance: none;
     width: 20px; /* Thumb size */
     height: 20px; /* Thumb size */
-    background: black; /* Thumb color */
+    /* background: black; Thumb color */
     cursor: pointer;
     border-radius: 50%;
     transition: background 0.3s;
@@ -287,7 +287,7 @@ body {
 .slider::-moz-range-thumb {
     width: 20px; 
     height: 20px; 
-    background: black; 
+    /* background: black;  */
     cursor: pointer;
     border-radius: 50%;
     transition: background 0.3s;
