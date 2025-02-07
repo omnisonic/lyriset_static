@@ -5,9 +5,9 @@
 }
 
 body {
-    color: #e0e0e0;
+    /* color: #e0e0e0; */
     font-family: 'Arial', sans-serif;
-    background-color: #121212;
+    /* background-color: #121212; */
     min-height: 100vh;
 }
 
@@ -58,7 +58,7 @@ body {
     padding: 1em;
     white-space: pre-wrap;
     font-family: Arial, sans-serif;
-    color: #e0e0e0;
+    /* color: #e0e0e0; */
 }
 
 .lyrics div {
@@ -242,4 +242,60 @@ body {
     display: none;
 
   
+}
+
+body {
+    /* transition: background-color 0.5s, color 0.5s; */
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 30px;
+}
+#colorDisplay {
+    padding: 20px;
+    border: 1px solid #000;
+    margin: 20px;
+    display: inline-block;
+}
+.slider {
+    width: 100%;
+    /* margin: 20px 0; */
+    z-index: 1000;
+}
+
+
+
+
+.slider {
+    width: 100%;
+    margin: 20px 0;
+    -webkit-appearance: none; /* For Safari */
+    appearance: none;
+    height: 10px;
+    background: #ddd; /* Track color */
+    border-radius: 5px;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; /* Thumb size */
+    height: 20px; /* Thumb size */
+    background: black; /* Thumb color */
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+.slider::-moz-range-thumb {
+    width: 20px; 
+    height: 20px; 
+    background: black; 
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+/* Style the slider hover effect */
+.slider:hover::-webkit-slider-thumb {
+    background: #444; /* Change color on hover */
+}
+.slider:hover::-moz-range-thumb {
+    background: #444; /* Change color on hover */
 }

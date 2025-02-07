@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark to Light Theme Slider</title>
+    <style>
+        body {
+            transition: background-color 0.5s, color 0.5s;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        #colorDisplay {
+            padding: 20px;
+            border: 1px solid #000;
+            margin: 20px;
+            display: inline-block;
+        }
+        .slider {
+            width: 100%;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="colorDisplay">Adjust my colors!</div>
+
+    <label for="themeSlider">Slide for Dark to Light Theme:</label>
+    <input type="range" id="themeSlider" class="slider" min="0" max="100" value="50">
+
+    <script>
+        const colorDisplay = document.getElementById('colorDisplay');
+        const themeSlider = document.getElementById('themeSlider');
+
+        function updateColors() {
+            // Get the value from the slider which ranges from 0 to 100
+            const sliderValue = themeSlider.value;
+            
+            // Calculate lightness based on slider value (0% lightness at 0, 100% lightness at 100)
+            const lightness = sliderValue; // Lightness value will be directly used as the slider value
+
+            // Hue can be fixed or control consistently changing on the slider movement
+            const hue = 200; // Example: fixed hue value for a blue theme
+
+            // Set background and font color based on calculated lightness
+            const backgroundColor = `hsl(${hue}, 70%, ${lightness}%)`; // Background color
+            const fontColor = `hsl(${hue}, 70%, ${lightness > 50 ? 20 : 90}%)`; // Adjust font color based on lightness
+
+            // Apply colors
+            document.body.style.backgroundColor = backgroundColor;
+            colorDisplay.style.color = fontColor;
+        }
+
+        themeSlider.addEventListener('input', updateColors);
+
+        // Initialize the colors on page load
+        updateColors();
+    </script>
+
+</body>
+</html>

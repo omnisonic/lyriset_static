@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/lyrics_app.css">
 </head>
 
-<body class="bg-dark text-light">
+<body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Lyriset</a>
@@ -103,7 +103,7 @@
 
     <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content bg-dark text-white">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="aboutModalLabel">About Lyriset</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -144,6 +144,9 @@
     </div>
 
     <div class="container">
+        <div class="slider">
+            <input type="range" id="themeSlider" class="slider" min="0" max="100" value="50">
+            </div>
         <div class="title-container">
             <div class="song-title">
                 <h3 id="songTitle" class="text-light">Select a Song</h3>
@@ -151,6 +154,8 @@
             </div>
         </div>
         <div class="lyrics-main">
+
+
             <div class="lyrics-container">
                 <div class="lyrics" id="lyricsDisplay">
                 </div>
@@ -160,6 +165,8 @@
     <script src="../js/clean_lyrics.js"></script>
     <script src="../js/lyrics_storage.js"></script>
     <script src="../js/lyrics_app.js"></script>
+    <script src="../js/slider_color.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('importExportContainer');
