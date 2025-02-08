@@ -107,8 +107,13 @@ function updateColors() {
             color: ${textColor} !important;
         }
         button, .btn {
-        border-color: ${buttonBorderColor} !important;
-        color: ${textColor} !important; /* Ensure the button text color is also readable */
+            border-color: ${buttonBorderColor} !important;
+            color: ${textColor} !important; /* Ensure the button text color is also readable */
+        }
+
+        /* Style navbar brand */
+        .navbar-brand {
+            color: ${backgroundColor} !important;
         }
         /* Preserve specific exceptions */
         .navbar { background-color: ${secondaryColor}}
