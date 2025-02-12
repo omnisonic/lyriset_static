@@ -11,7 +11,6 @@ function openEditModal() {
     }
 
     const songData = JSON.parse(localStorage.getItem(currentSong));
-    console.log('Retrieved song data:', songData);
     
     if (!songData) {
         alert('Song data not found.');
@@ -24,55 +23,51 @@ function openEditModal() {
     document.getElementById('editArtistInput').value = songData.artist;
     document.getElementById('editLyricsText').value = songData.lyrics;
 
-    const editModal = new bootstrap.Modal(document.getElementById('editLyricsModal'));
-    console.log('Opening edit modal...');
-    editModal.show();
+    // Use Bootstrap's data API instead of JavaScript initialization
+    const editModal = document.getElementById('editLyricsModal');
+    const bsModal = new bootstrap.Modal(editModal);
+    bsModal.show();
 }
 
-function saveEditedLyrics(e) {
-    e.preventDefault();
-    console.log('Editing lyrics...');
-
-    const song = document.getElementById('editSongInput').value.trim();
-    const artist = document.getElementById('editArtistInput').value.trim();
-    const lyrics = document.getElementById('editLyricsText').value.trim();
-    
-    console.log('Song:', song);
-    console.log('Artist:', artist);
-    console.log('Lyrics:', lyrics);
-    
-    if (!song || !lyrics) {
-        console.log('Song or lyrics field is empty. Aborting save.');
-        return;
-    }
-
-    // Save the edited data in localStorage
-    localStorage.setItem(song, JSON.stringify({
-        artist: artist,
-        lyrics: lyrics,
-        set: window.currentSetNumber
-    }));
-    console.log('Updated song data saved to localStorage');
-
-    // Update the displayed lyrics
-    displayLyrics(song, artist, lyrics);
-    updateSongDropdown(window.currentSetNumber);
-
-    // Close the edit modal here
-    const editModal = bootstrap.Modal.getInstance(document.getElementById('editLyricsModal'));
-    if (editModal) {
-        console.log('Closing edit modal...');
-        editModal.hide();
-    } else {
-        console.log('Edit modal instance not found.');
-    }
-}
-
-// Add event listener to handle the editing form submission
+// Main event listener for the page load
 document.addEventListener('DOMContentLoaded', function () {
     const editLyricsForm = document.getElementById('editLyricsForm');
     if (editLyricsForm) {
-        editLyricsForm.addEventListener('submit', saveEditedLyrics);
+        editLyricsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Editing lyrics...');
+
+            const song = document.getElementById('editSongInput').value.trim();
+            const artist = document.getElementById('editArtistInput').value.trim();
+            const lyrics = document.getElementById('editLyricsText').value.trim();
+            
+            console.log('Song:', song);
+            console.log('Artist:', artist);
+            
+            if (!song || !lyrics) {
+                console.log('Song or lyrics field is empty. Aborting save.');
+                return;
+            }
+
+            // Save the edited data in localStorage
+            localStorage.setItem(song, JSON.stringify({
+                artist: artist,
+                lyrics: lyrics,
+                set: window.currentSetNumber
+            }));
+            console.log('Updated song data saved to localStorage');
+
+            // Update the displayed lyrics
+            displayLyrics(song, artist, lyrics);
+            updateSongDropdown(window.currentSetNumber);
+
+            // Close the modal using Bootstrap's getInstance
+            const modalElement = document.getElementById('editLyricsModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
         console.log('Edit lyrics form event listener added.');
     }
 });

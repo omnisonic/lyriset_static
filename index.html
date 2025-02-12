@@ -27,24 +27,27 @@
                 </ul>
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <div class="dropdown">
-                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button" id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
-                    <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(2)">Set 2</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(3)">Set 3</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(4)">Set 4</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(5)">Set 5</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(6)">Set 6</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(7)">Set 7</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(8)">Set 8</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(9)">Set 9</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(10)">Set 10</a></li>
-                    </ul>
-                </div>
+                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
+                            id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
+                        <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(2)">Set 2</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(3)">Set 3</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(4)">Set 4</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(5)">Set 5</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(6)">Set 6</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(7)">Set 7</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(8)">Set 8</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(9)">Set 9</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(10)">Set 10</a></li>
+                        </ul>
+                    </div>
 
-                    <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal" data-bs-target="#lyricsModal">Add Song</button>
+                    <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal"
+                        data-bs-target="#lyricsModal">Add Song</button>
                     <div class="dropdown">
-                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button" id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
+                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
+                            id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
                         <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
                     </div>
                     <div class="btn-group">
@@ -52,14 +55,16 @@
                         <a href="#" class="btn btn-secondary border border-light" onclick="loadNextSong()">▶</a>
                         <button onclick="adjustFontSize(1)" class="btn btn-light border border-light">A+</button>
                         <button onclick="adjustFontSize(-1)" class="btn btn-light border border-light">A-</button>
-                        <button class="btn btn-light border border-light" id="toggleCleanLyricsButton" onclick="toggleCleanLyrics()">
+                        <button class="btn btn-light border border-light" id="toggleCleanLyricsButton"
+                            onclick="toggleCleanLyrics()">
                             <span id="toggleCleanLyricsText">✱</span>
                         </button>
                     </div>
                     <div class="url-submit form-group flex-grow-1">
                         <form id="urlForm" class="d-flex">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required placeholder="Enter URL" />
+                                <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required
+                                    placeholder="Enter URL" />
                                 <button type="submit" class="btn btn-secondary border rounded-0">Submit</button>
                             </div>
                         </form>
@@ -68,37 +73,44 @@
                     <div id="importExportContainer"></div>
 
                     <button class="btn btn-danger border border-light" onclick="deleteSong()">Delete</button>
+                    <button class="btn btn-warning border rounded-0" onclick="openEditModal()">Edit Song</button>
+
                 </div>
 
-                <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel" aria-hidden="true">
+                <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
+                        <div class="modal-content">
+                            <div class="modal-header">
                                 <h5 class="modal-title" id="lyricsModalLabel">Submit Lyrics</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
                                 <form id="lyricsForm">
                                     <div class="mb-3">
                                         <label for="songInput" class="form-label">Song</label>
-                                        <input type="text" class="form-control border-0" id="songInput" name="song" required />
-            </div>
+                                        <input type="text" class="form-control border-0" id="songInput" name="song"
+                                            required />
+                                    </div>
                                     <div class="mb-3">
                                         <label for="artistInput" class="form-label">Artist</label>
-                                        <input type="text" class="form-control border-0" id="artistInput" name="artist" required />
-            </div>
+                                        <input type="text" class="form-control border-0" id="artistInput" name="artist"
+                                            required />
+                                    </div>
                                     <div class="mb-3">
                                         <label for="lyricsText" class="form-label">Lyrics</label>
-                                        <textarea class="form-control border-0" id="lyricsText" name="lyrics" rows="10" required></textarea>
-        </div>
+                                        <textarea class="form-control border-0" id="lyricsText" name="lyrics" rows="10"
+                                            required></textarea>
+                                    </div>
                                     <button type="submit" class="btn btn-light">Submit</button>
                                 </form>
-    </div>
-</div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
     </nav>
 
     <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
@@ -106,35 +118,47 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="aboutModalLabel">About Lyriset</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
                 <div class="modal-body about-content">
                     <h4>Overview</h4>
-                    <ul> <li>Lyriset is an app designed to let you view the entire song lyrics on a single screen.
-                        You can create your own sets of songs and navigate through them easily. </li><li> As a performaing artist I use a tablet as my songbook for practice and performance.  I wanted a way to view the entire song on a single screen and be able to navigate through the setlist easily.  I also wanted to be able to view the lyrics in a clean format.  I could not find a app that simply did this so I created my own.</ligit >
+                    <ul>
+                        <li>Lyriset is an app designed to let you view the entire song lyrics on a single screen.
+                            You can create your own sets of songs and navigate through them easily. </li>
+                        <li> As a performaing artist I use a tablet as my songbook for practice and performance. I
+                            wanted a way to view the entire song on a single screen and be able to navigate through the
+                            setlist easily. I also wanted to be able to view the lyrics in a clean format. I could not
+                            find a app that simply did this so I created my own.</ligit>
                     </ul>
-                   
+
                     <h4>Main Features</h4>
                     <ul>
                         <li><strong>Sets:</strong> Organize songs into different sets (1-10) using the Set dropdown</li>
-                        <li><strong>Navigation:</strong> Use ◀ and ▶ buttons to move between songs in the current set</li>
+                        <li><strong>Navigation:</strong> Use ◀ and ▶ buttons to move between songs in the current set
+                        </li>
                         <li><strong>Text Size:</strong> Adjust text size with A+ and A- buttons</li>
-                        <li><strong>Clean Lyrics:</strong> Toggle between original and clean lyrics using the ✱ button</li>
+                        <li><strong>Clean Lyrics:</strong> Toggle between original and clean lyrics using the ✱ button
+                        </li>
                     </ul>
 
                     <h4>Managing Songs</h4>
                     <ul>
                         <li><strong>Add Song:</strong> Click "Add Song" to manually enter a new song's details</li>
                         <li><strong>Delete:</strong> Remove the current song using the Delete button</li>
-                        <li><strong>Import/Export:</strong> Backup or restore your song collection to your device or computer</li>
-                        <li>Set lists are stored in your browser's local storage only temporarily. To save your song data create permanant backups using the Export button.</li>
+                        <li><strong>Import/Export:</strong> Backup or restore your song collection to your device or
+                            computer</li>
+                        <li>Set lists are stored in your browser's local storage only temporarily. To save your song
+                            data create permanant backups using the Export button.</li>
                     </ul>
 
                     <h4>Tips</h4>
                     <ul>
                         <li>Export your collection regularly as a backup</li>
-                        <li>The clean lyrics (* button) feature automatically can help format text for better viewing</li>
-                        <li>The default songs that are loaded are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer" target="_blank">Tom lehrer</a> who released them to the public domain.  Thanks Tom!</li>
+                        <li>The clean lyrics (* button) feature automatically can help format text for better viewing
+                        </li>
+                        <li>The default songs that are loaded are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer"
+                                target="_blank">Tom lehrer</a> who released them to the public domain. Thanks Tom!</li>
                     </ul>
                 </div>
                 <div class="modal-footer">
@@ -144,10 +168,39 @@
         </div>
     </div>
 
+        <!-- Edit Lyrics Modal -->
+    <div class="modal fade" id="editLyricsModal" tabindex="-1" aria-labelledby="editLyricsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLyricsModalLabel">Edit Lyrics</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editLyricsForm">
+                        <div class="mb-3">
+                            <label for="editSongInput" class="form-label">Song</label>
+                            <input type="text" class="form-control border-0" id="editSongInput" name="song" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editArtistInput" class="form-label">Artist</label>
+                            <input type="text" class="form-control border-0" id="editArtistInput" name="artist" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLyricsText" class="form-label">Lyrics</label>
+                            <textarea class="form-control border-0" id="editLyricsText" name="lyrics" rows="10" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-light">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="slider">
             <input type="range" id="themeSlider" class="slider" min="0" max="100" value="50">
-            </div>
+        </div>
         <div class="title-container">
             <div class="song-title">
                 <h3 id="songTitle" class="text-light">Select a Song</h3>
@@ -155,8 +208,6 @@
             </div>
         </div>
         <div class="lyrics-main">
-
-
             <div class="lyrics-container">
                 <div class="lyrics" id="lyricsDisplay">
                 </div>
@@ -167,6 +218,7 @@
     <script src="../js/lyrics_storage.js"></script>
     <script src="../js/lyrics_app.js"></script>
     <script src="../js/slider_color.js"></script>
+    <script src="../js/edit.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
