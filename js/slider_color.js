@@ -203,7 +203,7 @@ function updateColors() {
         }
     `;
 
-    const isDarkTheme = lightness < 50; // Example threshold for dark theme
+    const isDarkTheme = lightness < 50;
 
     const hamburgerIcon = document.getElementById('hamburgerIcon');
     if (hamburgerIcon) {

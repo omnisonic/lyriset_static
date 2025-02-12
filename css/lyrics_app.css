@@ -163,6 +163,10 @@ body {
     border-radius: 0 0 8px 8px;
 }
 
+.nav-item {
+    padding: 1px;
+}
+
 .messages {
     position: absolute;
     z-index: 5;
