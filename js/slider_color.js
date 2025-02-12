@@ -50,7 +50,7 @@ function getOptimalTextColor(bgHue, bgSat, bgLight) {
     const complementaryHue = (bgHue + 180) % 360;
     
     // Calculate analogous hues for secondary text
-    const analogousHue = (complementaryHue + 30) % 360;
+    const analogousHue = (complementaryHue + 40) % 360;
     
     // Adjust saturation based on background
     const textSat = Math.min(bgSat + 20, 100);
@@ -63,11 +63,11 @@ function getOptimalTextColor(bgHue, bgSat, bgLight) {
     if (bgLuminance > 0.3) { // Much lower threshold for earlier switch to dark text
         // Dark text on light background
         mainLight = 15; // Even darker for better contrast
-        secondaryLight = 25;
+        secondaryLight = 95; // Invert secondaryLight
     } else {
         // Light text on dark background
         mainLight = 95; // Even lighter for better contrast
-        secondaryLight = 85;
+        secondaryLight = 15; // Invert secondaryLight
     }
     
     let mainLightAdjusted = mainLight;
@@ -97,7 +97,7 @@ function getOptimalTextColor(bgHue, bgSat, bgLight) {
 
     return {
         main: { hue: complementaryHue, sat: textSat, light: mainLightAdjusted },
-        secondary: { hue: analogousHue, sat: textSat - 10, light: secondaryLight }
+        secondary: { hue: bgHue, sat: textSat - 10, light: secondaryLight }
     };
 }
 
@@ -113,6 +113,7 @@ function updateColors() {
     
     const backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     const textColor = `hsl(${textColors.main.hue}, ${textColors.main.sat}%, ${textColors.main.light}%)`;
+    const secondaryTextColor = `hsl(${textColors.secondary.hue}, ${textColors.secondary.sat}%, ${textColors.secondary.light}%)`;
     const secondaryColor = `hsl(${textColors.secondary.hue}, ${textColors.secondary.sat}%, ${textColors.secondary.light}%)`;
 
     const buttonBorderColor = textColor;  // Use the same color for the button border
@@ -162,7 +163,10 @@ function updateColors() {
         }
         /* Preserve specific exceptions */
         .modal {
-            background-color: ${backgroundColor} !important;    
+            background-color: rgba(0, 0, 0, 0.6) !important;
+        }
+        .modal-content {
+            background-color: ${backgroundColor}
             color: ${textColor} !important;
         }
         .btn,
@@ -181,19 +185,19 @@ function updateColors() {
         .dropdown-menu .dropdown-item:hover,
         .dropdown-menu .dropdown-item:focus {
             background-color: ${secondaryColor} !important;
-            color: ${backgroundColor} !important;
+            color: ${textColor} !important;
         }
                
         .modal-content {
-            background-color: ${secondaryColor} !important;  /* Set modal background */
-            color: ${backgroundColor} !important;  /* Set modal text color */
+            background-color: ${backgroundColor} !important;  /* Set modal background */
+            color: ${textColor} !important;  /* Set modal text color */
         }
         
         /* Style all form inputs with a slightly darker/lighter shade */
         input,
         textarea,
         select {
-            background-color: ${backgroundColor} !important;
+            background-color: ${secondaryColor} !important;
             color: ${textColor} !important;
             border-color: ${buttonBorderColor} !important;
         }
