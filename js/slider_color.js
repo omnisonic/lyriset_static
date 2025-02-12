@@ -202,6 +202,13 @@ function updateColors() {
             border-color: ${buttonBorderColor} !important;
         }
     `;
+
+    const isDarkTheme = lightness < 50; // Example threshold for dark theme
+
+    const hamburgerIcon = document.getElementById('hamburgerIcon');
+    if (hamburgerIcon) {
+        hamburgerIcon.src = isDarkTheme ? 'img/hamburger-dark.svg' : 'img/hamburger-light.svg';
+    }
 }
 
 themeSlider.addEventListener('input', () => {
