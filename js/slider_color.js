@@ -40,35 +40,49 @@ function hslToRgb(h, s, l) {
 }
 
 function getOptimalTextColor(bgHue, bgSat, bgLight) {
+    // Calculate complementary hue (opposite on color wheel)
+    const complementaryHue = (bgHue + 180) % 360;
+    
+    // Calculate analogous hues for secondary text
+    const analogousHue = (complementaryHue + 30) % 360;
+    
+    // Adjust saturation based on background
+    const textSat = Math.min(bgSat + 20, 100);
+    
+    // Calculate optimal lightness based on background
     const bgRGB = hslToRgb(bgHue, bgSat, bgLight);
     const bgLuminance = getLuminance(...bgRGB);
     
-    // Calculate contrast with potential text colors
-    const blackLuminance = getLuminance(0, 0, 0);
-    const whiteLuminance = getLuminance(255, 255, 255);
+    let mainLight, secondaryLight;
+    if (bgLuminance > 0.3) { // Much lower threshold for earlier switch to dark text
+        // Dark text on light background
+        mainLight = 15; // Even darker for better contrast
+        secondaryLight = 25;
+    } else {
+        // Light text on dark background
+        mainLight = 95; // Even lighter for better contrast
+        secondaryLight = 85;
+    }
     
-    const contrastWithBlack = (Math.max(bgLuminance, blackLuminance) + 0.05) / 
-                             (Math.min(bgLuminance, blackLuminance) + 0.05);
-    const contrastWithWhite = (Math.max(bgLuminance, whiteLuminance) + 0.05) / 
-                             (Math.min(bgLuminance, whiteLuminance) + 0.05);
-    
-    return contrastWithBlack > contrastWithWhite ? 
-        { main: 0, secondary: 20 } : 
-        { main: 100, secondary: 80 };
+    return {
+        main: { hue: complementaryHue, sat: textSat, light: mainLight },
+        secondary: { hue: analogousHue, sat: textSat - 10, light: secondaryLight }
+    };
 }
 
 function updateColors() {
     const sliderValue = themeSlider.value;
     const hue = 30; // Warm base hue
     const saturation = Math.max(20, 60 - sliderValue/2);
-    const lightness = Math.pow(sliderValue/100, 1.5) * 95;
+    // Faster lightness progression
+    const lightness = Math.min(85, (sliderValue * 0.7)); // Steeper scaling from 0-70%
 
     // Get optimal text colors based on background
     const textColors = getOptimalTextColor(hue, saturation, lightness);
     
     const backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    const textColor = `hsl(${hue}, 20%, ${textColors.main}%)`;
-    const secondaryColor = `hsl(${hue}, 20%, ${textColors.secondary}%)`;
+    const textColor = `hsl(${textColors.main.hue}, ${textColors.main.sat}%, ${textColors.main.light}%)`;
+    const secondaryColor = `hsl(${textColors.secondary.hue}, ${textColors.secondary.sat}%, ${textColors.secondary.light}%)`;
 
     const buttonBorderColor = textColor;  // Use the same color for the button border
 
@@ -116,7 +130,6 @@ function updateColors() {
             color: ${backgroundColor} !important;
         }
         /* Preserve specific exceptions */
-        .navbar { background-color: ${secondaryColor}}
         .modal {
             background-color: ${backgroundColor} !important;    
             color: ${textColor} !important;
