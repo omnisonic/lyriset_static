@@ -135,8 +135,22 @@ function updateColors() {
             color: ${textColor} !important;
         }
         .btn,
-        .dropdown-menu {
+        .dropdown-menu,
+        .dropdown-item {
             background-color: ${backgroundColor} !important;
+        }
+        
+        /* Style dropdown items */
+        .dropdown-menu .dropdown-item,
+        .dropdown-menu .dropdown-header {
+            color: ${textColor} !important;
+        }
+        
+        /* Style dropdown item on hover */
+        .dropdown-menu .dropdown-item:hover,
+        .dropdown-menu .dropdown-item:focus {
+            background-color: ${secondaryColor} !important;
+            color: ${backgroundColor} !important;
         }
                
         .modal-content {
