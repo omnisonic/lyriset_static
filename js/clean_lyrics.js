@@ -48,19 +48,19 @@ function cleanLyrics(text) {
         // Remove lines that have no meaningful words, only one or two alphanumeric characters,
         // or contain only symbols/numbers (including lines like "==============2=0==========").
         if (/^(?!\s*$)(?!.*[a-zA-Z]{3,}).*$/.test(line) || /^[^a-zA-Z0-9]*$/.test(line)) {
-            console.log('Removed line with no meaningful words or a few characters:', line);
+            // console.log('Removed line with no meaningful words or a few characters:', line);
             continue;
         }
 
         // Remove lines that are made up only of consecutive symbols
         if (/^[^\w\s]*[\W_]{2,}[^\w\s]*$/.test(line)) {
-            console.log('Removed line with consecutive symbols:', line);
+            // console.log('Removed line with consecutive symbols:', line);
             continue;
         }
 
         // Remove lines with colons (likely metadata)
         if (line.includes(':')) {
-            console.log('Removed line with colon:', line);
+            // console.log('Removed line with colon:', line);
             continue;
         }
 
@@ -96,6 +96,6 @@ function cleanLyrics(text) {
     const result = cleanedLines.join('\n').trim();
 
     // Debug logging
-    console.log('Cleaned Lyrics:', result);
+    // console.log('Cleaned Lyrics:', result);
     return result;
 }
