@@ -39,6 +39,12 @@ function hslToRgb(h, s, l) {
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
+function calculateContrastRatio(luminance1, luminance2) {
+    const lighter = Math.max(luminance1, luminance2);
+    const darker = Math.min(luminance1, luminance2);
+    return (lighter + 0.05) / (darker + 0.05);
+}
+
 function getOptimalTextColor(bgHue, bgSat, bgLight) {
     // Calculate complementary hue (opposite on color wheel)
     const complementaryHue = (bgHue + 180) % 360;
@@ -64,18 +70,43 @@ function getOptimalTextColor(bgHue, bgSat, bgLight) {
         secondaryLight = 85;
     }
     
+    let mainLightAdjusted = mainLight;
+    let contrastRatio = 0;
+    let maxAdjustments = 200; // Limit adjustments to prevent infinite loops
+    const adjustmentIncrement = 0.1;
+
+    for (let i = 0; i < maxAdjustments; i++) {
+        const textRGB = hslToRgb(complementaryHue, textSat, mainLightAdjusted);
+        const textLuminance = getLuminance(...textRGB);
+        contrastRatio = calculateContrastRatio(bgLuminance, textLuminance);
+
+        if (contrastRatio >= 7.0) {
+            break;
+        }
+
+        // Adjust lightness based on current contrast
+        if (bgLuminance > textLuminance) {
+            mainLightAdjusted -= adjustmentIncrement; // Darken text
+        } else {
+            mainLightAdjusted += adjustmentIncrement; // Lighten text
+        }
+
+        // Ensure lightness stays within bounds
+        mainLightAdjusted = Math.max(0, Math.min(100, mainLightAdjusted));
+    }
+
     return {
-        main: { hue: complementaryHue, sat: textSat, light: mainLight },
+        main: { hue: complementaryHue, sat: textSat, light: mainLightAdjusted },
         secondary: { hue: analogousHue, sat: textSat - 10, light: secondaryLight }
     };
 }
 
 function updateColors() {
     const sliderValue = themeSlider.value;
-    const hue = 30; // Warm base hue
-    const saturation = Math.max(20, 60 - sliderValue/2);
+    const hue = 40; // Warm base hue
+    const saturation = Math.max(9.1, 20 - sliderValue/2);
     // Faster lightness progression
-    const lightness = Math.min(85, (sliderValue * 0.7)); // Steeper scaling from 0-70%
+    const lightness = Math.min(85, 12 + (sliderValue * 0.73)); // Steeper scaling from 0-70%
 
     // Get optimal text colors based on background
     const textColors = getOptimalTextColor(hue, saturation, lightness);
