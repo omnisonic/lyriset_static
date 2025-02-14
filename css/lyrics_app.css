@@ -122,14 +122,15 @@ body {
 }
 
 .about-content ul {
-    list-style-position: outside;
-    padding-left: 1.5rem;
+    list-style-position: inside;
+    padding-left: 0;
     margin-bottom: 1.5rem;
 }
 
 .about-content li {
     margin-bottom: 0.75rem;
     line-height: 1.5;
+    text-align:left ;
 }
 
 .about-content li strong {

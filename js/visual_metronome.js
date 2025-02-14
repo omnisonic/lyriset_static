@@ -65,7 +65,8 @@ function stopMetronome() {
 display.addEventListener('click', toggleMetronome);
 document.addEventListener('keydown', function(event) {
 if (event.code === 'Space') {
-     toggleMetronome();
+    event.preventDefault();
+    toggleMetronome();
     }
 });
 
