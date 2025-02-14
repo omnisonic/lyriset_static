@@ -159,7 +159,7 @@ function updateColors() {
 
         /* Style navbar brand */
         .navbar-brand {
-            color: ${backgroundColor} !important;
+            color: ${textColor} !important;
         }
         /* Preserve specific exceptions */
         .modal {

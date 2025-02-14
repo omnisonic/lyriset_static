@@ -329,3 +329,35 @@ body {
 .slider:hover::-moz-range-thumb {
     background: #444; /* Change color on hover */
 }
+
+@media (max-width: 576px) {
+    
+    .navbar-brand,
+    .btn,
+    .nav-item .btn,
+    .dropdown .btn {
+        font-size: 0.8em; /* Adjust the font size as needed */
+        padding: 0.25rem 0.5rem; /* Adjust padding as needed */
+    }
+    .navbar-toggler {
+        padding: 0.2rem 0.25rem; /* Adjust padding as needed */
+        margin-bottom: 0.30rem;
+
+    }
+    .navbar-toggler img {
+        width: 24px; /* Adjust width as needed */
+        height: 24px; /* Adjust height as needed */
+    }
+
+    body {
+        padding: 4px;
+    }
+
+
+    #themeSider, input,textarea, select {
+        background-color: hsl(40, 22%, 15%) !important;
+        color: hsl(220, 32%, 95%) !important;
+        border-color: hsl(220, 32%, 95%) !important;
+        max-width: 150px;
+    }
+}
