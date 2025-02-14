@@ -139,6 +139,18 @@ function displayLyrics(song, artist, lyrics) {
         lyricsContainer.setAttribute('data-song-title', song || '');
         lyricsContainer.setAttribute('data-clean', 'false');
     }
+
+    const lyricsModal = document.getElementById('lyricsModal');
+    if (lyricsModal) {
+        lyricsModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const formType = button.textContent.trim() === 'Add Song' ? 'add' : 'edit';
+            const formTypeInput = document.getElementById('formType');
+            if (formTypeInput) {
+                formTypeInput.value = formType;
+            }
+        });
+    }
 }
 
 function loadLastViewedSong() {
@@ -218,7 +230,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }));
 
             displayLyrics(song, artist, lyrics);
-            updateSongDropdown(window.currentSetNumber);
+
+            const formTypeInput = document.getElementById('formType');
+            if (formTypeInput && formTypeInput.value === 'add') {
+                updateSongDropdown(window.currentSetNumber);
+            }
 
             e.target.reset();
             const modalInstance = bootstrap.Modal.getInstance(document.getElementById('lyricsModal'));
@@ -264,6 +280,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add event listener for left and right arrow keys
     document.addEventListener('keydown', function(event) {
+        const lyricsModal = document.getElementById('lyricsModal');
+        const editLyricsModal = document.getElementById('editLyricsModal');
+
+        if (lyricsModal && lyricsModal.classList.contains('show')) {
+            return;
+        }
+
+        if (editLyricsModal && editLyricsModal.classList.contains('show')) {
+            return;
+        }
+
         if (event.key === 'ArrowLeft') {
             loadPrevSong();
         } else if (event.key === 'ArrowRight') {

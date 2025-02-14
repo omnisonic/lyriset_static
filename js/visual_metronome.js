@@ -65,7 +65,18 @@ function stopMetronome() {
 
 display.addEventListener('click', toggleMetronome);
 document.addEventListener('keydown', function(event) {
-if (event.code === 'Space') {
+    const lyricsModal = document.getElementById('lyricsModal');
+    const editLyricsModal = document.getElementById('editLyricsModal');
+
+    if (lyricsModal && lyricsModal.classList.contains('show')) {
+        return;
+    }
+
+    if (editLyricsModal && editLyricsModal.classList.contains('show')) {
+        return;
+    }
+
+    if (event.code === 'Space') {
     event.preventDefault();
     toggleMetronome();
     }

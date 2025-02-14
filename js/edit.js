@@ -25,6 +25,11 @@ function openEditModal() {
 
     // Use Bootstrap's data API instead of JavaScript initialization
     const editModal = document.getElementById('editLyricsModal');
+    const formTypeInput = document.getElementById('formType');
+    if (formTypeInput) {
+        formTypeInput.value = 'edit';
+    }
+
     const bsModal = new bootstrap.Modal(editModal);
     bsModal.show();
 }
@@ -59,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Update the displayed lyrics
             displayLyrics(song, artist, lyrics);
-            updateSongDropdown(window.currentSetNumber);
 
             // Close the modal using Bootstrap's getInstance
             const modalElement = document.getElementById('editLyricsModal');
