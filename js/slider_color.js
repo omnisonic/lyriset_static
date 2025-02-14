@@ -128,9 +128,7 @@ function updateColors() {
 
     // ... existing code for style rules ...
     styleEl.textContent = `
-        body,
-        body .container,
-        body .container * {
+        body {
             background-color: ${backgroundColor} !important;
         }
         body .lyrics,
