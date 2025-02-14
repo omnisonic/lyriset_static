@@ -40,7 +40,7 @@ function loadNextSong() {
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key !== 'lyrics-font-size') {
+        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
             const songData = JSON.parse(localStorage.getItem(key));
             if (songData.set === window.currentSetNumber) {
                 songs.push(key);
@@ -55,8 +55,12 @@ function loadNextSong() {
     const currentIndex = songs.indexOf(currentSong);
     const nextIndex = currentIndex === songs.length - 1 ? 0 : currentIndex + 1;
     const nextSong = songs[nextIndex];
-    const songData = JSON.parse(localStorage.getItem(nextSong));
-    displayLyrics(nextSong, songData.artist, songData.lyrics);
+    try {
+        const songData = JSON.parse(localStorage.getItem(nextSong));
+        displayLyrics(nextSong, songData.artist, songData.lyrics);
+    } catch (e) {
+        console.error("Error parsing JSON for song: " + nextSong, localStorage.getItem(nextSong), e);
+    }
 }
 
 function loadPrevSong() {
@@ -65,7 +69,7 @@ function loadPrevSong() {
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key !== 'lyrics-font-size') {
+        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
             const songData = JSON.parse(localStorage.getItem(key));
             if (songData.set === window.currentSetNumber) {
                 songs.push(key);
@@ -99,6 +103,8 @@ function adjustFontSize(delta) {
 }
 
 function displayLyrics(song, artist, lyrics) {
+    console.log(`Displaying lyrics for: ${song}`);
+
     const lyricsContainer = document.getElementById('lyricsDisplay');
     if (!lyricsContainer) {
         console.error('Lyrics container not found');
@@ -114,6 +120,9 @@ function displayLyrics(song, artist, lyrics) {
     if (artistElement) {
         artistElement.textContent = artist || '';
     }
+
+    localStorage.setItem('lastViewedSong', song);
+    console.log(`Setting last viewed song to: ${song}`);
 
     lyricsContainer.innerHTML = '';
 
@@ -132,13 +141,44 @@ function displayLyrics(song, artist, lyrics) {
     }
 }
 
+function loadLastViewedSong() {
+    const lastViewedSong = localStorage.getItem('lastViewedSong');
+    if (lastViewedSong && lastViewedSong !== 'Select a Song') {
+        if (localStorage.getItem(lastViewedSong)) {
+            try {
+                const songData = JSON.parse(localStorage.getItem(lastViewedSong));
+                if (songData) {
+                    console.log(`Loading last viewed song: ${lastViewedSong}`);
+                    displayLyrics(lastViewedSong, songData.artist, songData.lyrics);
+                } else {
+                    console.warn(`No song data found for ${lastViewedSong}`);
+                    displayLyrics('Select a Song', '', '');
+                }
+            } catch (e) {
+                console.error(`Error loading last viewed song ${lastViewedSong}:`, e);
+                displayLyrics('Select a Song', '', '');
+            }
+        } else {
+            console.log(`No song found with title: ${lastViewedSong}`);
+            displayLyrics('Select a Song', '', '');
+        }
+    } else {
+        console.log('No last viewed song found, loading default songs');
+        displayLyrics('Select a Song', '', '');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const urlInput = document.getElementById('lyrics_url');
     const lyricsContainer = document.getElementById('lyricsDisplay');
 
 
     loadDefaultSongs().then(() => {
-        updateSongDropdown(window.currentSetNumber);
+        loadLastViewedSong();
+        const lastViewedSong = localStorage.getItem('lastViewedSong');
+        if (lastViewedSong !== 'Select a Song') {
+            updateSongDropdown(window.currentSetNumber);
+        }
     });
 
     if (!urlInput) {
@@ -237,7 +277,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize with Set 1
     window.currentSetNumber = 1;
-    updateSongDropdown(1);
+        updateSongDropdown(1);
+
     
     if (lyricsContainer) {
         const resizeObserver = new ResizeObserver(entries => {

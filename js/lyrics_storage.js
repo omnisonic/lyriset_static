@@ -45,7 +45,7 @@ window.updateSongDropdown = function(setNumber = 1) {
         // Collect all songs for the specified set
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key !== 'lyrics-font-size') {
+            if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
                 try {
                     const songData = JSON.parse(localStorage.getItem(key));
                     if (songData.set === setNumber) {
@@ -59,9 +59,6 @@ window.updateSongDropdown = function(setNumber = 1) {
                 }
             }
         }
-        
-        // Sort songs alphabetically
-        songs.sort((a, b) => a.title.localeCompare(b.title));
         
         // Update the set dropdown button text
         const setDropdownButton = document.getElementById('setDropdownButton');
@@ -87,10 +84,20 @@ window.updateSongDropdown = function(setNumber = 1) {
             dropdown.appendChild(li);
         });
 
-        // If there are songs in this set, display the first one
+        // If there are songs in this set, display the first one, unless a last viewed song exists
         if (songs.length > 0) {
-            const firstSong = songs[0];
-            displayLyrics(firstSong.title, firstSong.artist, firstSong.lyrics);
+            const lastViewedSong = localStorage.getItem('lastViewedSong');
+            let songToDisplay = songs[0]; // Default to the first song
+
+            if (lastViewedSong) {
+                const lastViewedSongData = JSON.parse(localStorage.getItem(lastViewedSong));
+                if (lastViewedSongData && songs.find(song => song.title === lastViewedSong)) {
+                    // Last viewed song exists and is in the current set
+                    songToDisplay = songs.find(song => song.title === lastViewedSong);
+                }
+            }
+
+            displayLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
         } else {
             displayLyrics('Select a Song', '', '');
         }
