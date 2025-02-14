@@ -5,15 +5,16 @@ async function loadDefaultSongs() {
         const existingSongs = Object.keys(localStorage);
         console.log(`Current localStorage songs count: ${existingSongs.length}`);
         
-        const response = await fetch('../data/lyrics_data.json');
+        const response = await fetch('../data/lyrics_data_2025-02-14.lyriset');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const songs = await response.json();
-        
+        const responseText = await response.text();
+        const songs = JSON.parse(responseText);
+
         // Only load default songs if localStorage is empty (except for font size)
         if (localStorage.length <= 1) { // accounting for possible font-size setting
-            console.log('localStorage is empty, loading default songs from lyrics_data.json');
+            console.log('localStorage is empty, loading default songs from lyrics_data.lyriset');
             Object.entries(songs).forEach(([song, data]) => {
                 // Add set property if not present
                 if (!data.set) {
@@ -21,7 +22,8 @@ async function loadDefaultSongs() {
                 }
                 localStorage.setItem(song, JSON.stringify(data));
             });
-            console.log(`Loaded ${Object.keys(songs).length} default songs from lyrics_data.json`);
+            console.log(`Loaded ${Object.keys(songs).length} default songs from lyrics_data.lyriset`);
+            window.updateSongDropdown(window.currentSetNumber);
         } else {
             console.log('Using existing songs from localStorage');
             console.log('Songs in localStorage:', existingSongs);
@@ -89,12 +91,7 @@ window.updateSongDropdown = function(setNumber = 1) {
             const lastViewedSong = localStorage.getItem('lastViewedSong');
             let songToDisplay = songs[0]; // Default to the first song
 
-            if (lastViewedSong) {
-                const lastViewedSongData = JSON.parse(localStorage.getItem(lastViewedSong));
-                if (lastViewedSongData && songs.find(song => song.title === lastViewedSong)) {
-                    // Last viewed song exists and is in the current set
-                    songToDisplay = songs.find(song => song.title === lastViewedSong);
-                }
+            if (lastViewedSong && lastViewedSong !== "") {
             }
 
             displayLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
@@ -108,50 +105,64 @@ window.updateSongDropdown = function(setNumber = 1) {
 
 // In the exportSongData function, modify the localStorage check
 function exportSongData() {
-    const exportData = {};
-    
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        try {
-            exportData[key] = JSON.parse(localStorage.getItem(key));
-        } catch (e) {
-            console.error(`Error parsing data for song: ${key}`, e);
+    try {
+        localStorage.removeItem('lastViewedSong');
+        const exportData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key.startsWith('lyrics-font-size-') && !key.startsWith('metronome-bpm-')) {
+                try {
+                    exportData[key] = JSON.parse(localStorage.getItem(key));
+                } catch (e) {
+                    console.warn(`Error parsing data for song: ${key}`, e);
+                    exportData[key] = localStorage.getItem(key);
+                }
+            }
         }
+
+        // Include font size and tempo settings in export data
+        const lyricsContainer = document.getElementById('lyricsDisplay');
+        const songTitleElement = document.getElementById('songTitle');
+        const song = songTitleElement ? songTitleElement.textContent : null;
+
+        if (song && song !== 'Select a Song') {
+            const fontSize = localStorage.getItem(`lyrics-font-size-${song}`);
+            if (fontSize) {
+                exportData[`lyrics-font-size-${song}`] = fontSize;
+            }
+
+            const tempo = localStorage.getItem(`metronome-bpm-${song}`);
+            if (tempo) {
+                exportData[`metronome-bpm-${song}`] = tempo;
+            }
+        }
+
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        const now = new Date();
+        const dateString = now.toISOString().slice(0, 10);
+        link.download = `lyrics_data_${dateString}.lyriset`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error("Error during exportSongData:", error);
+        alert("Error during export. Please check the console for details.");
     }
-
-    // Include font size and tempo settings in export data
-    const lyricsContainer = document.getElementById('lyricsDisplay');
-    const songTitleElement = document.getElementById('songTitle');
-    const song = songTitleElement ? songTitleElement.textContent : null;
-
-    if (song && song !== 'Select a Song') {
-        const fontSize = localStorage.getItem(`lyrics-font-size-${song}`);
-        if (fontSize) {
-            exportData[`lyrics-font-size-${song}`] = fontSize;
-        }
-
-        const tempo = localStorage.getItem(`metronome-bpm-${song}`);
-         if (tempo) {
-            exportData[`metronome-bpm-${song}`] = tempo;
-        }
-    }
-    
-    const dataStr = JSON.stringify(exportData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'lyrics_data.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
 }
 
 function importSongData(file) {
     return new Promise((resolve, reject) => {
+        if (!file.name.endsWith('.lyriset')) {
+            reject(new Error('Invalid file extension. Only .lyriset files are supported.'));
+            return;
+        }
+
         const reader = new FileReader();
-        
+
         reader.onload = function(e) {
             try {
                 const importData = JSON.parse(e.target.result);
@@ -166,7 +177,7 @@ function importSongData(file) {
                         localStorage.setItem(key, JSON.stringify(value));
                     }
                 });
-                
+
                 window.updateSongDropdown(window.currentSetNumber);
                 resolve(Object.keys(importData).length);
             } catch (e) {
@@ -176,7 +187,7 @@ function importSongData(file) {
         reader.onerror = function() {
             reject(new Error('Error reading file'));
         };
-        
+
         reader.readAsText(file);
     });
 }
@@ -196,7 +207,7 @@ function createImportExportButtons() {
     
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
-    fileInput.accept = '.json';
+    fileInput.accept = '.lyriset';
     fileInput.style.display = 'none';
     
     fileInput.onchange = async function(e) {
