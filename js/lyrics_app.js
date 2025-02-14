@@ -222,6 +222,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+    // Add event listener for left and right arrow keys
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowLeft') {
+            loadPrevSong();
+        } else if (event.key === 'ArrowRight') {
+            loadNextSong();
+        } else if (event.key === 'ArrowUp') {
+            adjustFontSize(2); // Increase font size
+        } else if (event.key === 'ArrowDown') {
+            adjustFontSize(-2); // Decrease font size
+        }
+    });
+
     // Initialize with Set 1
     window.currentSetNumber = 1;
     updateSongDropdown(1);
