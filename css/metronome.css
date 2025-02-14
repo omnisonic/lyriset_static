@@ -1,0 +1,81 @@
+html, body {
+    height: 100%;
+    margin: 0; /* Remove default body margins */
+    overflow: hidden; /* Prevent scrollbars */
+}
+
+  body {
+      font-family: sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Align content to the top */
+      align-items: center;
+      position: relative; /* For absolute positioning of the border */
+  }
+
+  body::before {
+      content: '';
+      position: fixed; /* Fixed position to cover entire window */
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border: 15px solid transparent;
+      pointer-events: none; /* Allows clicking through the border */
+      transition: border-color 0.1s ease;
+      z-index: 9999; /* Ensure border is on top */
+  }
+
+  body.beat-flash::before {
+      border-color: lightgreen; /* Green border when flashing */
+  }
+
+
+  #controls {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;  /* Higher than the border */
+  }
+
+  #metronome {
+      font-size: 4em;
+      font-weight: bold;
+      width: 60px;
+      height: 60px;
+      border: 2px solid #333;
+      border-radius: 50%;
+      display: inline-block;
+      line-height: 60px;
+      margin-left: 10px;
+      cursor: pointer;
+      z-index: 10000;
+  }
+
+  #display:hover {
+    opacity: 0.8;
+  }
+
+  .running {
+      background-color: lightgreen;
+  }
+
+  label, input[type="number"], select {
+      font-size: 1em;
+      margin: 0 5px;
+      z-index: 10000;
+  }
+
+ input[type="number"] {
+      width: 60px;
+      padding: 5px;
+      text-align: center;
+      z-index: 10000;
+  }
+
+  select {
+    padding: 5px;
+    z-index: 10000;
+  }

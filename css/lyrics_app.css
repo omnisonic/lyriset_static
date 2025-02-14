@@ -163,10 +163,6 @@ body {
     border-radius: 0 0 8px 8px;
 }
 
-.nav-item {
-    padding: 1px;
-}
-
 .messages {
     position: absolute;
     z-index: 5;
@@ -295,23 +291,17 @@ body {
     margin: 20px;
     display: inline-block;
 }
-.slider {
-    width: 100%;
-    /* margin: 20px 0; */
-    z-index: 1000;
-}
-
-
 
 
 .slider {
-    width: 100%;
+    /* width: 100%; */
     margin: 20px 0;
     -webkit-appearance: none; /* For Safari */
     appearance: none;
     height: 10px;
     background: #ddd; /* Track color */
     border-radius: 5px;
+    z-index: 1000;
 }
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
