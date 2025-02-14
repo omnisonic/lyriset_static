@@ -29,6 +29,7 @@ function updateBeats() {
 
 
 function startMetronome() {
+    const beatDuration = 60000 / bpm; // Calculate beat duration in milliseconds
     intervalId = setInterval(() => {
 
         display.textContent = count;
@@ -41,7 +42,7 @@ function startMetronome() {
             setTimeout(() => {
                 display.classList.remove("running");
                 document.body.classList.remove("beat-flash"); // Remove class from body
-            }, 100); // Quick flash
+            }, beatDuration); // Flash for the duration of the beat
         }
 
 
@@ -49,7 +50,7 @@ function startMetronome() {
         count = (count % beats) + 1;
 
 
-    }, 60000 / bpm); // Calculate interval in milliseconds
+    }, beatDuration); // Calculate interval in milliseconds
     display.title = 'Click to Stop / Press Spacebar';
 }
 
