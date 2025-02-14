@@ -138,7 +138,7 @@ function exportSongData() {
         }
 
         const dataStr = JSON.stringify(exportData, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const dataBlob = new Blob([dataStr], { type: 'application/octet-stream' });
         const url = URL.createObjectURL(dataBlob);
         const link = document.createElement('a');
         link.href = url;
