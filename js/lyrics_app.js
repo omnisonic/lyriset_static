@@ -95,11 +95,17 @@ function adjustFontSize(delta) {
         console.error('Lyrics container not found');
         return;
     }
+
+    const song = document.getElementById('songTitle').textContent;
+    if (!song || song === 'Select a Song') {
+        console.warn('No song selected, cannot adjust font size.');
+        return;
+    }
     
     const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
     const newSize = Math.min(Math.max(currentSize + delta, 8), 32);
     lyricsContainer.style.fontSize = `${newSize}px`;
-    // localStorage.setItem('lyrics-font-size', newSize);
+    localStorage.setItem(`lyrics-font-size-${song}`, newSize);
 }
 
 function displayLyrics(song, artist, lyrics) {
@@ -109,6 +115,17 @@ function displayLyrics(song, artist, lyrics) {
     if (!lyricsContainer) {
         console.error('Lyrics container not found');
         return;
+    }
+
+    const fontSize = localStorage.getItem(`lyrics-font-size-${song}`);
+    if (fontSize) {
+        lyricsContainer.style.fontSize = `${fontSize}px`;
+    }
+
+    const bpmInput = document.getElementById('bpm');
+    const tempo = localStorage.getItem(`metronome-bpm-${song}`);
+    if (bpmInput && tempo) {
+        bpmInput.value = tempo;
     }
     
     const titleElement = document.getElementById('songTitle');
@@ -203,10 +220,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // const savedFontSize = localStorage.getItem('lyrics-font-size');
-    // if (savedFontSize) {
-    //     lyricsContainer.style.fontSize = `${savedFontSize}px`;
-    // }
+    const savedFontSize = localStorage.getItem('lyrics-font-size');
+    if (savedFontSize) {
+        lyricsContainer.style.fontSize = `${savedFontSize}px`;
+    }
 
     const lyricsDisplay = lyricsContainer.textContent;
     lyricsContainer.setAttribute('data-original-lyrics', lyricsDisplay);

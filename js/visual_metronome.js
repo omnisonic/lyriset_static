@@ -13,6 +13,15 @@ function updateBPM() {
     const newBPM = parseInt(bpmInput.value);
     if (!isNaN(newBPM) && newBPM >= 40 && newBPM <= 240) {
         bpm = newBPM;
+        
+        // Get the current song title
+        const songTitleElement = document.getElementById('songTitle');
+        const song = songTitleElement ? songTitleElement.textContent : null;
+
+        if (song && song !== 'Select a Song') {
+            localStorage.setItem(`metronome-bpm-${song}`, bpm);
+        }
+
         if (isRunning) {
             clearInterval(intervalId);
             startMetronome();

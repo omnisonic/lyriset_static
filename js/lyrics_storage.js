@@ -112,11 +112,27 @@ function exportSongData() {
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        // Remove font-size check since we're not storing it anymore
         try {
             exportData[key] = JSON.parse(localStorage.getItem(key));
         } catch (e) {
             console.error(`Error parsing data for song: ${key}`, e);
+        }
+    }
+
+    // Include font size and tempo settings in export data
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+    const songTitleElement = document.getElementById('songTitle');
+    const song = songTitleElement ? songTitleElement.textContent : null;
+
+    if (song && song !== 'Select a Song') {
+        const fontSize = localStorage.getItem(`lyrics-font-size-${song}`);
+        if (fontSize) {
+            exportData[`lyrics-font-size-${song}`] = fontSize;
+        }
+
+        const tempo = localStorage.getItem(`metronome-bpm-${song}`);
+         if (tempo) {
+            exportData[`metronome-bpm-${song}`] = tempo;
         }
     }
     
@@ -139,13 +155,16 @@ function importSongData(file) {
         reader.onload = function(e) {
             try {
                 const importData = JSON.parse(e.target.result);
-                
-                Object.entries(importData).forEach(([song, data]) => {
-                    // Ensure imported songs have a set number, default to 1 if none
-                    if (!data.set) {
-                        data.set = 1;
+
+                Object.entries(importData).forEach(([key, value]) => {
+                    if (key.startsWith('lyrics-font-size-')) {
+                        localStorage.setItem(key, value);
+                    } else if (key.startsWith('metronome-bpm-')) {
+                        localStorage.setItem(key, value);
                     }
-                    localStorage.setItem(song, JSON.stringify(data));
+                    else {
+                        localStorage.setItem(key, JSON.stringify(value));
+                    }
                 });
                 
                 window.updateSongDropdown(window.currentSetNumber);
@@ -154,7 +173,6 @@ function importSongData(file) {
                 reject(new Error('Invalid file format'));
             }
         };
-        
         reader.onerror = function() {
             reject(new Error('Error reading file'));
         };
