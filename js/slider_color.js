@@ -201,6 +201,23 @@ function updateColors() {
             color: ${textColor} !important;
             border-color: ${buttonBorderColor} !important;
         }
+
+        /* Make bpm input and beats selector background transparent */
+        #controls input#bpm,
+        #controls select#beats {
+            background-color: transparent !important;
+        }
+
+        /* Style metronome elements */
+        #controls #metronome {
+            color: ${textColor} !important;
+        }
+        #controls label,
+        #controls input,
+        #controls select {
+            color: ${textColor} !important;
+            border-color: ${buttonBorderColor} !important;
+        }
     `;
 
     const isDarkTheme = lightness < 50;
