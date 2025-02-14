@@ -106,8 +106,8 @@ body {
     max-width: 800px;
     margin: 0 auto;
     /* padding: 5rem; */
-    padding-left: 5rem;
-    padding-right: 5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 .about-content p {
@@ -356,13 +356,5 @@ body {
 
     body {
         padding: 4px;
-    }
-
-
-    #themeSider, input,textarea, select {
-        background-color: hsl(40, 22%, 15%) !important;
-        color: hsl(220, 32%, 95%) !important;
-        border-color: hsl(220, 32%, 95%) !important;
-        max-width: 150px;
     }
 }
