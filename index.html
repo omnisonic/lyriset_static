@@ -22,13 +22,13 @@
   
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <div class="nav-item">
-                        <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal"
+                        <button class="btn border rounded-0" data-bs-toggle="modal"
                             data-bs-target="#aboutModal">
                             About
                         </button>
                     </div>
                     <div class="dropdown">
-                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
+                        <button class="btn border rounded-0 dropdown-toggle" type="button"
                             id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
                         <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
                             <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
@@ -44,19 +44,19 @@
                         </ul>
                     </div>
 
-                    <button class="btn btn-secondary border rounded-0" data-bs-toggle="modal"
+                    <button class="btn  border rounded-0" data-bs-toggle="modal"
                         data-bs-target="#lyricsModal">Add Song</button>
                     <div class="dropdown">
-                        <button class="btn btn-secondary border rounded-0 dropdown-toggle" type="button"
+                        <button class="btn  border rounded-0 dropdown-toggle" type="button"
                             id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
                         <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
                     </div>
                     <div class="btn-group">
-                        <a href="#" class="btn btn-secondary border border-light" onclick="loadPrevSong()">◀</a>
-                        <a href="#" class="btn btn-secondary border border-light" onclick="loadNextSong()">▶</a>
-                        <button onclick="adjustFontSize(1)" class="btn btn-light border border-light">A+</button>
-                        <button onclick="adjustFontSize(-1)" class="btn btn-light border border-light">A-</button>
-                        <button class="btn btn-light border border-light" id="toggleCleanLyricsButton"
+                        <a href="#" class="btn  border border-light" onclick="loadPrevSong()">◀</a>
+                        <a href="#" class="btn  border border-light" onclick="loadNextSong()">▶</a>
+                        <button onclick="adjustFontSize(1)" class="btn border border-light">A+</button>
+                        <button onclick="adjustFontSize(-1)" class="btn border border-light">A-</button>
+                        <button class="btn border border-light" id="toggleCleanLyricsButton"
                             onclick="toggleCleanLyrics()">
                             <span id="toggleCleanLyricsText">✱</span>
                         </button>
@@ -66,15 +66,15 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required
                                     placeholder="Enter URL" />
-                                <button type="submit" class="btn btn-secondary border rounded-0">Submit</button>
+                                <button type="submit" class="btn  border rounded-0">Submit</button>
                             </div>
                         </form>
                     </div>
 
                     <div id="importExportContainer"></div>
 
-                    <button class="btn btn-danger border border-light" onclick="deleteSong()">Delete</button>
-                    <button class="btn btn-warning border rounded-0" onclick="openEditModal()">Edit Song</button>
+                    <button class="btn border" onclick="deleteSong()">Delete</button>
+                    <button class="btn border rounded-0" onclick="openEditModal()">Edit Song</button>
 
                     <div>
                         <input type="range" id="themeSlider" min="0" max="100" value="50"
@@ -195,7 +195,7 @@
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn " data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

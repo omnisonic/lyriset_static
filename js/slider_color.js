@@ -211,6 +211,7 @@ function updateColors() {
         /* Style metronome elements */
         #controls #metronome {
             color: ${textColor} !important;
+            border: ${buttonBorderColor} 1px solid !important;
         }
         #controls label,
         #controls input,
