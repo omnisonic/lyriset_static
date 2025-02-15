@@ -313,9 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (event.key === 'ArrowRight') {
             loadNextSong();
         } else if (event.key === 'ArrowUp') {
-            adjustFontSize(2); // Increase font size
+            adjustFontSize(1); // Increase font size
         } else if (event.key === 'ArrowDown') {
-            adjustFontSize(-2); // Decrease font size
+            adjustFontSize(-1); // Decrease font size
         }
     });
 

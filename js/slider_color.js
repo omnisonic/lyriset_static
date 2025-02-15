@@ -156,7 +156,7 @@ function updateColors() {
         }
 
         /* Style navbar brand */
-        .navbar-brand {
+        .brand {
             color: ${textColor} !important;
         }
         /* Preserve specific exceptions */

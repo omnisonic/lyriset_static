@@ -1,18 +1,9 @@
 html, body {
     height: 100%;
-    margin: 0; /* Remove default body margins */
-    overflow: hidden; /* Prevent scrollbars */
+    /* Prevent scrollbar */
+    overflow-x: hidden; 
 }
 
-  body {
-      font-family: sans-serif;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start; /* Align content to the top */
-      align-items: center;
-      position: relative; /* For absolute positioning of the border */
-  }
 
   body::before {
       content: '';
@@ -48,10 +39,11 @@ html, body {
       border: 2px solid #333;
       border-radius: 50%;
       display: inline-block;
-      line-height: 67px;
+      line-height: 60px;
       margin-left: 10px;
       cursor: pointer;
       /* z-index: 10000; */
+      padding-left: 10px;
   }
 
   #display:hover {
