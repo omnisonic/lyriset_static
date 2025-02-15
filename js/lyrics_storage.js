@@ -12,9 +12,10 @@ async function loadDefaultSongs() {
         const responseText = await response.text();
         const songs = JSON.parse(responseText);
 
-        // Only load default songs if localStorage is empty (except for font size)
-        if (localStorage.length <= 1) { // accounting for possible font-size setting
-            console.log('localStorage is empty, loading default songs from lyrics_data.lyriset');
+        // Only load default songs if localStorage has 3 or fewer songs (except for font size)
+        if (existingSongs.length <= 3) {
+            console.log('localStorage has 3 or fewer songs, clearing and loading default songs from lyrics_data.lyriset');
+            localStorage.clear();
             Object.entries(songs).forEach(([song, data]) => {
                 // Add set property if not present
                 if (!data.set) {
