@@ -175,31 +175,58 @@ function adjustColumnsForFontSize(fontSize) {
     // Calculate how many columns can fit
     const maxColumns = Math.floor(containerWidth / requiredColumnWidth);
     
-    // Ensure at least 1 column, but also respect font size constraints
+    // Ensure at least 1 column
     let targetColumns = Math.max(1, maxColumns);
     
-    // Apply reasonable limits based on font size
-    // Allow up to 4 columns for optimal layout
-    if (fontSize > 24) {
-        targetColumns = Math.min(targetColumns, 4); // Changed from 3 to 4
-    } else if (fontSize > 18) {
-        targetColumns = Math.min(targetColumns, 5); // Changed from 4 to 5
+    // CRITICAL: Never allow more columns than we have lines
+    // This prevents unnecessary columns and line wrapping
+    const lineDivs = Array.from(lyricsContainer.querySelectorAll('div'));
+    const totalLines = lineDivs.length;
+    
+    // Limit columns to actual number of lines to prevent empty columns
+    if (totalLines > 0) {
+        targetColumns = Math.min(targetColumns, totalLines);
+    }
+    
+    // Apply reasonable upper limits based on container width
+    // These are hard limits to prevent excessive columns
+    if (containerWidth >= 1200) {
+        targetColumns = Math.min(targetColumns, 4); // Max 4 columns on wide screens
+    } else if (containerWidth >= 800) {
+        targetColumns = Math.min(targetColumns, 3); // Max 3 columns on tablets
+    } else if (containerWidth >= 600) {
+        targetColumns = Math.min(targetColumns, 2); // Max 2 columns on small tablets
     } else {
-        targetColumns = Math.min(targetColumns, 6); // Changed from 5 to 6
+        targetColumns = 1; // Single column on phones
     }
     
-    // Ensure minimum of 2 columns if we have enough width
-    if (containerWidth > 800 && targetColumns < 2) {
-        targetColumns = 2;
-    }
+    // Ensure the longest line fits in a column without wrapping
+    // This is the key to preserving original lines
+    const columnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
+    const availableColumnWidth = (containerWidth - (targetColumns - 1) * columnGap) / targetColumns;
     
-    // Final safety check - never exceed 6 columns
-    targetColumns = Math.min(targetColumns, 6);
+    // CRITICAL FIX: If the longest line doesn't fit, we MUST reduce columns until it does
+    // This prevents text overlap
+    while (targetColumns > 1 && longestLine.width > availableColumnWidth) {
+        targetColumns--;
+        // Recalculate available width for the new column count
+        const newAvailableWidth = (containerWidth - (targetColumns - 1) * columnGap) / targetColumns;
+        
+        // If even 1 column can't fit the line, we need to use 1 column
+        // The line will be wider than the container, but that's better than overlap
+        if (targetColumns === 1) {
+            break;
+        }
+    }
     
     // Apply the column count
     lyricsContainer.style.columnCount = targetColumns;
     
-    console.log(`Longest line: "${longestLine.text}" (${longestLine.width}px), Container: ${containerWidth}px, Columns: ${targetColumns}`);
+    // Final verification: calculate actual column width after applying
+    const finalColumnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
+    const finalColumnWidth = (containerWidth - (targetColumns - 1) * finalColumnGap) / targetColumns;
+    
+    console.log(`Longest line: "${longestLine.text}" (${longestLine.width}px), Container: ${containerWidth}px, Lines: ${totalLines}, Columns: ${targetColumns}, Column Width: ${finalColumnWidth.toFixed(1)}px, Line Fits: ${longestLine.width <= finalColumnWidth}`);
     
     // Recalculate space after adjustment
     setTimeout(() => {
@@ -378,6 +405,9 @@ function autoFitLyrics(song, artist, lyrics) {
             // Apply temporary font size
             lyricsContainer.style.fontSize = `${size}px`;
             
+            // CRITICAL: Also adjust columns for this font size to get accurate measurements
+            adjustColumnsForFontSize(size);
+            
             // Force reflow to ensure measurements are accurate
             const forceReflow = lyricsContainer.offsetHeight;
             
@@ -388,38 +418,23 @@ function autoFitLyrics(song, artist, lyrics) {
             // Check if scrollbar is visible (this is the key indicator!)
             const hasScrollbar = scrollHeight > clientHeight;
             
-            // Calculate what column count WOULD be set by adjustColumnsForFontSize
-            const containerWidth = lyricsContainer.offsetWidth;
-            const longestLine = getLongestLineWidth(lyricsContainer, size);
-            const requiredColumnWidth = longestLine.width + 20; // 20px buffer
-            const maxColumns = Math.floor(containerWidth / requiredColumnWidth);
-            
-            // Apply the same logic as adjustColumnsForFontSize
-            let targetColumns = Math.max(1, maxColumns);
-            if (size > 24) {
-                targetColumns = Math.min(targetColumns, 4); // Updated to 4
-            } else if (size > 18) {
-                targetColumns = Math.min(targetColumns, 5); // Updated to 5
-            } else {
-                targetColumns = Math.min(targetColumns, 6); // Updated to 6
-            }
-            if (containerWidth > 800 && targetColumns < 2) {
-                targetColumns = 2;
-            }
-            // Final safety check
-            targetColumns = Math.min(targetColumns, 6);
-            
-            // Check if columns fit within container width (horizontal overflow check)
-            const columnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
-            const columnWidth = (containerWidth - (targetColumns - 1) * columnGap) / targetColumns;
-            const lineFitsInColumn = longestLine.width <= columnWidth;
-            
-            // Check for horizontal overflow after applying columns
-            lyricsContainer.style.columnCount = targetColumns;
-            const forceReflow2 = lyricsContainer.offsetHeight; // Force reflow
+            // Check for horizontal overflow with current column settings
             const hasHorizontalOverflow = lyricsContainer.scrollWidth > lyricsContainer.clientWidth;
             
-            console.log(`  Font ${size}px: scrollHeight=${scrollHeight}, clientHeight=${clientHeight}, hasScrollbar=${hasScrollbar}, targetColumns=${targetColumns}, lineFits=${lineFitsInColumn}, horizontalOverflow=${hasHorizontalOverflow}`);
+            // Get current column settings
+            const currentColumnCount = parseInt(window.getComputedStyle(lyricsContainer).columnCount) || 1;
+            const columnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
+            const columnWidth = (containerWidth - (currentColumnCount - 1) * columnGap) / currentColumnCount;
+            
+            // Check if longest line fits in current column width
+            const longestLine = getLongestLineWidth(lyricsContainer, size);
+            const lineFitsInColumn = longestLine.width <= columnWidth;
+            
+            // Get total lines for column limit check
+            const lineDivs = Array.from(lyricsContainer.querySelectorAll('div'));
+            const totalLines = lineDivs.length;
+            
+            console.log(`  Font ${size}px: scrollHeight=${scrollHeight}, clientHeight=${clientHeight}, hasScrollbar=${hasScrollbar}, currentColumns=${currentColumnCount}, lineFits=${lineFitsInColumn}, horizontalOverflow=${hasHorizontalOverflow}`);
             
             // Score this configuration
             let score = 0;
@@ -454,23 +469,23 @@ function autoFitLyrics(song, artist, lyrics) {
             }
             
             // Priority 3: Reasonable column count (1-4 is good)
-            if (targetColumns >= 1 && targetColumns <= 4) {
-                score += 200 - (targetColumns * 10); // Fewer columns score slightly higher
-                reasons.push(`${targetColumns}-cols-reasonable`);
-            } else if (targetColumns <= 6) {
+            if (currentColumnCount >= 1 && currentColumnCount <= 4) {
+                score += 200 - (currentColumnCount * 10); // Fewer columns score slightly higher
+                reasons.push(`${currentColumnCount}-cols-reasonable`);
+            } else if (currentColumnCount <= 6) {
                 score += 50; // 5-6 columns is acceptable but not ideal
-                reasons.push(`${targetColumns}-cols-acceptable`);
+                reasons.push(`${currentColumnCount}-cols-acceptable`);
             } else {
                 isValid = false;
-                reasons.push(`${targetColumns}-cols-too-many`);
+                reasons.push(`${currentColumnCount}-cols-too-many`);
             }
             
             // Priority 4: Larger font size bonus
             score += size * 2; // Larger fonts get more points
             
             // Priority 5: Penalize excessive column gaps (wasted space)
-            if (targetColumns > 1) {
-                const totalGap = (targetColumns - 1) * columnGap;
+            if (currentColumnCount > 1) {
+                const totalGap = (currentColumnCount - 1) * columnGap;
                 const wastedSpace = totalGap / containerWidth;
                 score -= wastedSpace * 100;
             }
@@ -479,12 +494,12 @@ function autoFitLyrics(song, artist, lyrics) {
                 validSizes.push({
                     size: size,
                     score: score,
-                    columns: targetColumns,
+                    columns: currentColumnCount,
                     longestLine: longestLine.width,
                     columnWidth: columnWidth,
                     reasons: reasons
                 });
-                console.log(`    ✅ VALID: ${size}px, ${targetColumns} cols, score=${score.toFixed(0)} [${reasons.join(', ')}]`);
+                console.log(`    ✅ VALID: ${size}px, ${currentColumnCount} cols, score=${score.toFixed(0)} [${reasons.join(', ')}]`);
             } else {
                 console.log(`    ❌ INVALID: ${size}px - ${reasons.join(', ')}`);
             }
@@ -518,6 +533,10 @@ function autoFitLyrics(song, artist, lyrics) {
         lyricsContainer.style.fontSize = `${bestSize}px`;
         console.log(`Applied font size: ${bestSize}px to lyrics container`);
         
+        // CRITICAL: After applying font size, ensure columns are properly set
+        // This ensures the final configuration is correct
+        adjustColumnsForFontSize(bestSize);
+        
         // Store the auto-fit setting
         localStorage.setItem(`lyrics-font-size-${song}`, bestSize);
         localStorage.setItem(`lyrics-auto-fit-${song}`, 'true');
@@ -530,6 +549,15 @@ function autoFitLyrics(song, artist, lyrics) {
         // Verify the font size was actually applied
         const appliedSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
         console.log(`Verified applied font size: ${appliedSize}px`);
+        
+        // Final verification: check if longest line fits
+        const finalLongestLine = getLongestLineWidth(lyricsContainer, bestSize);
+        const finalColumnCount = parseInt(window.getComputedStyle(lyricsContainer).columnCount) || 1;
+        const finalColumnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
+        const finalColumnWidth = (containerWidth - (finalColumnCount - 1) * finalColumnGap) / finalColumnCount;
+        const finalLineFits = finalLongestLine.width <= finalColumnWidth;
+        
+        console.log(`Final verification: Longest line (${finalLongestLine.width}px) fits in column (${finalColumnWidth.toFixed(1)}px): ${finalLineFits}`);
         
         // Update status indicator if available
         if (typeof updateAutoFitStatus === 'function') {
