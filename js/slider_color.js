@@ -200,17 +200,7 @@ function updateColors() {
             border-color: ${buttonBorderColor} !important;
         }
 
-        /* Make bpm input and beats selector background transparent */
-        #controls input#bpm,
-        #controls select#beats {
-            background-color: transparent !important;
-        }
-
-        /* Style metronome elements */
-        #controls #metronome {
-            color: ${textColor} !important;
-            border: ${buttonBorderColor} 1px solid !important;
-        }
+        /* Style form controls */
         #controls label,
         #controls input,
         #controls select {

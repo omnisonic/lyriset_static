@@ -19,7 +19,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/lyrics_app.css">
-    <link rel="stylesheet" href="../css/metronome.css">
 </head>
 
 <body>
@@ -95,34 +94,6 @@
                         <input type="range" id="themeSlider" min="0" max="100" value="50"
                             title="Adjust color theme">
                     </div>
-                    <div id="controls">
-                        <label for="bpm">BPM: </label>
-                        <input type="number" id="bpm" value="120" min="40" max="240">
-
-                        <label for="beats">Beats: </label>
-                        <select id="beats">
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4" selected>4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                        </select>
-
-
-
-                        <div id="metronome" title="Click to Start/Stop">1</div>
-
-                    </div>
                 </div>
 
                 <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
@@ -185,7 +156,6 @@
                         <li><strong>Navigation:</strong> Use the left (◀) and right (▶) arrow buttons or keys to move between songs.</li>
                         <li><strong>Text Size:</strong> Adjust text size with the A+ and A- buttons or the up and down arrow keys.</li>
                         <li><strong>Clean Lyrics:</strong> Toggle between original and cleaned lyrics using the ✱ button.</li>
-                        <li><strong>Metronome:</strong> Start/stop the visual metronome by clicking the display or pressing the spacebar.</li>
                         <li><strong>Theme:</strong> Adjust the color theme using the slider for optimal readability.</li>
                     </ul>
 
@@ -203,7 +173,7 @@
                         <li>Export your collection if you make changes so that you have a backup</li>
                         <li>The clean lyrics (* button) feature can help format text for better viewing.  If you inlcude chords in the lyrics, the clean lyrics will hide them.
                         </li>
-                        <li>Settings for font size and BPM are saved in the export file and in your browser's local storage for each song.
+                        <li>Settings for font size are saved in the export file and in your browser's local storage for each song.
 
                         </li>   
                         <li>The default songs that are loaded are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer"
@@ -279,7 +249,6 @@
     <script src="../js/reset_autofit.js"></script>
     <script src="../js/slider_color.js"></script>
     <script src="../js/edit.js"></script>
-    <script src="../js/visual_metronome.js"></script>
 
 
     <script>

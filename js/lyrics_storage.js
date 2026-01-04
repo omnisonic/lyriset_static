@@ -159,17 +159,6 @@ function exportSongData() {
             }
         }
 
-        // Include tempo settings in export data (but not font sizes since we use auto-fit)
-        const lyricsContainer = document.getElementById('lyricsDisplay');
-        const songTitleElement = document.getElementById('songTitle');
-        const song = songTitleElement ? songTitleElement.textContent : null;
-
-        if (song && song !== 'Select a Song') {
-            const tempo = localStorage.getItem(`metronome-bpm-${song}`);
-            if (tempo) {
-                exportData[`metronome-bpm-${song}`] = tempo;
-            }
-        }
 
         const dataStr = JSON.stringify(exportData, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/octet-stream' });
@@ -207,12 +196,12 @@ function importSongData(file) {
                         console.log(`Skipping import of font size setting: ${key}`);
                         return;
                     }
+                    // Skip metronome-bpm entries since metronome is removed
                     if (key.startsWith('metronome-bpm-')) {
-                        localStorage.setItem(key, value);
+                        console.log(`Skipping import of metronome BPM setting: ${key}`);
+                        return;
                     }
-                    else {
-                        localStorage.setItem(key, JSON.stringify(value));
-                    }
+                    localStorage.setItem(key, JSON.stringify(value));
                 });
 
                 window.updateSongDropdown(window.currentSetNumber);

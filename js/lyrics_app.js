@@ -775,12 +775,6 @@ function displayLyrics(song, artist, lyrics) {
         console.error('Lyrics container not found');
         return;
     }
-
-    const bpmInput = document.getElementById('bpm');
-    const tempo = localStorage.getItem(`metronome-bpm-${song}`);
-    if (bpmInput && tempo) {
-        bpmInput.value = tempo;
-    }
     
     const titleElement = document.getElementById('songTitle');
     if (titleElement) {
