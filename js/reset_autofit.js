@@ -9,10 +9,6 @@ function resetAutoFit() {
         return;
     }
 
-    // Remove manual font size override for this song
-    localStorage.removeItem(`lyrics-font-size-${song}`);
-    localStorage.removeItem(`lyrics-auto-fit-${song}`);
-    
     // Get the lyrics container
     const lyricsContainer = document.getElementById('lyricsDisplay');
     if (lyricsContainer) {

@@ -12,10 +12,36 @@ async function loadDefaultSongs() {
         const responseText = await response.text();
         const songs = JSON.parse(responseText);
 
-        // Only load default songs if localStorage has 3 or fewer songs (except for font size)
-        if (existingSongs.length <= 3) {
+        // Clean up any old font size entries from previous versions
+        let cleanedCount = 0;
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith('lyrics-font-size-') || key === 'lyrics-font-size' || key.startsWith('lyrics-auto-fit-'))) {
+                localStorage.removeItem(key);
+                cleanedCount++;
+            }
+        }
+        if (cleanedCount > 0) {
+            console.log(`Cleaned up ${cleanedCount} old font size entries from localStorage`);
+        }
+
+        // Only load default songs if localStorage has 3 or fewer songs (after cleanup)
+        const currentSongsCount = Object.keys(localStorage).filter(k => 
+            k !== 'lastViewedSong' && !k.startsWith('lyrics-font-size') && !k.startsWith('metronome-bpm-')
+        ).length;
+        
+        if (currentSongsCount <= 3) {
             console.log('localStorage has 3 or fewer songs, clearing and loading default songs from lyrics_data.lyriset');
-            localStorage.clear();
+            // Clear all except the cleanup we just did
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key !== 'lastViewedSong' && !key.startsWith('lyrics-font-size') && !key.startsWith('metronome-bpm-')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            
             Object.entries(songs).forEach(([song, data]) => {
                 // Add set property if not present
                 if (!data.set) {
@@ -80,7 +106,12 @@ window.updateSongDropdown = function(setNumber = 1) {
             // Add click event listener
             a.addEventListener('click', function(e) {
                 e.preventDefault();
-                displayLyrics(song.title, song.artist, song.lyrics);
+                // Use autoFitLyrics if available, otherwise fallback to displayLyrics
+                if (typeof autoFitLyrics === 'function') {
+                    autoFitLyrics(song.title, song.artist, song.lyrics);
+                } else if (typeof displayLyrics === 'function') {
+                    displayLyrics(song.title, song.artist, song.lyrics);
+                }
             });
             
             li.appendChild(a);
@@ -95,9 +126,16 @@ window.updateSongDropdown = function(setNumber = 1) {
             if (lastViewedSong && lastViewedSong !== "") {
             }
 
-            displayLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
+            // Use autoFitLyrics if available, otherwise fallback to displayLyrics
+            if (typeof autoFitLyrics === 'function') {
+                autoFitLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
+            } else if (typeof displayLyrics === 'function') {
+                displayLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
+            }
         } else {
-            displayLyrics('Select a Song', '', '');
+            if (typeof displayLyrics === 'function') {
+                displayLyrics('Select a Song', '', '');
+            }
         }
     } else {
         console.error('Dropdown element not found');
@@ -121,17 +159,12 @@ function exportSongData() {
             }
         }
 
-        // Include font size and tempo settings in export data
+        // Include tempo settings in export data (but not font sizes since we use auto-fit)
         const lyricsContainer = document.getElementById('lyricsDisplay');
         const songTitleElement = document.getElementById('songTitle');
         const song = songTitleElement ? songTitleElement.textContent : null;
 
         if (song && song !== 'Select a Song') {
-            const fontSize = localStorage.getItem(`lyrics-font-size-${song}`);
-            if (fontSize) {
-                exportData[`lyrics-font-size-${song}`] = fontSize;
-            }
-
             const tempo = localStorage.getItem(`metronome-bpm-${song}`);
             if (tempo) {
                 exportData[`metronome-bpm-${song}`] = tempo;
@@ -169,9 +202,12 @@ function importSongData(file) {
                 const importData = JSON.parse(e.target.result);
 
                 Object.entries(importData).forEach(([key, value]) => {
+                    // Skip font size entries since we use auto-fit now
                     if (key.startsWith('lyrics-font-size-')) {
-                        localStorage.setItem(key, value);
-                    } else if (key.startsWith('metronome-bpm-')) {
+                        console.log(`Skipping import of font size setting: ${key}`);
+                        return;
+                    }
+                    if (key.startsWith('metronome-bpm-')) {
                         localStorage.setItem(key, value);
                     }
                     else {

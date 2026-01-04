@@ -19,14 +19,14 @@ function toggleCleanLyrics() {
     const song = document.getElementById('songTitle').textContent;
     const artist = document.getElementById('songArtist').textContent;
     if (isClean) {
-        displayLyrics(song, artist, originalLyrics);
+        autoFitLyrics(song, artist, originalLyrics);
         toggleText.textContent = '✓';
         toggleButton.classList.add('active');
         lyricsContainer.setAttribute('data-clean', 'false');
     } else {
         const cleanedLyrics = cleanLyrics(originalLyrics);
         if (cleanedLyrics) {
-            displayLyrics(song, artist, cleanedLyrics);
+            autoFitLyrics(song, artist, cleanedLyrics);
             toggleText.textContent = '✱';
             toggleButton.classList.remove('active');
             lyricsContainer.setAttribute('data-clean', 'true');
@@ -64,7 +64,7 @@ function loadNextSong() {
     const nextSong = songs[nextIndex];
     try {
         const songData = JSON.parse(localStorage.getItem(nextSong));
-        displayLyrics(nextSong, songData.artist, songData.lyrics);
+        autoFitLyrics(nextSong, songData.artist, songData.lyrics);
     } catch (e) {
         console.error("Error parsing JSON for song: " + nextSong, localStorage.getItem(nextSong), e);
     }
@@ -93,7 +93,7 @@ function loadPrevSong() {
     const prevSong = songs[prevIndex];
     
     const songData = JSON.parse(localStorage.getItem(prevSong));
-    displayLyrics(prevSong, songData.artist, songData.lyrics);
+    autoFitLyrics(prevSong, songData.artist, songData.lyrics);
 }
     
 function adjustFontSize(delta) {
@@ -112,7 +112,6 @@ function adjustFontSize(delta) {
     const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
     const newSize = Math.min(Math.max(currentSize + delta, 8), 32);
     lyricsContainer.style.fontSize = `${newSize}px`;
-    localStorage.setItem(`lyrics-font-size-${song}`, newSize);
     
     // Get longest line with current font size to check if adjustment is needed
     const longestLine = getLongestLineWidth(lyricsContainer, newSize);
@@ -537,10 +536,6 @@ function autoFitLyrics(song, artist, lyrics) {
         // This ensures the final configuration is correct
         adjustColumnsForFontSize(bestSize);
         
-        // Store the auto-fit setting
-        localStorage.setItem(`lyrics-font-size-${song}`, bestSize);
-        localStorage.setItem(`lyrics-auto-fit-${song}`, 'true');
-        
         // Log final results
         console.log('=== AUTO-FIT RESULTS ===');
         console.log(`✅ Optimal font size: ${bestSize}px`);
@@ -781,11 +776,6 @@ function displayLyrics(song, artist, lyrics) {
         return;
     }
 
-    const fontSize = localStorage.getItem(`lyrics-font-size-${song}`);
-    if (fontSize) {
-        lyricsContainer.style.fontSize = `${fontSize}px`;
-    }
-
     const bpmInput = document.getElementById('bpm');
     const tempo = localStorage.getItem(`metronome-bpm-${song}`);
     if (bpmInput && tempo) {
@@ -850,7 +840,8 @@ function loadLastViewedSong() {
                 const songData = JSON.parse(localStorage.getItem(lastViewedSong));
                 if (songData) {
                     console.log(`Loading last viewed song: ${lastViewedSong}`);
-                    displayLyrics(lastViewedSong, songData.artist, songData.lyrics);
+                    // Use auto-fit directly to ensure optimal sizing on initial load
+                    autoFitLyrics(lastViewedSong, songData.artist, songData.lyrics);
                 } else {
                     console.warn(`No song data found for ${lastViewedSong}`);
                     displayLyrics('Select a Song', '', '');
@@ -892,10 +883,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    const savedFontSize = localStorage.getItem('lyrics-font-size');
-    if (savedFontSize) {
-        lyricsContainer.style.fontSize = `${savedFontSize}px`;
-    }
+    // Don't load saved font sizes - we use auto-fit on every load
+    // Clear any existing font size to ensure clean state
+    lyricsContainer.style.fontSize = '';
 
     const lyricsDisplay = lyricsContainer.textContent;
     lyricsContainer.setAttribute('data-original-lyrics', lyricsDisplay);
@@ -1017,6 +1007,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         resizeObserver.observe(lyricsContainer);
     }
+    
+    // Clean up old localStorage font size entries
+    // Remove any saved font sizes since we now use auto-fit on every load
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('lyrics-font-size-')) {
+            localStorage.removeItem(key);
+        }
+        if (key && key.startsWith('lyrics-auto-fit-')) {
+            localStorage.removeItem(key);
+        }
+    }
+    
+    // Also remove the old global font size key
+    localStorage.removeItem('lyrics-font-size');
 });
 
 function deleteSong() {
@@ -1048,6 +1053,6 @@ function deleteSong() {
     if (remainingSongs.length > 0) {
         const nextSong = remainingSongs[0];
         const songData = JSON.parse(localStorage.getItem(nextSong));
-        displayLyrics(nextSong, songData.artist, songData.lyrics);
+        autoFitLyrics(nextSong, songData.artist, songData.lyrics);
     }
 }
