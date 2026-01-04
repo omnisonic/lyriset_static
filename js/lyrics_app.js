@@ -179,18 +179,22 @@ function adjustColumnsForFontSize(fontSize) {
     let targetColumns = Math.max(1, maxColumns);
     
     // Apply reasonable limits based on font size
+    // Allow up to 4 columns for optimal layout
     if (fontSize > 24) {
-        targetColumns = Math.min(targetColumns, 3);
+        targetColumns = Math.min(targetColumns, 4); // Changed from 3 to 4
     } else if (fontSize > 18) {
-        targetColumns = Math.min(targetColumns, 4);
+        targetColumns = Math.min(targetColumns, 5); // Changed from 4 to 5
     } else {
-        targetColumns = Math.min(targetColumns, 5);
+        targetColumns = Math.min(targetColumns, 6); // Changed from 5 to 6
     }
     
     // Ensure minimum of 2 columns if we have enough width
     if (containerWidth > 800 && targetColumns < 2) {
         targetColumns = 2;
     }
+    
+    // Final safety check - never exceed 6 columns
+    targetColumns = Math.min(targetColumns, 6);
     
     // Apply the column count
     lyricsContainer.style.columnCount = targetColumns;
@@ -288,54 +292,28 @@ function calculateUnusedSpace() {
         }
     }
     
-    // Calculate space usage based on line measurements
-    const usedHeight = totalRenderedLines * actualLineHeight;
-    const usedSpace = containerWidth * usedHeight;
-    const totalAvailableSpace = containerWidth * containerHeight;
-    const unusedSpace = Math.max(0, totalAvailableSpace - usedSpace);
-    
-    const unusedPercentage = totalAvailableSpace > 0 ? (unusedSpace / totalAvailableSpace * 100) : 0;
-    const usedPercentage = totalAvailableSpace > 0 ? (usedSpace / totalAvailableSpace * 100) : 0;
     
     // Log detailed line-based information
-    console.log('=== SPACE USAGE ANALYSIS (LINE-BASED) ===');
-    console.log('Container Dimensions:', {
-        width: containerWidth.toFixed(2) + 'px',
-        height: containerHeight.toFixed(2) + 'px',
-        total: totalAvailableSpace.toFixed(2) + 'px²'
-    });
+    console.log('=== LINE ANALYSIS ===');
     console.log('Typography & Layout:', {
         fontSize: fontSize.toFixed(2) + 'px',
         lineHeight: actualLineHeight.toFixed(2) + 'px',
         columnCount: columnCount,
-        columnWidth: columnWidth.toFixed(2) + 'px',
-        columnFill: 'auto (sequential)'
+        columnWidth: columnWidth.toFixed(2) + 'px'
     });
     console.log('Longest Line Analysis:', {
         text: longestLine.text,
         width: longestLine.width.toFixed(2) + 'px',
         fitsInColumn: longestLine.width <= columnWidth
     });
-    console.log('Line Analysis:', {
-        totalRenderedLines: totalRenderedLines,
+    console.log('Line Distribution:', {
+        totalLines: totalRenderedLines,
         hasWrappedLines: hasWrappedLines,
         linesPerColumn: linesPerColumn,
-        availableLinesPerColumn: availableLinesPerColumn
-    });
-    console.log('Capacity Analysis:', {
+        availableLinesPerColumn: availableLinesPerColumn,
         fullColumns: fullColumns,
         linesInLastColumn: linesInLastColumn,
-        lastTextColumnIndex: lastTextColumnIndex,
-        emptyLinesAfterText: emptyLinesAfterText,
-        emptyColumnsAfterText: emptyColumnsAfterText,
-        emptyLinesCapacity: emptyLines
-    });
-    console.log('Space Usage:', {
-        usedHeight: usedHeight.toFixed(2) + 'px',
-        usedSpace: usedSpace.toFixed(2) + 'px²',
-        unusedSpace: unusedSpace.toFixed(2) + 'px²',
-        usedPercentage: usedPercentage.toFixed(2) + '%',
-        unusedPercentage: unusedPercentage.toFixed(2) + '%'
+        emptyColumnsAfterText: emptyColumnsAfterText
     });
     
     return {
@@ -348,15 +326,422 @@ function calculateUnusedSpace() {
         lastTextColumnIndex: lastTextColumnIndex,
         emptyLinesAfterText: emptyLinesAfterText,
         emptyLines: emptyLines,
-        usedSpace: usedSpace,
-        unusedSpace: unusedSpace,
-        usedPercentage: usedPercentage,
-        unusedPercentage: unusedPercentage,
         columns: columnCount,
         columnWidth: columnWidth,
         fontSize: fontSize,
         longestLine: longestLine
     };
+}
+
+// Auto-fit functionality - finds maximum font size without vertical overflow
+// Uses overflow-y: auto to detect when font is too large
+function autoFitLyrics(song, artist, lyrics) {
+    console.log(`=== AUTO-FIT STARTED ===`);
+    console.log(`Auto-fitting lyrics for: ${song}`);
+    
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+    if (!lyricsContainer) {
+        console.error('Lyrics container not found');
+        return;
+    }
+
+    // First display the lyrics with current settings
+    displayLyrics(song, artist, lyrics);
+    
+    // Wait for DOM to update
+    setTimeout(() => {
+        console.log(`DOM updated, starting font size tests...`);
+        
+        // Get container height
+        const containerHeight = lyricsContainer.clientHeight;
+        const containerWidth = lyricsContainer.offsetWidth;
+        
+        console.log(`Container dimensions: ${containerWidth}w x ${containerHeight}h`);
+        
+        if (containerHeight === 0) {
+            console.warn('Container height not available yet');
+            return;
+        }
+
+        // Try different font sizes to find the maximum without overflow
+        const minFontSize = 8;
+        const maxFontSize = 32;
+        const stepSize = 0.5;
+        
+        // Track all valid configurations and their scores
+        let validSizes = [];
+        
+        console.log(`Testing font sizes from ${maxFontSize}px down to ${minFontSize}px...`);
+        
+        // Test font sizes from large to small
+        for (let size = maxFontSize; size >= minFontSize; size -= stepSize) {
+            // Apply temporary font size
+            lyricsContainer.style.fontSize = `${size}px`;
+            
+            // Force reflow to ensure measurements are accurate
+            const forceReflow = lyricsContainer.offsetHeight;
+            
+            // Check for vertical overflow
+            const scrollHeight = lyricsContainer.scrollHeight;
+            const clientHeight = lyricsContainer.clientHeight;
+            
+            // Check if scrollbar is visible (this is the key indicator!)
+            const hasScrollbar = scrollHeight > clientHeight;
+            
+            // Calculate what column count WOULD be set by adjustColumnsForFontSize
+            const containerWidth = lyricsContainer.offsetWidth;
+            const longestLine = getLongestLineWidth(lyricsContainer, size);
+            const requiredColumnWidth = longestLine.width + 20; // 20px buffer
+            const maxColumns = Math.floor(containerWidth / requiredColumnWidth);
+            
+            // Apply the same logic as adjustColumnsForFontSize
+            let targetColumns = Math.max(1, maxColumns);
+            if (size > 24) {
+                targetColumns = Math.min(targetColumns, 4); // Updated to 4
+            } else if (size > 18) {
+                targetColumns = Math.min(targetColumns, 5); // Updated to 5
+            } else {
+                targetColumns = Math.min(targetColumns, 6); // Updated to 6
+            }
+            if (containerWidth > 800 && targetColumns < 2) {
+                targetColumns = 2;
+            }
+            // Final safety check
+            targetColumns = Math.min(targetColumns, 6);
+            
+            // Check if columns fit within container width (horizontal overflow check)
+            const columnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
+            const columnWidth = (containerWidth - (targetColumns - 1) * columnGap) / targetColumns;
+            const lineFitsInColumn = longestLine.width <= columnWidth;
+            
+            // Check for horizontal overflow after applying columns
+            lyricsContainer.style.columnCount = targetColumns;
+            const forceReflow2 = lyricsContainer.offsetHeight; // Force reflow
+            const hasHorizontalOverflow = lyricsContainer.scrollWidth > lyricsContainer.clientWidth;
+            
+            console.log(`  Font ${size}px: scrollHeight=${scrollHeight}, clientHeight=${clientHeight}, hasScrollbar=${hasScrollbar}, targetColumns=${targetColumns}, lineFits=${lineFitsInColumn}, horizontalOverflow=${hasHorizontalOverflow}`);
+            
+            // Score this configuration
+            let score = 0;
+            let isValid = true;
+            let reasons = [];
+            
+            // Priority 1: No scrollbar (critical)
+            if (!hasScrollbar) {
+                score += 1000;
+                reasons.push('no-scrollbar');
+            } else {
+                isValid = false;
+                reasons.push('has-scrollbar');
+            }
+            
+            // Priority 1b: No horizontal overflow (critical)
+            if (!hasHorizontalOverflow) {
+                score += 1000;
+                reasons.push('no-horizontal-overflow');
+            } else {
+                isValid = false;
+                reasons.push('horizontal-overflow');
+            }
+            
+            // Priority 2: Line fits in column (critical)
+            if (lineFitsInColumn) {
+                score += 500;
+                reasons.push('line-fits');
+            } else {
+                isValid = false;
+                reasons.push('line-too-long');
+            }
+            
+            // Priority 3: Reasonable column count (1-4 is good)
+            if (targetColumns >= 1 && targetColumns <= 4) {
+                score += 200 - (targetColumns * 10); // Fewer columns score slightly higher
+                reasons.push(`${targetColumns}-cols-reasonable`);
+            } else if (targetColumns <= 6) {
+                score += 50; // 5-6 columns is acceptable but not ideal
+                reasons.push(`${targetColumns}-cols-acceptable`);
+            } else {
+                isValid = false;
+                reasons.push(`${targetColumns}-cols-too-many`);
+            }
+            
+            // Priority 4: Larger font size bonus
+            score += size * 2; // Larger fonts get more points
+            
+            // Priority 5: Penalize excessive column gaps (wasted space)
+            if (targetColumns > 1) {
+                const totalGap = (targetColumns - 1) * columnGap;
+                const wastedSpace = totalGap / containerWidth;
+                score -= wastedSpace * 100;
+            }
+            
+            if (isValid) {
+                validSizes.push({
+                    size: size,
+                    score: score,
+                    columns: targetColumns,
+                    longestLine: longestLine.width,
+                    columnWidth: columnWidth,
+                    reasons: reasons
+                });
+                console.log(`    ✅ VALID: ${size}px, ${targetColumns} cols, score=${score.toFixed(0)} [${reasons.join(', ')}]`);
+            } else {
+                console.log(`    ❌ INVALID: ${size}px - ${reasons.join(', ')}`);
+            }
+        }
+        
+        // Find the best valid size
+        let bestSize = 14; // fallback default
+        
+        if (validSizes.length > 0) {
+            // Sort by score (highest first)
+            validSizes.sort((a, b) => b.score - a.score);
+            
+            // Pick the best
+            const best = validSizes[0];
+            bestSize = best.size;
+            
+            console.log(`\n=== AUTO-FIT SELECTION ===`);
+            console.log(`Best size: ${bestSize}px (score: ${best.score.toFixed(0)})`);
+            console.log(`Columns: ${best.columns}`);
+            console.log(`Longest line: ${best.longestLine}px`);
+            console.log(`Column width: ${best.columnWidth.toFixed(2)}px`);
+            console.log(`Reasons: ${best.reasons.join(', ')}`);
+        } else {
+            console.log(`\n=== NO VALID SIZES FOUND ===`);
+            console.log(`Using fallback: ${bestSize}px`);
+            // Try to find the least bad option
+            // This shouldn't happen often, but we have a fallback
+        }
+        
+        // Apply the best found size
+        lyricsContainer.style.fontSize = `${bestSize}px`;
+        console.log(`Applied font size: ${bestSize}px to lyrics container`);
+        
+        // Store the auto-fit setting
+        localStorage.setItem(`lyrics-font-size-${song}`, bestSize);
+        localStorage.setItem(`lyrics-auto-fit-${song}`, 'true');
+        
+        // Log final results
+        console.log('=== AUTO-FIT RESULTS ===');
+        console.log(`✅ Optimal font size: ${bestSize}px`);
+        console.log(`✅ No vertical overflow - fits perfectly in container`);
+        
+        // Verify the font size was actually applied
+        const appliedSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
+        console.log(`Verified applied font size: ${appliedSize}px`);
+        
+        // Update status indicator if available
+        if (typeof updateAutoFitStatus === 'function') {
+            updateAutoFitStatus(true);
+        }
+        
+    }, 200); // Increased timeout to ensure DOM is fully ready
+}
+
+// Debug function to check current overflow state
+function debugOverflow() {
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+    if (!lyricsContainer) {
+        console.error('Lyrics container not found');
+        return;
+    }
+    
+    const scrollHeight = lyricsContainer.scrollHeight;
+    const clientHeight = lyricsContainer.clientHeight;
+    const hasScrollbar = scrollHeight > clientHeight;
+    const columnCount = parseInt(window.getComputedStyle(lyricsContainer).columnCount) || 1;
+    const fontSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
+    
+    // Check line fitting
+    const containerWidth = lyricsContainer.offsetWidth;
+    const columnGap = parseFloat(window.getComputedStyle(lyricsContainer).columnGap) || 0;
+    const columnWidth = (containerWidth - (columnCount - 1) * columnGap) / columnCount;
+    const longestLine = getLongestLineWidth(lyricsContainer, fontSize);
+    const lineFitsInColumn = longestLine.width <= columnWidth;
+    
+    // Calculate what adjustColumnsForFontSize would set
+    const requiredColumnWidth = longestLine.width + 20;
+    const maxColumns = Math.floor(containerWidth / requiredColumnWidth);
+    let targetColumns = Math.max(1, maxColumns);
+    if (fontSize > 24) {
+        targetColumns = Math.min(targetColumns, 4);
+    } else if (fontSize > 18) {
+        targetColumns = Math.min(targetColumns, 5);
+    } else {
+        targetColumns = Math.min(targetColumns, 6);
+    }
+    if (containerWidth > 800 && targetColumns < 2) {
+        targetColumns = 2;
+    }
+    targetColumns = Math.min(targetColumns, 6);
+    
+    console.log('=== CURRENT STATE ===');
+    console.log(`Font size: ${fontSize}px`);
+    console.log(`Scroll height: ${scrollHeight}px`);
+    console.log(`Client height: ${clientHeight}px`);
+    console.log(`Has scrollbar: ${hasScrollbar}`);
+    console.log(`Current column count: ${columnCount}`);
+    console.log(`Would set column count: ${targetColumns}`);
+    console.log(`Container width: ${containerWidth}px`);
+    console.log(`Column width: ${columnWidth.toFixed(2)}px`);
+    console.log(`Longest line: "${longestLine.text}" (${longestLine.width}px)`);
+    console.log(`Line fits in column: ${lineFitsInColumn}`);
+    console.log(`Overflow Y: ${window.getComputedStyle(lyricsContainer).overflowY}`);
+    
+    // Additional debug: Check actual rendered columns
+    const renderedColumns = lyricsContainer.querySelectorAll('div').length;
+    const containerRect = lyricsContainer.getBoundingClientRect();
+    console.log(`\n--- RENDERED STATE ---`);
+    console.log(`Lyrics container rect: ${containerRect.left}-${containerRect.right} (${containerRect.width}px)`);
+    console.log(`Number of line divs: ${renderedColumns}`);
+    console.log(`Computed column-count: ${window.getComputedStyle(lyricsContainer).columnCount}`);
+    console.log(`Computed column-gap: ${window.getComputedStyle(lyricsContainer).columnGap}`);
+    
+    // Check if there's horizontal overflow
+    const horizontalOverflow = lyricsContainer.scrollWidth > lyricsContainer.clientWidth;
+    console.log(`Horizontal overflow: ${horizontalOverflow} (scrollWidth=${lyricsContainer.scrollWidth}, clientWidth=${lyricsContainer.clientWidth})`);
+    
+    // Summary using new scoring logic (same as autofit)
+    let score = 0;
+    let isOptimal = false;
+    let reasons = [];
+    let isValid = true;
+    
+    // Priority 1: No scrollbar (critical)
+    if (!hasScrollbar) {
+        score += 1000;
+        reasons.push('no-scrollbar');
+    } else {
+        isValid = false;
+        reasons.push('has-scrollbar');
+    }
+    
+    // Priority 1b: No horizontal overflow (critical)
+    if (!horizontalOverflow) {
+        score += 1000;
+        reasons.push('no-horizontal-overflow');
+    } else {
+        isValid = false;
+        reasons.push('horizontal-overflow');
+    }
+    
+    // Priority 2: Line fits in column (critical)
+    if (lineFitsInColumn) {
+        score += 500;
+        reasons.push('line-fits');
+    } else {
+        isValid = false;
+        reasons.push('line-too-long');
+    }
+    
+    // Priority 3: Reasonable column count (1-4 is good)
+    if (targetColumns >= 1 && targetColumns <= 4) {
+        score += 200 - (targetColumns * 10);
+        reasons.push(`${targetColumns}-cols-reasonable`);
+    } else if (targetColumns <= 6) {
+        score += 50;
+        reasons.push(`${targetColumns}-cols-acceptable`);
+    } else {
+        isValid = false;
+        reasons.push(`${targetColumns}-cols-too-many`);
+    }
+    
+    // Priority 4: Font size bonus (for display purposes)
+    score += fontSize * 2;
+    
+    // Check if this would be considered optimal
+    isOptimal = isValid;
+    
+    console.log(`\n✅ OPTIMAL: ${isOptimal ? 'YES' : 'NO'} (score: ${score})`);
+    console.log(`Reasons: ${reasons.join(', ')}`);
+    if (!isOptimal) {
+        if (hasScrollbar || horizontalOverflow) console.log('  → Has scrollbar (check types above)');
+        if (!lineFitsInColumn) console.log('  → Line too long for column');
+        if (targetColumns > 4) console.log(`  → Would set ${targetColumns} columns (too many)`);
+    }
+}
+
+// Update auto-fit status indicator
+function updateAutoFitStatus(isActive) {
+    const statusElement = document.getElementById('autoFitStatus');
+    if (statusElement) {
+        if (isActive) {
+            statusElement.textContent = 'AUTO';
+            statusElement.style.opacity = '1';
+        } else {
+            statusElement.textContent = 'MANUAL';
+            statusElement.style.opacity = '0.6';
+        }
+    }
+}
+
+// Add auto-fit button to the UI
+function addAutoFitButton() {
+    // Find the existing controls container
+    const controlsContainer = document.querySelector('.btn-group');
+    if (!controlsContainer) {
+        console.error('Controls container not found');
+        return;
+    }
+
+    // Check if button already exists
+    if (document.getElementById('autoFitButton')) {
+        console.log('Auto-fit button already exists');
+        return;
+    }
+
+    // Create the auto-fit button
+    const autoFitButton = document.createElement('button');
+    autoFitButton.id = 'autoFitButton';
+    autoFitButton.className = 'btn border border-light';
+    autoFitButton.textContent = '⚡';
+    autoFitButton.title = 'Auto-fit font size to screen';
+    autoFitButton.onclick = function() {
+        const song = document.getElementById('songTitle').textContent;
+        if (!song || song === 'Select a Song') {
+            console.warn('No song selected, cannot auto-fit.');
+            return;
+        }
+        
+        if (localStorage.getItem(song)) {
+            try {
+                const songData = JSON.parse(localStorage.getItem(song));
+                autoFitLyrics(song, songData.artist, songData.lyrics);
+            } catch (e) {
+                console.error('Error auto-fitting:', e);
+            }
+        }
+    };
+
+    // Create status indicator
+    const statusSpan = document.createElement('span');
+    statusSpan.id = 'autoFitStatus';
+    statusSpan.style.cssText = 'margin-left: 5px; font-size: 0.7em; opacity: 0.6; color: #bb86fc;';
+    statusSpan.textContent = 'AUTO';
+
+    // Insert the button after the A- button (before the clean lyrics button)
+    const aMinusButton = controlsContainer.querySelector('button[onclick="adjustFontSize(-1)"]');
+    if (aMinusButton) {
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'inline-flex';
+        wrapper.style.alignItems = 'center';
+        wrapper.appendChild(autoFitButton);
+        wrapper.appendChild(statusSpan);
+        aMinusButton.parentNode.insertBefore(wrapper, aMinusButton.nextSibling);
+    } else {
+        // Fallback: add to the end
+        controlsContainer.appendChild(autoFitButton);
+    }
+
+    console.log('Auto-fit button added to UI');
+}
+
+// Export functions for use in other files
+if (typeof window !== 'undefined') {
+    window.autoFitLyrics = autoFitLyrics;
+    window.updateAutoFitStatus = updateAutoFitStatus;
+    window.addAutoFitButton = addAutoFitButton;
 }
 
 function displayLyrics(song, artist, lyrics) {

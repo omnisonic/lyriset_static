@@ -68,6 +68,9 @@
                         <a href="#" class="btn  border border-light" onclick="loadNextSong()">▶</a>
                         <button onclick="adjustFontSize(1)" class="btn border border-light">A+</button>
                         <button onclick="adjustFontSize(-1)" class="btn border border-light">A-</button>
+                        <button onclick="autoFitLyrics(document.getElementById('songTitle').textContent, document.getElementById('songArtist').textContent, localStorage.getItem(document.getElementById('songTitle').textContent) ? JSON.parse(localStorage.getItem(document.getElementById('songTitle').textContent)).lyrics : '')" class="btn border border-light" title="Auto-fit font size to screen">⚡</button>
+                        <button onclick="resetAutoFit()" class="btn border border-light" title="Reset auto-fit">↺</button>
+                        <button onclick="debugOverflow()" class="btn border border-light" title="Debug overflow">🐛</button>
                         <button class="btn border border-light" id="toggleCleanLyricsButton"
                             onclick="toggleCleanLyrics()">
                             <span id="toggleCleanLyricsText">✱</span>
@@ -273,6 +276,7 @@
     <script src="../js/clean_lyrics.js"></script>
     <script src="../js/lyrics_storage.js"></script>
     <script src="../js/lyrics_app.js"></script>
+    <script src="../js/reset_autofit.js"></script>
     <script src="../js/slider_color.js"></script>
     <script src="../js/edit.js"></script>
     <script src="../js/visual_metronome.js"></script>
@@ -283,6 +287,13 @@
             const container = document.getElementById('importExportContainer');
             if (container) {
                 container.appendChild(createImportExportButtons());
+            }
+            
+            // Initialize auto-fit button functionality
+            // The buttons are already in the HTML, but we need to ensure the functions are available
+            if (typeof addAutoFitButton === 'function') {
+                // The button is already added to HTML, but we can call this if needed
+                // addAutoFitButton(); // Not needed since buttons are in HTML
             }
         });
     </script>

@@ -11,15 +11,13 @@ function resetAutoFit() {
 
     // Remove manual font size override for this song
     localStorage.removeItem(`lyrics-font-size-${song}`);
+    localStorage.removeItem(`lyrics-auto-fit-${song}`);
     
     // Get the lyrics container
     const lyricsContainer = document.getElementById('lyricsDisplay');
     if (lyricsContainer) {
         // Remove manual font size from inline styles
         lyricsContainer.style.fontSize = '';
-        
-        // Re-enable auto-fit class
-        lyricsContainer.classList.add('auto-fit-active');
         
         console.log(`Reset auto-fit for: ${song}`);
     }
@@ -51,43 +49,7 @@ function resetAutoFit() {
     }
 }
 
-// Add reset button to the UI
-function addResetAutoFitButton() {
-    // Find the existing controls container
-    const controlsContainer = document.querySelector('.btn-group');
-    if (!controlsContainer) {
-        console.error('Controls container not found');
-        return;
-    }
-
-    // Check if button already exists
-    if (document.getElementById('resetAutoFitButton')) {
-        console.log('Reset auto-fit button already exists');
-        return;
-    }
-
-    // Create the reset button
-    const resetButton = document.createElement('button');
-    resetButton.id = 'resetAutoFitButton';
-    resetButton.className = 'btn border border-light';
-    resetButton.textContent = '↺';
-    resetButton.title = 'Reset Auto-Fit (clear manual font size and recalculate)';
-    resetButton.onclick = resetAutoFit;
-
-    // Insert the button after the A- button (before the clean lyrics button)
-    const aMinusButton = controlsContainer.querySelector('button[onclick="adjustFontSize(-1)"]');
-    if (aMinusButton) {
-        aMinusButton.parentNode.insertBefore(resetButton, aMinusButton.nextSibling);
-    } else {
-        // Fallback: add to the end
-        controlsContainer.appendChild(resetButton);
-    }
-
-    console.log('Reset auto-fit button added to UI');
-}
-
 // Export functions for use in other files
 if (typeof window !== 'undefined') {
     window.resetAutoFit = resetAutoFit;
-    window.addResetAutoFitButton = addResetAutoFitButton;
 }
