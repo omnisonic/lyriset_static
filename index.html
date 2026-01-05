@@ -64,18 +64,28 @@
                         <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
                     </div>
                     <div class="btn-group">
-                        <a href="#" class="btn  border border-light" onclick="loadPrevSong()">◀</a>
-                        <a href="#" class="btn  border border-light" onclick="loadNextSong()">▶</a>
-                        <button onclick="adjustFontSize(1)" class="btn border border-light">A+</button>
-                        <button onclick="adjustFontSize(-1)" class="btn border border-light">A-</button>
-                        <button onclick="resetAutoFit()" class="btn border border-light" title="Reset auto-fit">↺</button>
+                        <a href="#" class="btn  border border-light" onclick="loadPrevSong()" title="Previous Song">
+                            <span class="icon">⏮</span>
+                        </a>
+                        <a href="#" class="btn  border border-light" onclick="loadNextSong()" title="Next Song">
+                            <span class="icon">⏭</span>
+                        </a>
+                        <button onclick="adjustFontSize(1)" class="btn border border-light" title="Increase Font Size">
+                            <span class="icon">🔍+</span>
+                        </button>
+                        <button onclick="adjustFontSize(-1)" class="btn border border-light" title="Decrease Font Size">
+                            <span class="icon">🔍-</span>
+                        </button>
+                        <button onclick="resetAutoFit()" class="btn border border-light" title="Reset Auto-Fit">
+                            <span class="icon">🔄</span>
+                        </button>
                         <button class="btn border border-light" id="toggleCleanLyricsButton"
-                            onclick="toggleCleanLyrics()">
-                            <span id="toggleCleanLyricsText">✱</span>
+                            onclick="toggleCleanLyrics()" title="Toggle Clean Lyrics">
+                            <span id="toggleCleanLyricsText" class="icon">✨</span>
                         </button>
                         <button class="btn border border-light" id="autoScrollButton"
-                            onclick="toggleAutoScroll()">
-                            <span id="autoScrollText">▶</span>
+                            onclick="toggleAutoScroll()" title="Toggle Auto-Scroll" style="display: none;">
+                            <span id="autoScrollText" class="icon">▶</span>
                         </button>
                     </div>
                     <div class="url-submit form-group flex-grow-1">

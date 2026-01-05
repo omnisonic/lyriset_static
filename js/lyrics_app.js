@@ -148,7 +148,7 @@ function toggleCleanLyrics() {
         } else {
             displayLyrics(song, artist, originalLyrics);
         }
-        toggleText.textContent = '✓';
+        toggleText.textContent = '✨';
         toggleButton.classList.add('active');
         lyricsContainer.setAttribute('data-clean', 'false');
     } else {
@@ -160,7 +160,7 @@ function toggleCleanLyrics() {
             } else {
                 displayLyrics(song, artist, cleanedLyrics);
             }
-            toggleText.textContent = '✱';
+            toggleText.textContent = '🧹';
             toggleButton.classList.remove('active');
             lyricsContainer.setAttribute('data-clean', 'true');
         }
@@ -1206,6 +1206,23 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         setupMobileTouchHandlers();
     }
+
+    // Show/hide auto-scroll button based on screen size
+    function updateAutoScrollButtonVisibility() {
+        const autoScrollButton = document.getElementById('autoScrollButton');
+        if (!autoScrollButton) return;
+        
+        const containerWidth = window.innerWidth;
+        if (containerWidth < 769) {
+            autoScrollButton.style.display = 'flex'; // Show on mobile/tablet
+        } else {
+            autoScrollButton.style.display = 'none'; // Hide on desktop
+        }
+    }
+
+    // Update visibility on load and resize
+    updateAutoScrollButtonVisibility();
+    window.addEventListener('resize', updateAutoScrollButtonVisibility);
 
     // Add event listener for left and right arrow keys
     document.addEventListener('keydown', function(event) {
