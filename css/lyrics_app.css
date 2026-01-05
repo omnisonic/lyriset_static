@@ -1,3 +1,74 @@
+/* CSS Variables for theming */
+:root {
+    /* Light mode (default) */
+    --bg-primary: #e9e6dc;
+    --bg-secondary: #eae8dc;
+    --text-primary: #333;
+    --text-secondary: #7f8c8d;
+    --border-color: #8b6f47;
+    --button-bg: #e9e6dc;
+    --button-hover: #d4c5b0;
+    --modal-bg: #e9e6dc;
+    --input-bg: #ffffff;
+    --input-border: #8b6f47;
+    --dropdown-hover: #d4c5b0;
+    --dropdown-border: #8b6f47;
+    --shadow: rgba(0,0,0,0.1);
+}
+
+/* Dark mode - automatic based on system preference */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #c0c0c0;
+        --text-secondary: #707070;
+        --border-color: #3a3a3a;
+        --button-bg: #2d2d2d;
+        --button-hover: #3a3a3a;
+        --modal-bg: #2d2d2d;
+        --input-bg: #1a1a1a;
+        --input-border: #3a3a3a;
+        --dropdown-hover: #3a3a3a;
+        --dropdown-border: #3a3a3a;
+        --shadow: rgba(0,0,0,0.3);
+    }
+}
+
+/* Manual theme override - dark mode */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #c0c0c0;
+    --text-secondary: #707070;
+    --border-color: #3a3a3a;
+    --button-bg: #2d2d2d;
+    --button-hover: #3a3a3a;
+    --modal-bg: #2d2d2d;
+    --input-bg: #1a1a1a;
+    --input-border: #3a3a3a;
+    --dropdown-hover: #3a3a3a;
+    --dropdown-border: #3a3a3a;
+    --shadow: rgba(0,0,0,0.3);
+}
+
+/* Manual theme override - light mode */
+[data-theme="light"] {
+    --bg-primary: #e9e6dc;
+    --bg-secondary: #eae8dc;
+    --text-primary: #333;
+    --text-secondary: #7f8c8d;
+    --border-color: #8b6f47;
+    --button-bg: #e9e6dc;
+    --button-hover: #d4c5b0;
+    --modal-bg: #e9e6dc;
+    --input-bg: #ffffff;
+    --input-border: #8b6f47;
+    --dropdown-hover: #d4c5b0;
+    --dropdown-border: #8b6f47;
+    --shadow: rgba(0,0,0,0.1);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,22 +77,22 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #e9e6dc; /* Neutral light gray background */
-    color: #333; /* Dark gray text for readability */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     padding: 10px;
 }
 
 .brand {
     text-align: left;
-    color: #333; /* Neutral dark text */
+    color: var(--text-primary);
     font-weight: bold;
     font-size: 1.2rem;
 }
 
 .navbar {
     /* padding: 0px; */
-    background-color: #e9e6dc; /* Base background */
-    border-bottom: 2px solid #8b6f47; /* Warm brown border */
+    background-color: var(--bg-primary);
+    border-bottom: 2px solid var(--border-color);
 }
 
 /* Ensure brand and hamburger stay on same line on mobile */
@@ -159,9 +230,9 @@ body {
     height: 100%;
     padding: 0 5px;
     max-width: 100%;
-    background-color: #eae8dc; /* White background for lyrics area */
+    background-color: var(--bg-secondary);
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+    box-shadow: 0 2px 8px var(--shadow);
     overflow: hidden; /* Hide overflow at container level */
     -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     touch-action: manipulation; /* Optimize touch behavior */
@@ -170,14 +241,14 @@ body {
 .lyrics {
     column-count: 4;
     column-gap: 0.8em;
-    column-rule: 1px solid #e0e0e0; /* Light gray rule */
+    column-rule: 1px solid var(--border-color);
     column-fill: auto;
     height: 100%;
     width: 100%;
     overflow-y: auto;
     padding: 0.5em;
     font-family: Arial, sans-serif;
-    color: #333; /* Dark text for readability */
+    color: var(--text-primary);
     text-align: center;
     -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     touch-action: pan-y; /* Allow vertical scrolling, handle horizontal gestures */
@@ -196,9 +267,9 @@ body {
         overflow-x: hidden;
         padding: 15px;
         margin: 0;
-        background-color: #eae8dc;
+        background-color: var(--bg-secondary);
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px var(--shadow);
         -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
         touch-action: pan-y; /* Allow vertical scrolling */
     }
@@ -256,9 +327,9 @@ body {
         overflow-x: hidden;
         padding: 10px;
         margin: 0;
-        background-color: #eae8dc;
+        background-color: var(--bg-secondary);
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px var(--shadow);
         -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
         touch-action: pan-y; /* Allow vertical scrolling */
     }
@@ -312,47 +383,47 @@ body {
     column-span: all;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .song-title h3 {
-    color: #2c3e50; /* Dark blue-gray for better contrast */
+    color: var(--text-primary);
     margin: 0;
     font-size: 1em;
     font-weight: bold;
 }
 
 .song-title .artist {
-    color: #7f8c8d; /* Medium gray for subtle distinction */
+    color: var(--text-secondary);
     font-size: 1em;
     font-style: italic;
 }
 
 /* Override Bootstrap text classes to ensure neutral theme */
 .text-light {
-    color: #2c3e50 !important;
+    color: var(--text-primary) !important;
 }
 
 .text-secondary {
-    color: #7f8c8d !important;
+    color: var(--text-secondary) !important;
 }
 
 .dropdown-item {
-    color: #333;
-    background-color: #e9e6dc; /* Base background */
+    color: var(--text-primary);
+    background-color: var(--button-bg);
 }
 
 .dropdown-item:hover,
 .dropdown-item:focus {
-    background-color: #d4c5b0; /* Warm beige hover */
-    color: #333;
-    border-left: 3px solid #8b6f47; /* Warm brown accent on hover */
+    background-color: var(--dropdown-hover);
+    color: var(--text-primary);
+    border-left: 3px solid var(--border-color);
 }
 
 /* Ensure hover states work properly */
 .dropdown-menu .dropdown-item:hover {
-    background-color: #d4c5b0 !important;
-    color: #333 !important;
+    background-color: var(--dropdown-hover) !important;
+    color: var(--text-primary) !important;
 }
 
 /* Fix dropdown menus on mobile to prevent running off screen */
@@ -367,8 +438,8 @@ body {
         transform: none !important;
         width: auto !important;
         min-width: unset;
-        background-color: #e9e6dc; /* Base background */
-        border: 2px solid #8b6f47; /* Warm brown border */
+        background-color: var(--button-bg);
+        border: 2px solid var(--border-color);
         z-index: 1000; /* Ensure it's on top */
     }
     
@@ -383,31 +454,31 @@ body {
     
     /* Mobile dropdown item hover - ensure it works with touch and mouse */
     .dropdown-menu .dropdown-item {
-        background-color: #e9e6dc; /* Base background */
-        color: #333;
+        background-color: var(--button-bg);
+        color: var(--text-primary);
         border-left: 3px solid transparent; /* Prepare for hover effect */
     }
     
     .dropdown-menu .dropdown-item:hover,
     .dropdown-menu .dropdown-item:focus {
-        background-color: #d4c5b0 !important; /* Warm beige hover */
-        color: #333 !important;
-        border-left-color: #8b6f47 !important; /* Warm brown accent */
+        background-color: var(--dropdown-hover) !important;
+        color: var(--text-primary) !important;
+        border-left-color: var(--border-color) !important;
     }
     
     /* Additional mobile-specific hover fix */
     @media (hover: hover) {
         .dropdown-menu .dropdown-item:hover {
-            background-color: #d4c5b0 !important;
-            border-left-color: #8b6f47 !important;
+            background-color: var(--dropdown-hover) !important;
+            border-left-color: var(--border-color) !important;
         }
     }
 }
 
 /* Desktop dropdown menu styling */
 .dropdown-menu {
-    background-color: #e9e6dc; /* Base background */
-    border: 2px solid #8b6f47; /* Warm brown border */
+    background-color: var(--button-bg);
+    border: 2px solid var(--border-color);
 }
 
 .dropdown-menu.show {
@@ -416,33 +487,33 @@ body {
 
 /* Ensure dropdown items work on both desktop and mobile */
 .dropdown-menu .dropdown-item {
-    background-color: #e9e6dc; /* Base background */
-    color: #333;
+    background-color: var(--button-bg);
+    color: var(--text-primary);
     border-left: 3px solid transparent; /* Prepare for hover effect */
     transition: background-color 0.15s ease, border-left-color 0.15s ease;
 }
 
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus {
-    background-color: #d4c5b0 !important; /* Warm beige hover */
-    color: #333 !important;
-    border-left-color: #8b6f47 !important; /* Warm brown accent */
+    background-color: var(--dropdown-hover) !important;
+    color: var(--text-primary) !important;
+    border-left-color: var(--border-color) !important;
 }
 
 .modal-content {
-    background-color: #e9e6dc; /* Base background color */
-    color: #333;
-    border: 2px solid #8b6f47; /* Warm brown border for better definition */
+    background-color: var(--modal-bg);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
 }
 
 .modal-header {
-    border-bottom: 2px solid #8b6f47; /* Warm brown */
-    background-color: #e9e6dc; /* Base background */
+    border-bottom: 2px solid var(--border-color);
+    background-color: var(--modal-bg);
 }
 
 /* Modal body - use base background */
 .modal-body {
-    background-color: #e9e6dc; /* Base background */
+    background-color: var(--modal-bg);
 }
 
 /* Form groups in modals */
@@ -453,7 +524,7 @@ body {
 }
 
 .modal-title {
-    color: #333;
+    color: var(--text-primary);
 }
 
 .btn-close {
@@ -472,13 +543,13 @@ body {
     max-width: 65ch;
     margin-bottom: 1.5rem;
     line-height: 1.6;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .about-content h4 {
     margin-top: 2rem;
     margin-bottom: 1rem;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .about-content ul {
@@ -491,36 +562,36 @@ body {
     margin-bottom: 0.75rem;
     line-height: 1.5;
     text-align: left;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .about-content li strong {
     margin-right: 0.5rem;
-    color: #000;
+    color: var(--text-primary);
 }
 
 .about-content a {
-    color: #8b6f47; /* Warm brown for links to match scheme */
+    color: var(--border-color);
     text-decoration: underline;
 }
 
 .about-content a:hover {
-    color: #6b5538; /* Darker warm brown on hover */
+    color: var(--button-hover);
 }
 
 /* Feature Highlights in About Modal */
 .feature-highlights {
     margin-bottom: 2rem;
     padding: 1rem;
-    background: linear-gradient(135deg, #f8f5f0 0%, #e9e6dc 100%);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     border-radius: 8px;
-    border: 1px solid #d4c5b0;
+    border: 1px solid var(--border-color);
 }
 
 .feature-highlights h4 {
     margin-top: 0;
     margin-bottom: 1rem;
-    color: #8b6f47;
+    color: var(--border-color);
     text-align: center;
     font-size: 1.3rem;
 }
@@ -537,17 +608,19 @@ body {
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--bg-primary);
+    opacity: 0.8;
     border-radius: 6px;
-    border: 1px solid #d4c5b0;
+    border: 1px solid var(--border-color);
     transition: all 0.2s ease;
 }
 
 .feature-card:hover {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: #8b6f47;
+    background: var(--bg-primary);
+    opacity: 1;
+    border-color: var(--border-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(139, 111, 71, 0.15);
+    box-shadow: 0 4px 8px var(--shadow);
 }
 
 .feature-icon {
@@ -562,14 +635,14 @@ body {
 
 .feature-text strong {
     display: block;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
     font-size: 0.95rem;
 }
 
 .feature-text p {
     margin: 0;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     line-height: 1.3;
 }
@@ -642,7 +715,8 @@ body {
 
 /* Mobile touch feedback - subtle visual indicator */
 .lyrics-container:active {
-    background-color: #e5e2d8;
+    background-color: var(--bg-primary);
+    opacity: 0.9;
 }
 
 /* Enhanced touch feedback for mobile */
@@ -652,143 +726,266 @@ body {
     }
     
     .lyrics-container:active {
-        background-color: #e0dccf;
+        background-color: var(--bg-primary);
+        opacity: 0.85;
         transition: background-color 0.1s ease;
     }
 }
 
 .form-control {
-    background-color: #e9e6dc; /* Base background */
-    color: #333;
-    border: 2px solid #8b6f47; /* Warm brown border - clear and defined */
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border: 2px solid var(--input-border);
 }
 
 .form-control:focus {
-    background-color: #e9e6dc; /* Base background */
-    color: #333;
-    border-color: #8b6f47; /* Warm brown */
-    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2); /* Warm shadow */
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
 }
 
 /* Textarea specific styling */
 textarea.form-control {
-    background-color: #e9e6dc; /* Base background */
-    border: 2px solid #8b6f47; /* Warm brown border */
+    background-color: var(--input-bg);
+    border: 2px solid var(--input-border);
     resize: vertical; /* Allow vertical resizing */
 }
 
 textarea.form-control:focus {
-    background-color: #e9e6dc; /* Base background */
-    border-color: #8b6f47; /* Warm brown */
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
 }
 
 /* Input fields in modals specifically */
 .modal .form-control {
-    background-color: #ffffff; /* White for clear visibility */
-    border: 2px solid #8b6f47; /* Warm brown border */
+    background-color: var(--input-bg);
+    border: 2px solid var(--input-border);
 }
 
 .modal .form-control:focus {
-    background-color: #ffffff; /* White */
-    border-color: #8b6f47; /* Warm brown */
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
 }
 
 /* Ensure Add and Edit modal text fields are clearly visible */
 #lyricsModal .form-control,
 #editLyricsModal .form-control {
-    background-color: #ffffff; /* White background */
-    border: 2px solid #8b6f47; /* Warm brown border */
-    color: #333;
+    background-color: var(--input-bg);
+    border: 2px solid var(--input-border);
+    color: var(--text-primary);
 }
 
 #lyricsModal .form-control:focus,
 #editLyricsModal .form-control:focus {
-    background-color: #ffffff;
-    border-color: #8b6f47;
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
     box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
 }
 
 /* Labels in modals */
 .modal .form-label {
-    color: #333;
+    color: var(--text-primary);
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
 
 .btn {
-    background-color: #e9e6dc; /* Base background */
-    color: #333;
-    border: 1px solid #ccc; /* Neutral border */
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
 }
 
 .btn:hover {
-    background-color: #d4c5b0; /* Warm beige hover */
-    border-color: #8b6f47; /* Warm brown on hover */
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
 }
 
 .btn-light {
-    background-color: #e9e6dc; /* Base background */
-    color: #333;
-    border: 1px solid #ccc; /* Neutral border */
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
 }
 
 .btn-light:hover {
-    background-color: #d4c5b0; /* Warm beige hover */
-    border-color: #8b6f47; /* Warm brown on hover */
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
 }
 
 .btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2); /* Warm shadow */
-    border-color: #8b6f47; /* Warm brown */
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
+    border-color: var(--border-color);
 }
 
-/* Dropdown toggle button styling */
+/* Dropdown toggle button styling - ensure consistent with other buttons */
 .dropdown-toggle {
-    background-color: #e9e6dc !important; /* Base background */
-    color: #333 !important;
-    border: 1px solid #ccc !important; /* Neutral border */
+    background-color: var(--button-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 .dropdown-toggle:hover {
-    background-color: #d4c5b0 !important; /* Warm beige hover */
-    border-color: #8b6f47 !important; /* Warm brown on hover */
+    background-color: var(--button-hover) !important;
+    border-color: var(--border-color) !important;
 }
 
 .dropdown-toggle:focus {
-    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2) !important; /* Warm shadow */
-    border-color: #8b6f47 !important; /* Warm brown */
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2) !important;
+    border-color: var(--border-color) !important;
 }
 
-/* Navbar buttons specifically */
+/* Ensure dropdown buttons in navbar match other buttons exactly */
+.navbar .dropdown-toggle {
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+}
+
+.navbar .dropdown-toggle:hover {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+.navbar .dropdown-toggle:active {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+/* Style the dropdown menus to match the theme */
+.dropdown-menu {
+    background-color: var(--button-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    min-width: 10rem;
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-primary);
+    background-color: transparent;
+    padding: 0.5rem 1rem;
+    border-left: 3px solid transparent;
+    transition: background-color 0.15s ease, border-left-color 0.15s ease;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: var(--dropdown-hover);
+    color: var(--text-primary);
+    border-left-color: var(--border-color);
+}
+
+/* Ensure dropdowns work in both light and dark modes */
+[data-theme="dark"] .dropdown-menu,
+[data-theme="dark"] .dropdown-toggle {
+    /* These are already handled by CSS variables */
+}
+
+/* Mobile dropdown styling adjustments */
+@media (max-width: 768px) {
+    .navbar .dropdown-toggle {
+        font-size: 1em;
+        padding: 0.6rem 0.8rem;
+        min-height: 40px;
+    }
+    
+    .dropdown-menu {
+        background-color: var(--button-bg);
+        border: 2px solid var(--border-color);
+    }
+    
+    .dropdown-menu .dropdown-item {
+        font-size: 1em;
+        padding: 0.6rem 1rem;
+        min-height: 40px;
+    }
+}
+
+/* Navbar buttons specifically - ensure all buttons have consistent styling */
 .navbar .btn {
-    background-color: #e9e6dc;
-    color: #333;
-    border: 1px solid #ccc; /* Neutral border */
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
 }
 
 .navbar .btn:hover {
-    background-color: #d4c5b0;
-    border-color: #8b6f47; /* Warm brown on hover */
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
 }
 
 .navbar .btn.border-light {
-    border-color: #ccc; /* Neutral border */
+    border-color: var(--border-color);
 }
 
 .navbar .btn.border-light:hover {
-    border-color: #8b6f47; /* Warm brown on hover */
+    border-color: var(--border-color);
+}
+
+.navbar .btn:active {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+/* Ensure all navbar buttons (including Add, Delete, Edit, About) have consistent styling */
+.navbar .btn[data-bs-toggle="modal"],
+.navbar .btn[onclick*="deleteSong"],
+.navbar .btn[onclick*="openEditModal"] {
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+}
+
+.navbar .btn[data-bs-toggle="modal"]:hover,
+.navbar .btn[onclick*="deleteSong"]:hover,
+.navbar .btn[onclick*="openEditModal"]:hover {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+/* URL submit button styling */
+.url-submit .btn {
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+}
+
+.url-submit .btn:hover {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+/* Import/Export buttons (when they exist) */
+#importExportContainer .btn {
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+}
+
+#importExportContainer .btn:hover {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
 }
 
 /* Button group styling */
 .btn-group .btn {
     border-radius: 0;
-    background-color: #e9e6dc; /* Base background */
-    border: 1px solid #ccc; /* Neutral border */
+    background-color: var(--button-bg);
+    border: 1px solid var(--border-color);
 }
 
 .btn-group .btn:hover {
-    background-color: #d4c5b0; /* Warm beige hover */
-    border-color: #8b6f47; /* Warm brown */
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
 }
 
 .btn-group .btn:first-child {
@@ -864,9 +1061,9 @@ textarea.form-control:focus {
 }
 
 .font-size-controls button {
-    background: rgba(233, 230, 220, 0.9); /* Base background with transparency */
-    color: #333;
-    border: 1px solid #ccc; /* Neutral border */
+    background: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 3px;
@@ -877,9 +1074,9 @@ textarea.form-control:focus {
 }
 
 .font-size-controls button:hover {
-    background: rgba(212, 197, 176, 0.9); /* Warm beige hover */
-    color: #333;
-    border-color: #8b6f47; /* Warm brown on hover */
+    background: var(--button-hover);
+    color: var(--text-primary);
+    border-color: var(--border-color);
 }
 
 .lyrics-text {
@@ -891,7 +1088,7 @@ textarea.form-control:focus {
     max-width: 100%;
     box-sizing: border-box;
     padding: 1rem;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .lyrics-text div {
@@ -931,9 +1128,9 @@ textarea.form-control:focus {
 
 /* Active state for toggle buttons */
 .btn-group .btn.active {
-    background-color: #d4c5b0;
-    border-color: #8b6f47;
-    color: #333;
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+    color: var(--text-primary);
 }
 
 /* Responsive adjustments for icon buttons */

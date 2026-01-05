@@ -166,10 +166,18 @@ function loadNextSong() {
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
-            const songData = JSON.parse(localStorage.getItem(key));
-            if (songData.set === window.currentSetNumber) {
-                songs.push(key);
+        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong' && key !== 'theme-preference') {
+            try {
+                const item = localStorage.getItem(key);
+                if (item) {
+                    const songData = JSON.parse(item);
+                    if (songData && songData.set === window.currentSetNumber) {
+                        songs.push(key);
+                    }
+                }
+            } catch (e) {
+                // Skip items that aren't valid JSON
+                continue;
             }
         }
     }
@@ -183,9 +191,11 @@ function loadNextSong() {
     const nextSong = songs[nextIndex];
     try {
         const songData = JSON.parse(localStorage.getItem(nextSong));
-        autoFitLyrics(nextSong, songData.artist, songData.lyrics);
+        if (songData) {
+            autoFitLyrics(nextSong, songData.artist, songData.lyrics);
+        }
     } catch (e) {
-        // Error parsing JSON
+        console.error('Error loading next song:', e);
     }
 }
 
@@ -195,10 +205,18 @@ function loadPrevSong() {
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
-            const songData = JSON.parse(localStorage.getItem(key));
-            if (songData.set === window.currentSetNumber) {
-                songs.push(key);
+        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong' && key !== 'theme-preference') {
+            try {
+                const item = localStorage.getItem(key);
+                if (item) {
+                    const songData = JSON.parse(item);
+                    if (songData && songData.set === window.currentSetNumber) {
+                        songs.push(key);
+                    }
+                }
+            } catch (e) {
+                // Skip items that aren't valid JSON
+                continue;
             }
         }
     }
@@ -211,8 +229,14 @@ function loadPrevSong() {
     const prevIndex = currentIndex <= 0 ? songs.length - 1 : currentIndex - 1;
     const prevSong = songs[prevIndex];
     
-    const songData = JSON.parse(localStorage.getItem(prevSong));
-    autoFitLyrics(prevSong, songData.artist, songData.lyrics);
+    try {
+        const songData = JSON.parse(localStorage.getItem(prevSong));
+        if (songData) {
+            autoFitLyrics(prevSong, songData.artist, songData.lyrics);
+        }
+    } catch (e) {
+        console.error('Error loading previous song:', e);
+    }
 }
     
 function adjustFontSize(delta) {
@@ -1233,3 +1257,355 @@ function deleteSong() {
         autoFitLyrics(nextSong, songData.artist, songData.lyrics);
     }
 }
+
+// Override the DOMContentLoaded listener to add theme initialization
+document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.getElementById('lyrics_url');
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+
+    loadDefaultSongs().then(() => {
+        loadLastViewedSong();
+        const lastViewedSong = localStorage.getItem('lastViewedSong');
+        if (lastViewedSong !== 'Select a Song') {
+            updateSongDropdown(window.currentSetNumber);
+        }
+    });
+
+    if (!urlInput) {
+        return;
+    }
+
+    if (!lyricsContainer) {
+        return;
+    }
+
+    // Don't load saved font sizes - we use auto-fit on every load
+    // Clear any existing font size to ensure clean state
+    lyricsContainer.style.fontSize = '';
+
+    const lyricsDisplay = lyricsContainer.textContent;
+    lyricsContainer.setAttribute('data-original-lyrics', lyricsDisplay);
+    const cleanedLyrics = cleanLyrics(lyricsDisplay);
+    lyricsContainer.textContent = cleanedLyrics;
+
+    const lyricsForm = document.getElementById('lyricsForm');
+    if (lyricsForm) {
+        lyricsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const song = document.getElementById('songInput').value.trim();
+            const artist = document.getElementById('artistInput').value.trim();
+            const lyrics = document.getElementById('lyricsText').value.trim();
+
+            if (!song || !lyrics) return;
+
+            localStorage.setItem(song, JSON.stringify({
+                artist: artist,
+                lyrics: lyrics,
+                set: window.currentSetNumber
+            }));
+
+            displayLyrics(song, artist, lyrics);
+
+            const formTypeInput = document.getElementById('formType');
+            if (formTypeInput && formTypeInput.value === 'add') {
+                updateSongDropdown(window.currentSetNumber);
+            }
+
+            e.target.reset();
+            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('lyricsModal'));
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+    }
+    
+    // Mobile touch handling variables (used by setupMobileTouchHandlers)
+    const swipeThreshold = 50; // minimum distance for a swipe
+    const tapThreshold = 15; // maximum movement for a tap
+    const tapTimeThreshold = 300; // maximum time for a tap (ms)
+
+    // Show swipe indicator briefly when lyrics area is touched
+    function showSwipeIndicator() {
+        // Create indicator if it doesn't exist
+        if (!window.swipeIndicator) {
+            const indicator = document.createElement('div');
+            indicator.className = 'swipe-indicator';
+            indicator.textContent = '← Previous | Next →';
+            document.body.appendChild(indicator);
+            window.swipeIndicator = indicator;
+        }
+        
+        // Clear any existing timeout
+        if (window.swipeIndicatorTimeout) {
+            clearTimeout(window.swipeIndicatorTimeout);
+        }
+        
+        window.swipeIndicator.classList.add('show');
+        window.swipeIndicatorTimeout = setTimeout(() => {
+            if (window.swipeIndicator) {
+                window.swipeIndicator.classList.remove('show');
+            }
+        }, 1500);
+    }
+
+    // Simplified mobile touch handler - single unified handler
+    function setupMobileTouchHandlers() {
+        const lyricsContainer = document.getElementById('lyricsDisplay');
+        if (!lyricsContainer) return;
+
+        // Single touch handler for iOS compatibility
+        let touchStartTime = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchMoved = false;
+
+        lyricsContainer.addEventListener('touchstart', function(e) {
+            // Only handle single touch on mobile
+            if (e.touches.length !== 1) return;
+            
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) return; // Desktop only
+
+            // Record touch start
+            touchStartTime = Date.now();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchMoved = false;
+
+            // Show swipe indicator (briefly)
+            showSwipeIndicator();
+
+        }, { passive: true });
+
+        lyricsContainer.addEventListener('touchmove', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) return;
+
+            if (e.touches.length === 1) {
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                const deltaX = Math.abs(touchX - touchStartX);
+                const deltaY = Math.abs(touchY - touchStartY);
+
+                // Check if moved significantly
+                if (deltaX > 15 || deltaY > 15) {
+                    touchMoved = true;
+
+                    // If auto-scroll is active and user starts manual scroll, stop it
+                    if (autoScrollActive && deltaY > 5) {
+                        stopAutoScroll();
+                        const autoScrollButton = document.getElementById('autoScrollButton');
+                        const autoScrollText = document.getElementById('autoScrollText');
+                        if (autoScrollButton && autoScrollText) {
+                            autoScrollText.textContent = '▶';
+                            autoScrollButton.classList.remove('active');
+                        }
+                    }
+                }
+            }
+        }, { passive: true });
+
+        lyricsContainer.addEventListener('touchend', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) return;
+
+            // Calculate touch metrics
+            const touchDuration = Date.now() - touchStartTime;
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const absDeltaX = Math.abs(deltaX);
+            const absDeltaY = Math.abs(deltaY);
+
+            // Check if this was a quick tap (not a scroll gesture)
+            const isQuickTap = touchDuration < 300 && 
+                              absDeltaX < 15 && 
+                              absDeltaY < 15 && 
+                              !touchMoved;
+
+            // Check if this was a side swipe (horizontal gesture)
+            const isSideSwipe = absDeltaX > 50 && 
+                               absDeltaX > absDeltaY * 1.5; // More horizontal than vertical
+
+            if (isQuickTap) {
+                // TAP: Toggle auto-scroll
+                e.preventDefault();
+                
+                const song = document.getElementById('songTitle').textContent;
+                if (!song || song === 'Select a Song') {
+                    return; // No hint, just silent return
+                }
+
+                if (autoScrollActive) {
+                    stopAutoScroll();
+                    const autoScrollButton = document.getElementById('autoScrollButton');
+                    const autoScrollText = document.getElementById('autoScrollText');
+                    if (autoScrollButton && autoScrollText) {
+                        autoScrollText.textContent = '▶';
+                        autoScrollButton.classList.remove('active');
+                    }
+                } else {
+                    startAutoScroll();
+                    const autoScrollButton = document.getElementById('autoScrollButton');
+                    const autoScrollText = document.getElementById('autoScrollText');
+                    if (autoScrollButton && autoScrollText) {
+                        autoScrollText.textContent = '⏸';
+                        autoScrollButton.classList.add('active');
+                    }
+                }
+            } else if (isSideSwipe) {
+                // SWIPE: Navigate between songs
+                e.preventDefault();
+                
+                if (deltaX > 0) {
+                    // Swipe right - previous song
+                    loadPrevSong();
+                } else {
+                    // Swipe left - next song
+                    loadNextSong();
+                }
+                showSwipeIndicator();
+            }
+            // If it was a vertical scroll gesture, let it pass through naturally
+
+        }, { passive: false }); // Non-passive to allow preventDefault on taps/swipes
+
+        // Add subtle visual feedback for touch interactions
+        lyricsContainer.addEventListener('touchstart', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth < 769) {
+                this.style.backgroundColor = '#e5e2d8';
+            }
+        }, { passive: true });
+
+        lyricsContainer.addEventListener('touchend', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth < 769) {
+                setTimeout(() => {
+                    this.style.backgroundColor = '#eae8dc';
+                }, 100);
+            }
+        }, { passive: true });
+    }
+
+    // Initialize mobile handlers when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileTouchHandlers);
+    } else {
+        setupMobileTouchHandlers();
+    }
+
+    // Show/hide auto-scroll button based on screen size
+    function updateAutoScrollButtonVisibility() {
+        const autoScrollButton = document.getElementById('autoScrollButton');
+        if (!autoScrollButton) return;
+        
+        const containerWidth = window.innerWidth;
+        if (containerWidth < 769) {
+            autoScrollButton.style.display = 'flex'; // Show on mobile/tablet
+        } else {
+            autoScrollButton.style.display = 'none'; // Hide on desktop
+        }
+    }
+
+    // Update visibility on load and resize
+    updateAutoScrollButtonVisibility();
+    window.addEventListener('resize', updateAutoScrollButtonVisibility);
+
+    // Add event listener for left and right arrow keys
+    document.addEventListener('keydown', function(event) {
+        const lyricsModal = document.getElementById('lyricsModal');
+        const editLyricsModal = document.getElementById('editLyricsModal');
+
+        if (lyricsModal && lyricsModal.classList.contains('show')) {
+            return;
+        }
+
+        if (editLyricsModal && editLyricsModal.classList.contains('show')) {
+            return;
+        }
+
+        if (event.key === 'ArrowLeft') {
+            loadPrevSong();
+        } else if (event.key === 'ArrowRight') {
+            loadNextSong();
+        } else if (event.key === 'ArrowUp') {
+            adjustFontSize(1); // Increase font size
+        } else if (event.key === 'ArrowDown') {
+            adjustFontSize(-1); // Decrease font size
+        }
+    });
+
+    // Initialize with Set 1
+    window.currentSetNumber = 1;
+    updateSongDropdown(1);
+
+    
+    if (lyricsContainer) {
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                const containerWidth = entry.contentRect.width;
+                const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
+                
+                // Only adjust columns on desktop (mobile uses vertical scrolling)
+                if (containerWidth >= 769) {
+                    adjustColumnsForFontSize(currentSize);
+                }
+                
+                // Recalculate space after resize
+                setTimeout(() => {
+                    calculateUnusedSpace();
+                }, 100);
+            }
+        });
+        
+        resizeObserver.observe(lyricsContainer);
+        
+        // Stop auto-scroll when user manually scrolls
+        let userScrollTimeout;
+        lyricsContainer.addEventListener('scroll', function() {
+            if (autoScrollActive) {
+                // Clear any existing timeout
+                if (userScrollTimeout) {
+                    clearTimeout(userScrollTimeout);
+                }
+                
+                // Wait a bit to see if this is a manual scroll or auto-scroll
+                userScrollTimeout = setTimeout(() => {
+                    // If auto-scroll is still active and we're not at the bottom, it was a manual scroll
+                    if (autoScrollActive) {
+                        const currentScroll = lyricsContainer.scrollTop;
+                        const maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
+                        
+                        // If not at the bottom, stop auto-scroll
+                        if (currentScroll < maxScroll - 10) {
+                            stopAutoScroll();
+                            const autoScrollButton = document.getElementById('autoScrollButton');
+                            const autoScrollText = document.getElementById('autoScrollText');
+                            if (autoScrollButton && autoScrollText) {
+                                autoScrollText.textContent = '▶';
+                                autoScrollButton.classList.remove('active');
+                            }
+                        }
+                    }
+                }, 150); // Wait 150ms to distinguish manual from auto scroll
+            }
+        });
+    }
+    
+    // Clean up old localStorage font size entries
+    // Remove any saved font sizes since we now use auto-fit on every load
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('lyrics-font-size-')) {
+            localStorage.removeItem(key);
+        }
+        if (key && key.startsWith('lyrics-auto-fit-')) {
+            localStorage.removeItem(key);
+        }
+    }
+    
+    // Also remove the old global font size key
+    localStorage.removeItem('lyrics-font-size');
+});
