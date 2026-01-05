@@ -991,10 +991,60 @@ body {
     transition: opacity 0.3s ease;
     pointer-events: none;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .swipe-indicator.show {
     opacity: 1;
+}
+
+/* Ensure Bootstrap Icons in swipe indicator are white */
+.swipe-indicator .bi {
+    color: white;
+    font-size: 1em;
+}
+
+/* About modal feature icons styling */
+.feature-icon .bi {
+    font-size: 1.5em;
+    color: var(--border-color);
+}
+
+/* Ensure all Bootstrap Icons in about modal have proper sizing */
+.about-content .bi {
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+/* Icon button active state */
+.btn-group .btn.active .bi {
+    color: var(--text-primary);
+}
+
+/* Ensure icons in navbar buttons have proper contrast */
+.navbar .btn .bi {
+    color: var(--text-primary);
+}
+
+.navbar .btn:hover .bi {
+    color: var(--text-primary);
+}
+
+/* Mobile icon sizing adjustments */
+@media (max-width: 768px) {
+    .swipe-indicator .bi {
+        font-size: 1.1em;
+    }
+    
+    .feature-icon .bi {
+        font-size: 1.3em;
+    }
+    
+    .about-content .bi {
+        font-size: 1.1em;
+    }
 }
 
 /* Auto-scroll status indicator */
@@ -1420,6 +1470,47 @@ textarea.form-control:focus {
     display: inline-block;
     min-width: 1.2em;
     text-align: center;
+}
+
+/* Bootstrap Icons styling */
+.bi {
+    font-size: 1.1em;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Ensure icon buttons have proper spacing */
+.btn-group .btn i.bi {
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* Specific icon sizing for different button types */
+.navbar .btn-group .btn i.bi {
+    font-size: 1em;
+}
+
+/* Mobile icon sizing */
+@media (max-width: 768px) {
+    .bi {
+        font-size: 1.2em;
+    }
+    
+    .btn-group .btn i.bi {
+        font-size: 1.2em;
+    }
+}
+
+/* Desktop icon sizing */
+@media (min-width: 992px) {
+    .bi {
+        font-size: 1em;
+    }
+    
+    .btn-group .btn i.bi {
+        font-size: 0.95em;
+    }
 }
 
 /* Ensure icon buttons have proper spacing */

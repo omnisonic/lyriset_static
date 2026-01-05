@@ -21,10 +21,10 @@ function toggleTheme() {
     // Apply the new theme
     if (newTheme === 'dark') {
         html.setAttribute('data-theme', 'dark');
-        themeIcon.textContent = '☀️';
+        themeIcon.className = 'bi bi-sun-fill';
     } else {
         html.setAttribute('data-theme', 'light');
-        themeIcon.textContent = '🌙';
+        themeIcon.className = 'bi bi-moon-stars';
     }
     
     // Save preference to localStorage
@@ -46,10 +46,10 @@ function initializeTheme() {
         // Apply saved preference
         if (savedTheme === 'dark') {
             html.setAttribute('data-theme', 'dark');
-            if (themeIcon) themeIcon.textContent = '☀️';
+            if (themeIcon) themeIcon.className = 'bi bi-sun-fill';
         } else {
             html.setAttribute('data-theme', 'light');
-            if (themeIcon) themeIcon.textContent = '🌙';
+            if (themeIcon) themeIcon.className = 'bi bi-moon-stars';
         }
         updateHamburgerIcon(savedTheme);
     } else {
@@ -57,10 +57,10 @@ function initializeTheme() {
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (systemPrefersDark) {
             // Let CSS handle it automatically, but update icon
-            if (themeIcon) themeIcon.textContent = '☀️';
+            if (themeIcon) themeIcon.className = 'bi bi-sun-fill';
             updateHamburgerIcon('dark');
         } else {
-            if (themeIcon) themeIcon.textContent = '🌙';
+            if (themeIcon) themeIcon.className = 'bi bi-moon-stars';
             updateHamburgerIcon('light');
         }
     }

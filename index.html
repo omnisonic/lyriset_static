@@ -29,6 +29,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="css/lyrics_app.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     
     <!-- Prevent selection and zoom for app-like experience -->
     <style>
@@ -82,23 +84,23 @@
 
                     <li class="nav-item">
                         <button class="btn btn-link nav-link w-auto min-w-50 max-w-70" data-bs-toggle="modal" data-bs-target="#lyricsModal" title="Add Song">
-                            <span class="icon">➕</span>
+                            <i class="bi bi-plus-lg"></i>
                         </button>
                     </li>
 
                     <li class="nav-item">
                         <div class="btn-group flex-fill">
                             <button class="btn btn-secondary flex-grow-1" onclick="exportSongData()" title="Export Collection">
-                                <span class="icon">💾</span>
+                                <i class="bi bi-download"></i>
                             </button>
                             <button class="btn btn-secondary flex-grow-1" onclick="document.getElementById('importFileInput').click()" title="Import Collection">
-                                <span class="icon">📂</span>
+                                <i class="bi bi-upload"></i>
                             </button>
                             <button class="btn btn-link nav-link flex-grow-1" onclick="deleteSong()" title="Delete Song">
-                                <span class="icon">🗑️</span>
+                                <i class="bi bi-trash"></i>
                             </button>
                             <button class="btn btn-link nav-link flex-grow-1" onclick="openEditModal()" title="Edit Song">
-                                <span class="icon">✏️</span>
+                                <i class="bi bi-pencil"></i>
                             </button>
                             <input type="file" id="importFileInput" accept=".lyriset" style="display: none;" onchange="handleImportFile(event)">
                         </div>
@@ -107,10 +109,10 @@
                     <li class="nav-item">
                         <div class="btn-group flex-fill">
                             <a href="#" class="btn btn-link nav-link flex-grow-1" onclick="loadPrevSong()" title="Previous Song">
-                                <span class="icon">⏮</span>
+                                <i class="bi bi-skip-start-fill"></i>
                             </a>
                             <a href="#" class="btn btn-link nav-link flex-grow-1" onclick="loadNextSong()" title="Next Song">
-                                <span class="icon">⏭</span>
+                                <i class="bi bi-skip-end-fill"></i>
                             </a>
                         </div>
                     </li>
@@ -118,13 +120,13 @@
                     <li class="nav-item">
                         <div class="btn-group flex-fill">
                             <button onclick="adjustFontSize(1)" class="btn btn-link nav-link flex-grow-1" title="Increase Font Size">
-                                <span class="icon">🔍+</span>
+                                <i class="bi bi-zoom-in"></i>
                             </button>
                             <button onclick="adjustFontSize(-1)" class="btn btn-link nav-link flex-grow-1" title="Decrease Font Size">
-                                <span class="icon">🔍-</span>
+                                <i class="bi bi-zoom-out"></i>
                             </button>
                             <button onclick="resetAutoFit()" class="btn btn-link nav-link flex-grow-1" title="Reset Auto-Fit">
-                                <span class="icon">🔄</span>
+                                <i class="bi bi-arrow-clockwise"></i>
                             </button>
                         </div>
                     </li>
@@ -133,15 +135,15 @@
                         <div class="btn-group flex-fill">
                             <button class="btn btn-link nav-link flex-grow-1" id="toggleCleanLyricsButton"
                                 onclick="toggleCleanLyrics()" title="Toggle Clean Lyrics">
-                                <span id="toggleCleanLyricsText" class="icon">✨</span>
+                                <i id="toggleCleanLyricsText" class="bi bi-stars"></i>
                             </button>
                             <button class="btn btn-link nav-link flex-grow-1" id="autoScrollButton"
                                 onclick="toggleAutoScroll()" title="Toggle Auto-Scroll">
-                                <span id="autoScrollText" class="icon">▶</span>
+                                <i id="autoScrollText" class="bi bi-play-fill"></i>
                             </button>
                             <button class="btn btn-link nav-link flex-grow-1" id="themeToggle"
                                 onclick="toggleTheme()" title="Toggle Dark Mode">
-                                <span id="themeIcon" class="icon">🌙</span>
+                                <i id="themeIcon" class="bi bi-moon-stars"></i>
                             </button>
                         </div>
                     </li>
@@ -196,24 +198,24 @@
                 <div class="modal-body about-content">
                     <!-- New Feature Highlights Section -->
                     <div class="feature-highlights">
-                        <h4 class="text-start">✨ New UI Features</h4>
+                        <h4 class="text-start">New UI Features</h4>
                         <div class="feature-grid">
                             <div class="feature-card">
-                                <div class="feature-icon">🎯</div>
+                                <div class="feature-icon"><i class="bi bi-bullseye"></i></div>
                                 <div class="feature-text">
                                     <strong>Smart Auto-Fit</strong>
                                     <p>Automatic font sizing to fit lyrics perfectly on screen</p>
                                 </div>
                             </div>
                             <div class="feature-card">
-                                <div class="feature-icon">📱</div>
+                                <div class="feature-icon"><i class="bi bi-phone"></i></div>
                                 <div class="feature-text">
                                     <strong>Side Swipe Navigation</strong>
                                     <p>Swipe left/right on mobile to navigate between songs</p>
                                 </div>
                             </div>
                             <div class="feature-card">
-                                <div class="feature-icon">👆</div>
+                                <div class="feature-icon"><i class="bi bi-hand-index-thumb"></i></div>
                                 <div class="feature-text">
                                     <strong>Tap to Scroll</strong>
                                     <p>Tap lyrics to toggle auto-scroll on mobile</p>
@@ -248,18 +250,18 @@
 
                     <h4 class="text-start">Main Features</h4>
                     <ul>
-                        <li><strong>Add Song (➕):</strong> Submit new songs with lyrics from sites like guitaretab.com</li>
+                        <li><strong>Add Song (<i class="bi bi-plus-lg"></i>):</strong> Submit new songs with lyrics from sites like guitaretab.com</li>
                         <li><strong>Sets (Set ▼):</strong> Organize songs into sets (1-10) using the Set dropdown</li>
                         <li><strong>Song Selection (Song ▼):</strong> Choose songs from your current set</li>
-                        <li><strong>Export (💾):</strong> Save your entire collection as a .lyriset file</li>
-                        <li><strong>Import (📂):</strong> Load a previously saved .lyriset file</li>
-                        <li><strong>Delete (🗑️):</strong> Remove the currently selected song</li>
-                        <li><strong>Edit (✏️):</strong> Modify the currently selected song's details</li>
-                        <li><strong>Navigation (⏮ ⏭):</strong> Move to previous or next song in your set</li>
-                        <li><strong>Font Size (🔍+ 🔍- 🔄):</strong> Increase, decrease, or reset text size</li>
-                        <li><strong>Clean Lyrics (✨):</strong> Toggle between original and chord-free lyrics</li>
-                        <li><strong>Auto-Scroll (▶):</strong> Enable/disable automatic scrolling</li>
-                        <li><strong>Theme (🌙):</strong> Toggle between light and dark mode</li>
+                        <li><strong>Export (<i class="bi bi-download"></i>):</strong> Save your entire collection as a .lyriset file</li>
+                        <li><strong>Import (<i class="bi bi-upload"></i>):</strong> Load a previously saved .lyriset file</li>
+                        <li><strong>Delete (<i class="bi bi-trash"></i>):</strong> Remove the currently selected song</li>
+                        <li><strong>Edit (<i class="bi bi-pencil"></i>):</strong> Modify the currently selected song's details</li>
+                        <li><strong>Navigation (<i class="bi bi-skip-start-fill"></i> <i class="bi bi-skip-end-fill"></i>):</strong> Move to previous or next song in your set</li>
+                        <li><strong>Font Size (<i class="bi bi-zoom-in"></i> <i class="bi bi-zoom-out"></i> <i class="bi bi-arrow-clockwise"></i>):</strong> Increase, decrease, or reset text size</li>
+                        <li><strong>Clean Lyrics (<i class="bi bi-stars"></i>):</strong> Toggle between original and chord-free lyrics</li>
+                        <li><strong>Auto-Scroll (<i class="bi bi-play-fill"></i>):</strong> Enable/disable automatic scrolling</li>
+                        <li><strong>Theme (<i class="bi bi-moon-stars"></i>):</strong> Toggle between light and dark mode</li>
                     </ul>
 
                     <h4 class="text-start">Button Groups & Layout</h4>
@@ -283,35 +285,35 @@
 
                     <h4 class="text-start">Adding Songs to Your Collection</h4>
                     <ul>
-                        <li><strong>Step 1:</strong> Click the ➕ button (top navigation) to open the Submit Lyrics form</li>
+                        <li><strong>Step 1:</strong> Click the <i class="bi bi-plus-lg"></i> button (top navigation) to open the Submit Lyrics form</li>
                         <li><strong>Step 2:</strong> Visit a lyrics site like <a href="https://www.guitaretab.com/" target="_blank">www.guitaretab.com</a> and copy the song lyrics</li>
                         <li><strong>Step 3:</strong> Paste the lyrics into the form along with the song title and artist</li>
                         <li><strong>Step 4:</strong> Click "Submit" to add the song to your current set</li>
-                        <li><strong>Step 5:</strong> Use the 💾 Export button (in the file management group) to save your collection as a .lyriset file</li>
+                        <li><strong>Step 5:</strong> Use the <i class="bi bi-download"></i> Export button (in the file management group) to save your collection as a .lyriset file</li>
                         <li><strong>Result:</strong> Your songs are now in your setlist and safely saved in your .lyriset file!</li>
                     </ul>
 
                     <h4 class="text-start">Managing Your Songs</h4>
                     <ul>
                         <li><strong>Select a Song:</strong> Use the Song ▼ dropdown to choose a song from your current set</li>
-                        <li><strong>Edit a Song:</strong> Select a song, then click the ✏️ Edit button to modify it</li>
-                        <li><strong>Delete a Song:</strong> Select a song, then click the 🗑️ Delete button to remove it</li>
+                        <li><strong>Edit a Song:</strong> Select a song, then click the <i class="bi bi-pencil"></i> Edit button to modify it</li>
+                        <li><strong>Delete a Song:</strong> Select a song, then click the <i class="bi bi-trash"></i> Delete button to remove it</li>
                         <li><strong>Switch Sets:</strong> Use the Set ▼ dropdown to organize songs into different sets (1-10)</li>
                     </ul>
 
                     <h4 class="text-start">Navigation & Display Controls</h4>
                     <ul>
-                        <li><strong>Browse Songs:</strong> Use ⏮ Previous and ⏭ Next buttons to navigate through your set</li>
-                        <li><strong>Adjust Text Size:</strong> Use 🔍+ to increase, 🔍- to decrease, or 🔄 to reset font size</li>
-                        <li><strong>Clean View:</strong> Click ✨ to toggle between original lyrics and chord-free version</li>
-                        <li><strong>Auto-Scroll:</strong> Click ▶ to enable/disable automatic scrolling during performance</li>
-                        <li><strong>Theme:</strong> Click 🌙 to switch between light and dark modes</li>
+                        <li><strong>Browse Songs:</strong> Use <i class="bi bi-skip-start-fill"></i> Previous and <i class="bi bi-skip-end-fill"></i> Next buttons to navigate through your set</li>
+                        <li><strong>Adjust Text Size:</strong> Use <i class="bi bi-zoom-in"></i> to increase, <i class="bi bi-zoom-out"></i> to decrease, or <i class="bi bi-arrow-clockwise"></i> to reset font size</li>
+                        <li><strong>Clean View:</strong> Click <i class="bi bi-stars"></i> to toggle between original lyrics and chord-free version</li>
+                        <li><strong>Auto-Scroll:</strong> Click <i class="bi bi-play-fill"></i> to enable/disable automatic scrolling during performance</li>
+                        <li><strong>Theme:</strong> Click <i class="bi bi-moon-stars"></i> to switch between light and dark modes</li>
                     </ul>
 
                     <h4 class="text-start">Tips</h4>
                     <ul>
                         <li>Export your collection if you make changes so that you have a backup</li>
-                        <li>The clean lyrics (* button) feature can help format text for better viewing. If you include chords in the lyrics, the clean lyrics will hide them.</li>
+                        <li>The clean lyrics (<i class="bi bi-stars"></i> button) feature can help format text for better viewing. If you include chords in the lyrics, the clean lyrics will hide them.</li>
                     </ul>
 
                 </div>

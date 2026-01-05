@@ -25,12 +25,12 @@ function toggleAutoScroll() {
     if (autoScrollActive) {
         // Stop auto-scroll
         stopAutoScroll();
-        autoScrollText.textContent = '▶';
+        autoScrollText.className = 'bi bi-play-fill';
         autoScrollButton.classList.remove('active');
     } else {
         // Start auto-scroll
         startAutoScroll();
-        autoScrollText.textContent = '⏸';
+        autoScrollText.className = 'bi bi-pause-fill';
         autoScrollButton.classList.add('active');
     }
 }
@@ -118,7 +118,7 @@ function toggleCleanLyrics() {
     const autoScrollButton = document.getElementById('autoScrollButton');
     const autoScrollText = document.getElementById('autoScrollText');
     if (autoScrollButton && autoScrollText) {
-        autoScrollText.textContent = '▶';
+        autoScrollText.className = 'bi bi-play-fill';
         autoScrollButton.classList.remove('active');
     }
     
@@ -129,7 +129,7 @@ function toggleCleanLyrics() {
         } else {
             displayLyrics(song, artist, originalLyrics);
         }
-        toggleText.textContent = '✨';
+        toggleText.className = 'bi bi-stars';
         toggleButton.classList.add('active');
         lyricsContainer.setAttribute('data-clean', 'false');
     } else {
@@ -141,7 +141,7 @@ function toggleCleanLyrics() {
             } else {
                 displayLyrics(song, artist, cleanedLyrics);
             }
-            toggleText.textContent = '🧹';
+            toggleText.className = 'bi bi-stars';
             toggleButton.classList.remove('active');
             lyricsContainer.setAttribute('data-clean', 'true');
         }
@@ -946,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!window.swipeIndicator) {
             const indicator = document.createElement('div');
             indicator.className = 'swipe-indicator';
-            indicator.textContent = '← Previous | Next →';
+            indicator.innerHTML = '<i class="bi bi-arrow-left-circle"></i> Previous | Next <i class="bi bi-arrow-right-circle"></i>';
             document.body.appendChild(indicator);
             window.swipeIndicator = indicator;
         }
@@ -1016,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const autoScrollButton = document.getElementById('autoScrollButton');
                         const autoScrollText = document.getElementById('autoScrollText');
                         if (autoScrollButton && autoScrollText) {
-                            autoScrollText.textContent = '▶';
+                            autoScrollText.className = 'bi bi-play-fill';
                             autoScrollButton.classList.remove('active');
                         }
                     }
@@ -1062,7 +1062,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const autoScrollButton = document.getElementById('autoScrollButton');
                     const autoScrollText = document.getElementById('autoScrollText');
                     if (autoScrollButton && autoScrollText) {
-                        autoScrollText.textContent = '▶';
+                        autoScrollText.className = 'bi bi-play-fill';
                         autoScrollButton.classList.remove('active');
                     }
                 } else {
@@ -1070,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const autoScrollButton = document.getElementById('autoScrollButton');
                     const autoScrollText = document.getElementById('autoScrollText');
                     if (autoScrollButton && autoScrollText) {
-                        autoScrollText.textContent = '⏸';
+                        autoScrollText.className = 'bi bi-pause-fill';
                         autoScrollButton.classList.add('active');
                     }
                 }
@@ -1211,7 +1211,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             const autoScrollButton = document.getElementById('autoScrollButton');
                             const autoScrollText = document.getElementById('autoScrollText');
                             if (autoScrollButton && autoScrollText) {
-                                autoScrollText.textContent = '▶';
+                                autoScrollText.className = 'bi bi-play-fill';
                                 autoScrollButton.classList.remove('active');
                             }
                         }
