@@ -137,21 +137,66 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="aboutModalLabel">About Lyriset - An app for singers</h5>
+                    <h5 class="modal-title" id="aboutModalLabel">About Lyriset - A better way to read your lyrics</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body about-content">
+                    <!-- New Feature Highlights Section -->
+                    <div class="feature-highlights">
+                        <h4 class="text-start">✨ New UI Features</h4>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">🎯</div>
+                                <div class="feature-text">
+                                    <strong>Smart Auto-Fit</strong>
+                                    <p>Automatic font sizing to fit lyrics perfectly on screen</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">📱</div>
+                                <div class="feature-text">
+                                    <strong>Side Swipe Navigation</strong>
+                                    <p>Swipe left/right on mobile to navigate between songs</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">👆</div>
+                                <div class="feature-text">
+                                    <strong>Tap to Scroll</strong>
+                                    <p>Tap lyrics to toggle auto-scroll on mobile</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <h4 class="text-start">Overview</h4>
                     <ul>
-                        <li>View a song's lyrics on a single screen. </li>
+                        <li>View a song's lyrics on a single screen with desktop and tablet. </li>
                         <li>Navigate through your setlist easily. </li>
                         <li>Create sets of songs and save the entire collection privately on your computer</li>
                         <li>Best with tablet or laptop as a 'songbook' for practice and performance.</li>
                     </ul>
 
+                    <h4 class="text-start">Smart Auto-Fit</h4>
+                    <ul>
+                        <li><strong>Automatic Font Sizing:</strong> Calculates optimal font size so lyrics fit perfectly without overflow</li>
+                        <li><strong>Longest Line Detection:</strong> Measures the longest line to determine column width</li>
+                        <li><strong>Screen Optimization:</strong> Maximizes font size while ensuring all content fits on screen</li>
+                        <li><strong>Desktop & Mobile:</strong> Works seamlessly across all device sizes</li>
+                    </ul>
+
+                    <h4 class="text-start">Mobile Navigation</h4>
+                    <ul>
+                        <li><strong>Side Swipe:</strong> Swipe left or right on the lyrics area to go to next/previous song</li>
+                        <li><strong>Tap to Scroll:</strong> Tap anywhere on the lyrics to start/stop auto-scrolling</li>
+                        <li><strong>Manual Scroll:</strong> Drag up/down to scroll manually (stops auto-scroll)</li>
+                        <li><strong>Auto-Scroll:</strong> Smooth continuous scrolling at optimal speed</li>
+                    </ul>
+
                     <h4 class="text-start">Main Features</h4>
                     <ul>
+                        <li><strong>Add:</strong> Click the "Add" button to submit new songs with lyrics from sites like guitaretab.com</li>
                         <li><strong>Sets:</strong> Organize songs into sets (1-10) using the Set dropdown.</li>
                         <li><strong>Navigation:</strong> Use the left (◀) and right (▶) arrow buttons or keys to move between songs.</li>
                         <li><strong>Text Size:</strong> Adjust text size with the A+ and A- buttons or the up and down arrow keys.</li>
@@ -159,34 +204,34 @@
                         <li><strong>Theme:</strong> Neutral color scheme for optimal readability.</li>
                     </ul>
 
-                    <h4 class="text-start">Managing Songs</h4>
+                    <h4 class="text-start">Saving & Loading Your Collection</h4>
                     <ul>
-                        <li><strong>Add:</strong> Click "Add Song" to manually enter a new song's details</li>
-                        <li><strong>Delete:</strong> Remove the current song using the Delete button</li>
-                        <li><strong>Import/Export:</strong> Backup or restore your song collection to your device or
-                            computer</li>
-                        <li><strong>100% Private.</strong>  No user date is collected or stored online.  Your lyrics collection is stored in your browser's local storage only temporarily. To save your collection more permanenlty use export button.  This will create a file on your computer or device, that you can later import back into the app.  You can even share this data file with friends or other devices.</li>
+                        <li><strong>Export:</strong> Creates a .lyriset file containing all your songs, sets, and font size preferences</li>
+                        <li><strong>Import:</strong> Loads a previously saved .lyriset file to restore your complete collection</li>
+                        <li><strong>File Format:</strong> The .lyriset file is a JSON format that stores all your data locally on your device</li>
+                        <li><strong>Backup Strategy:</strong> Export regularly to create backups. The file can be stored on your device, external drives, or cloud storage</li>
+                        <li><strong>Sharing:</strong> Share your .lyriset files with other devices or users - perfect for bands or performance groups</li>
+                        <li><strong>100% Private:</strong> No data is collected or stored online. Your lyrics collection lives only in your browser's local storage and your exported .lyriset files</li>
+                    </ul>
+
+                    <h4 class="text-start">Adding Songs to Your Collection</h4>
+                    <ul>
+                        <li><strong>Step 1:</strong> Click the "Add" button to open the Submit Lyrics form</li>
+                        <li><strong>Step 2:</strong> Visit a lyrics site like <a href="https://www.guitaretab.com/" target="_blank">www.guitaretab.com</a> and copy the song lyrics</li>
+                        <li><strong>Step 3:</strong> Paste the lyrics into the form along with the song title and artist</li>
+                        <li><strong>Step 4:</strong> Click "Submit" to add the song to your current set</li>
+                        <li><strong>Step 5:</strong> Use the "Export" button to save your collection as a .lyriset file</li>
+                        <li><strong>Result:</strong> Your songs are now in your setlist and safely saved in your .lyriset file!</li>
                     </ul>
 
                     <h4 class="text-start">Tips</h4>
                     <ul>
                         <li>Export your collection if you make changes so that you have a backup</li>
-                        <li>The clean lyrics (* button) feature can help format text for better viewing.  If you inlcude chords in the lyrics, the clean lyrics will hide them.
-                        </li>
-                        <li>Settings for font size are saved in the export file and in your browser's local storage for each song.
-
-                        </li>   
-                        <li>The default songs that are loaded are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer"
-                                target="_blank">Tom lehrer</a> who released them to the public domain. Thanks Tom!</li>
+                        <li>The clean lyrics (* button) feature can help format text for better viewing. If you include chords in the lyrics, the clean lyrics will hide them.</li>
+                        <li>Font size settings are saved in the export file and in your browser's local storage for each song</li>
+                        <li>The default songs are by <a href="https://en.wikipedia.org/wiki/Tom_Lehrer" target="_blank">Tom Lehrer</a> who released them to the public domain. Thanks Tom!</li>
                     </ul>
 
-                    <h4 class="text-start">Use Cases</h4>
-                    <ul>
-                        <li>Practice</li>
-                        <li>Performance</li>
-                        <li>Video Production</li>
-                        <li>Audio Production</li>
-                    </ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn " data-bs-dismiss="modal">Close</button>

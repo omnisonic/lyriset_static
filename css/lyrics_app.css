@@ -477,6 +477,178 @@ body {
     color: #6b5538; /* Darker warm brown on hover */
 }
 
+/* Feature Highlights in About Modal */
+.feature-highlights {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f5f0 0%, #e9e6dc 100%);
+    border-radius: 8px;
+    border: 1px solid #d4c5b0;
+}
+
+.feature-highlights h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #8b6f47;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    border: 1px solid #d4c5b0;
+    transition: all 0.2s ease;
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #8b6f47;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 111, 71, 0.15);
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.feature-text {
+    flex: 1;
+}
+
+.feature-text strong {
+    display: block;
+    color: #333;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.feature-text p {
+    margin: 0;
+    color: #666;
+    font-size: 0.85rem;
+    line-height: 1.3;
+}
+
+/* Responsive adjustments for feature cards */
+@media (max-width: 768px) {
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .feature-card {
+        padding: 0.6rem;
+    }
+    
+    .feature-icon {
+        font-size: 1.3rem;
+    }
+    
+    .feature-text strong {
+        font-size: 0.9rem;
+    }
+    
+    .feature-text p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Mobile swipe indicator overlay */
+.swipe-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(51, 51, 51, 0.9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.swipe-indicator.show {
+    opacity: 1;
+}
+
+/* Auto-scroll status indicator */
+.auto-scroll-status {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    background: rgba(139, 111, 71, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.auto-scroll-status.active {
+    opacity: 1;
+}
+
+/* Tap gesture hint */
+.tap-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(139, 111, 71, 0.95);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    text-align: center;
+    max-width: 200px;
+}
+
+.tap-hint.show {
+    opacity: 1;
+}
+
+/* Mobile touch feedback */
+.lyrics-container:active {
+    background-color: #e5e2d8;
+}
+
+/* Enhanced touch feedback for mobile */
+@media (hover: none) and (pointer: coarse) {
+    .lyrics-container {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .lyrics-container:active {
+        background-color: #e0dccf;
+        transition: background-color 0.1s ease;
+    }
+}
+
 .form-control {
     background-color: #e9e6dc; /* Base background */
     color: #333;

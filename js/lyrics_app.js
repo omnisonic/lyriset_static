@@ -1027,33 +1027,268 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-        // Add touch swipe handling
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const swipeThreshold = 50; // minimum distance for a swipe
+    // Enhanced mobile touch handling - side swipe for navigation + tap to scroll
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let touchStartTime = 0;
+    let touchMoved = false;
+    let swipeIndicatorTimeout = null;
+    let tapHintTimeout = null;
     
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-        }, false);
-    
-        document.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, false);
-    
-        function handleSwipe() {
-            const swipeDistance = touchEndX - touchStartX;
+    const swipeThreshold = 50; // minimum distance for a swipe
+    const tapThreshold = 15; // maximum movement for a tap
+    const tapTimeThreshold = 300; // maximum time for a tap (ms)
+
+    // Create UI indicators
+    function createSwipeIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'swipe-indicator';
+        indicator.textContent = '← Previous | Next →';
+        document.body.appendChild(indicator);
+        return indicator;
+    }
+
+    function createTapHint() {
+        const hint = document.createElement('div');
+        hint.className = 'tap-hint';
+        hint.textContent = 'Tap to toggle auto-scroll';
+        document.body.appendChild(hint);
+        return hint;
+    }
+
+    function createAutoScrollStatus() {
+        const status = document.createElement('div');
+        status.className = 'auto-scroll-status';
+        status.textContent = 'Auto-scroll: ON';
+        document.body.appendChild(status);
+        return status;
+    }
+
+    // Initialize UI indicators
+    let swipeIndicator = null;
+    let tapHint = null;
+    let autoScrollStatus = null;
+
+    // Show swipe indicator briefly when lyrics area is touched
+    function showSwipeIndicator() {
+        if (!swipeIndicator) swipeIndicator = createSwipeIndicator();
+        
+        // Clear any existing timeout
+        if (swipeIndicatorTimeout) {
+            clearTimeout(swipeIndicatorTimeout);
+        }
+        
+        swipeIndicator.classList.add('show');
+        swipeIndicatorTimeout = setTimeout(() => {
+            if (swipeIndicator) {
+                swipeIndicator.classList.remove('show');
+            }
+        }, 1500);
+    }
+
+    // Show tap hint
+    function showTapHint() {
+        if (!tapHint) tapHint = createTapHint();
+        
+        // Clear any existing timeout
+        if (tapHintTimeout) {
+            clearTimeout(tapHintTimeout);
+        }
+        
+        tapHint.classList.add('show');
+        tapHintTimeout = setTimeout(() => {
+            if (tapHint) {
+                tapHint.classList.remove('show');
+            }
+        }, 2000);
+    }
+
+    // Update auto-scroll status indicator
+    function updateScrollStatusIndicator(isActive) {
+        if (!autoScrollStatus) autoScrollStatus = createAutoScrollStatus();
+        
+        if (isActive) {
+            autoScrollStatus.textContent = 'Auto-scroll: ON';
+            autoScrollStatus.classList.add('active');
+            setTimeout(() => {
+                if (autoScrollStatus) {
+                    autoScrollStatus.classList.remove('active');
+                }
+            }, 2000);
+        } else {
+            autoScrollStatus.textContent = 'Auto-scroll: OFF';
+            autoScrollStatus.classList.add('active');
+            setTimeout(() => {
+                if (autoScrollStatus) {
+                    autoScrollStatus.classList.remove('active');
+                }
+            }, 1000);
+        }
+    }
+
+    // Enhanced touch handler for lyrics container
+    function setupMobileTouchHandlers() {
+        const lyricsContainer = document.getElementById('lyricsDisplay');
+        if (!lyricsContainer) return;
+
+        lyricsContainer.addEventListener('touchstart', function(e) {
+            // Only handle single touch on mobile
+            if (e.touches.length !== 1) return;
             
-            if (Math.abs(swipeDistance) > swipeThreshold) {
-                if (swipeDistance > 0) {
-                    // Swipe right - go to previous song
-                    loadPrevSong();
-                } else {
-                    // Swipe left - go to next song
-                    loadNextSong();
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) return; // Desktop only
+
+            // Record touch start
+            touchStartTime = Date.now();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchMoved = false;
+
+            // Show swipe indicator hint
+            showSwipeIndicator();
+
+        }, { passive: true });
+
+        lyricsContainer.addEventListener('touchmove', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) return;
+
+            if (e.touches.length === 1) {
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+                const deltaX = Math.abs(touchX - touchStartX);
+                const deltaY = Math.abs(touchY - touchStartY);
+
+                // Check if moved significantly
+                if (deltaX > tapThreshold || deltaY > tapThreshold) {
+                    touchMoved = true;
+
+                    // If auto-scroll is active and user starts manual scroll, stop it
+                    if (autoScrollActive && deltaY > 5) {
+                        stopAutoScroll();
+                        const autoScrollButton = document.getElementById('autoScrollButton');
+                        const autoScrollText = document.getElementById('autoScrollText');
+                        if (autoScrollButton && autoScrollText) {
+                            autoScrollText.textContent = '▶';
+                            autoScrollButton.classList.remove('active');
+                        }
+                        updateScrollStatusIndicator(false);
+                        console.log('Auto-scroll stopped - user initiated manual scroll');
+                    }
                 }
             }
+        }, { passive: true });
+
+        lyricsContainer.addEventListener('touchend', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) return;
+
+            // Calculate touch metrics
+            const touchDuration = Date.now() - touchStartTime;
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const absDeltaX = Math.abs(deltaX);
+            const absDeltaY = Math.abs(deltaY);
+
+            // Check if this was a quick tap (not a scroll gesture)
+            const isQuickTap = touchDuration < tapTimeThreshold && 
+                              absDeltaX < tapThreshold && 
+                              absDeltaY < tapThreshold && 
+                              !touchMoved;
+
+            // Check if this was a side swipe (horizontal gesture)
+            const isSideSwipe = absDeltaX > swipeThreshold && 
+                               absDeltaX > absDeltaY * 1.5; // More horizontal than vertical
+
+            if (isQuickTap) {
+                // TAP: Toggle auto-scroll
+                e.preventDefault();
+                
+                const song = document.getElementById('songTitle').textContent;
+                if (!song || song === 'Select a Song') {
+                    showTapHint();
+                    return;
+                }
+
+                if (autoScrollActive) {
+                    stopAutoScroll();
+                    const autoScrollButton = document.getElementById('autoScrollButton');
+                    const autoScrollText = document.getElementById('autoScrollText');
+                    if (autoScrollButton && autoScrollText) {
+                        autoScrollText.textContent = '▶';
+                        autoScrollButton.classList.remove('active');
+                    }
+                    updateScrollStatusIndicator(false);
+                    showTapHint(); // Show hint again to confirm it stopped
+                } else {
+                    startAutoScroll();
+                    const autoScrollButton = document.getElementById('autoScrollButton');
+                    const autoScrollText = document.getElementById('autoScrollText');
+                    if (autoScrollButton && autoScrollText) {
+                        autoScrollText.textContent = '⏸';
+                        autoScrollButton.classList.add('active');
+                    }
+                    updateScrollStatusIndicator(true);
+                    showTapHint(); // Show hint to confirm it started
+                }
+            } else if (isSideSwipe) {
+                // SWIPE: Navigate between songs
+                e.preventDefault();
+                
+                if (deltaX > 0) {
+                    // Swipe right - previous song
+                    loadPrevSong();
+                    showSwipeIndicator();
+                } else {
+                    // Swipe left - next song
+                    loadNextSong();
+                    showSwipeIndicator();
+                }
+            }
+            // If it was a vertical scroll gesture, let it pass through naturally
+
+        }, { passive: false }); // Non-passive to allow preventDefault on taps/swipes
+
+        // Add visual feedback for touch interactions
+        lyricsContainer.addEventListener('touchstart', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth < 769) {
+                this.style.backgroundColor = '#e5e2d8';
+            }
+        }, { passive: true });
+
+        lyricsContainer.addEventListener('touchend', function(e) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth < 769) {
+                setTimeout(() => {
+                    this.style.backgroundColor = '#eae8dc';
+                }, 100);
+            }
+        }, { passive: true });
+    }
+
+    // Initialize mobile handlers when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileTouchHandlers);
+    } else {
+        setupMobileTouchHandlers();
+    }
+
+    // Also set up global touch handlers for swipe indicators
+    document.addEventListener('touchstart', function(e) {
+        // Only show indicators if touching lyrics area
+        const lyricsContainer = document.getElementById('lyricsDisplay');
+        if (lyricsContainer && lyricsContainer.contains(e.target)) {
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth < 769) {
+                showSwipeIndicator();
+            }
         }
+    }, { passive: true });
 
     // Add event listener for left and right arrow keys
     document.addEventListener('keydown', function(event) {
