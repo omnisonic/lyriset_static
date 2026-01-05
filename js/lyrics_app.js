@@ -1086,11 +1086,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         }, { passive: false }); // Non-passive to allow preventDefault on taps/swipes
 
-        // Add subtle visual feedback for touch interactions
+        // Add subtle visual feedback for touch interactions (respecting theme)
         lyricsContainer.addEventListener('touchstart', function(e) {
             const containerWidth = lyricsContainer.offsetWidth;
             if (containerWidth < 769) {
-                this.style.backgroundColor = '#e5e2d8';
+                // Use CSS variables to respect current theme
+                this.style.backgroundColor = 'var(--bg-primary)';
+                this.style.opacity = '0.95';
             }
         }, { passive: true });
 
@@ -1098,7 +1100,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const containerWidth = lyricsContainer.offsetWidth;
             if (containerWidth < 769) {
                 setTimeout(() => {
-                    this.style.backgroundColor = '#eae8dc';
+                    // Restore original background and opacity
+                    this.style.backgroundColor = 'var(--bg-secondary)';
+                    this.style.opacity = '1';
                 }, 100);
             }
         }, { passive: true });

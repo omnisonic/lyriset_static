@@ -716,7 +716,7 @@ body {
 /* Mobile touch feedback - subtle visual indicator */
 .lyrics-container:active {
     background-color: var(--bg-primary);
-    opacity: 0.9;
+    opacity: 0.98; /* Much more subtle */
 }
 
 /* Enhanced touch feedback for mobile */
@@ -727,8 +727,8 @@ body {
     
     .lyrics-container:active {
         background-color: var(--bg-primary);
-        opacity: 0.85;
-        transition: background-color 0.1s ease;
+        opacity: 0.98; /* Very subtle to avoid flash in dark mode */
+        transition: opacity 0.05s ease; /* Faster, subtle transition */
     }
 }
 
