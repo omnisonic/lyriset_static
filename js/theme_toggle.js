@@ -68,14 +68,8 @@ function initializeTheme() {
 
 // Update hamburger icon based on theme
 function updateHamburgerIcon(theme) {
-    const hamburgerIcon = document.getElementById('hamburgerIcon');
-    if (!hamburgerIcon) return;
-    
-    if (theme === 'dark') {
-        hamburgerIcon.src = 'img/hamburger-dark.svg';
-    } else {
-        hamburgerIcon.src = 'img/hamburger-light.svg';
-    }
+    // Hamburger icon is now handled by Bootstrap's built-in icon
+    // No action needed
 }
 
 // Initialize theme when DOM is ready

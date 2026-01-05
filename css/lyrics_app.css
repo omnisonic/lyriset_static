@@ -197,6 +197,13 @@ body {
     justify-content: center;
 }
 
+/* Ensure hamburger is hidden on desktop - override any conflicting display rules */
+@media (min-width: 992px) {
+    .navbar .navbar-toggler {
+        display: none !important;
+    }
+}
+
 @media (max-width: 576px) {
     /* Make nav buttons and dropdowns bigger on mobile */
     .navbar .btn,

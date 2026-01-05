@@ -195,7 +195,7 @@ function loadNextSong() {
             autoFitLyrics(nextSong, songData.artist, songData.lyrics);
         }
     } catch (e) {
-        console.error('Error loading next song:', e);
+        // Error loading next song
     }
 }
 
@@ -235,7 +235,7 @@ function loadPrevSong() {
             autoFitLyrics(prevSong, songData.artist, songData.lyrics);
         }
     } catch (e) {
-        console.error('Error loading previous song:', e);
+        // Error loading previous song
     }
 }
     
@@ -875,6 +875,10 @@ function loadLastViewedSong() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Always set up touch handlers, regardless of other elements
+    setupMobileTouchHandlers();
+    
     const urlInput = document.getElementById('lyrics_url');
     const lyricsContainer = document.getElementById('lyricsDisplay');
 
@@ -886,11 +890,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    if (!urlInput) {
-        return;
-    }
-
-    if (!lyricsContainer) {
+    // Only proceed with the rest if these elements exist
+    if (!urlInput || !lyricsContainer) {
         return;
     }
 
@@ -965,8 +966,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Simplified mobile touch handler - single unified handler
     function setupMobileTouchHandlers() {
-        const lyricsContainer = document.getElementById('lyricsDisplay');
-        if (!lyricsContainer) return;
+        // Attach to the lyrics container wrapper for better touch coverage
+        const lyricsContainer = document.querySelector('.lyrics-container');
+        if (!lyricsContainer) {
+            return;
+        }
 
         // Single touch handler for iOS compatibility
         let touchStartTime = 0;
@@ -974,11 +978,11 @@ document.addEventListener('DOMContentLoaded', function() {
         let touchStartY = 0;
         let touchMoved = false;
 
-        lyricsContainer.addEventListener('touchstart', function(e) {
+        function handleTouchStart(e) {
             // Only handle single touch on mobile
             if (e.touches.length !== 1) return;
             
-            const containerWidth = lyricsContainer.offsetWidth;
+            const containerWidth = window.innerWidth;
             if (containerWidth >= 769) return; // Desktop only
 
             // Record touch start
@@ -987,13 +991,14 @@ document.addEventListener('DOMContentLoaded', function() {
             touchStartY = e.touches[0].clientY;
             touchMoved = false;
 
+            
+
             // Show swipe indicator (briefly)
             showSwipeIndicator();
+        }
 
-        }, { passive: true });
-
-        lyricsContainer.addEventListener('touchmove', function(e) {
-            const containerWidth = lyricsContainer.offsetWidth;
+        function handleTouchMove(e) {
+            const containerWidth = window.innerWidth;
             if (containerWidth >= 769) return;
 
             if (e.touches.length === 1) {
@@ -1005,7 +1010,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check if moved significantly
                 if (deltaX > 15 || deltaY > 15) {
                     touchMoved = true;
-
                     // If auto-scroll is active and user starts manual scroll, stop it
                     if (autoScrollActive && deltaY > 5) {
                         stopAutoScroll();
@@ -1018,10 +1022,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
-        }, { passive: true });
+        }
 
-        lyricsContainer.addEventListener('touchend', function(e) {
-            const containerWidth = lyricsContainer.offsetWidth;
+        function handleTouchEnd(e) {
+            const containerWidth = window.innerWidth;
             if (containerWidth >= 769) return;
 
             // Calculate touch metrics
@@ -1032,6 +1036,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const deltaY = touchEndY - touchStartY;
             const absDeltaX = Math.abs(deltaX);
             const absDeltaY = Math.abs(deltaY);
+
+            
 
             // Check if this was a quick tap (not a scroll gesture)
             const isQuickTap = touchDuration < 300 && 
@@ -1046,7 +1052,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isQuickTap) {
                 // TAP: Toggle auto-scroll
                 e.preventDefault();
-                
                 const song = document.getElementById('songTitle').textContent;
                 if (!song || song === 'Select a Song') {
                     return; // No hint, just silent return
@@ -1072,7 +1077,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (isSideSwipe) {
                 // SWIPE: Navigate between songs
                 e.preventDefault();
-                
                 if (deltaX > 0) {
                     // Swipe right - previous song
                     loadPrevSong();
@@ -1083,12 +1087,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 showSwipeIndicator();
             }
             // If it was a vertical scroll gesture, let it pass through naturally
+        }
 
-        }, { passive: false }); // Non-passive to allow preventDefault on taps/swipes
+        // Remove any existing listeners first to avoid duplicates
+        lyricsContainer.removeEventListener('touchstart', handleTouchStart);
+        lyricsContainer.removeEventListener('touchmove', handleTouchMove);
+        lyricsContainer.removeEventListener('touchend', handleTouchEnd);
+
+        // Add event listeners with proper options
+        lyricsContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+        lyricsContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+        lyricsContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
 
         // Add subtle visual feedback for touch interactions (respecting theme)
         lyricsContainer.addEventListener('touchstart', function(e) {
-            const containerWidth = lyricsContainer.offsetWidth;
+            const containerWidth = window.innerWidth;
             if (containerWidth < 769) {
                 // Use CSS variables to respect current theme
                 this.style.backgroundColor = 'var(--bg-primary)';
@@ -1097,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
 
         lyricsContainer.addEventListener('touchend', function(e) {
-            const containerWidth = lyricsContainer.offsetWidth;
+            const containerWidth = window.innerWidth;
             if (containerWidth < 769) {
                 setTimeout(() => {
                     // Restore original background and opacity
@@ -1108,12 +1121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
     }
 
-    // Initialize mobile handlers when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupMobileTouchHandlers);
-    } else {
-        setupMobileTouchHandlers();
-    }
+    // Mobile handlers are now set up in the main DOMContentLoaded listener
 
     // Show/hide auto-scroll button based on screen size
     function updateAutoScrollButtonVisibility() {
