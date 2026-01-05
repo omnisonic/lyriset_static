@@ -1,17 +1,17 @@
 /* CSS Variables for theming */
 :root {
-    /* Light mode (default) */
+    /* Light mode (default) - darker buttons */
     --bg-primary: #e9e6dc;
     --bg-secondary: #eae8dc;
     --text-primary: #333;
     --text-secondary: #7f8c8d;
     --border-color: #8b6f47;
-    --button-bg: #e9e6dc;
-    --button-hover: #d4c5b0;
+    --button-bg: #d4c5b0; /* Darker in light mode */
+    --button-hover: #c0b098; /* Even darker on hover */
     --modal-bg: #e9e6dc;
     --input-bg: #ffffff;
     --input-border: #8b6f47;
-    --dropdown-hover: #d4c5b0;
+    --dropdown-hover: #c0b098;
     --dropdown-border: #8b6f47;
     --shadow: rgba(0,0,0,0.1);
 }
@@ -59,12 +59,12 @@
     --text-primary: #333;
     --text-secondary: #7f8c8d;
     --border-color: #8b6f47;
-    --button-bg: #e9e6dc;
-    --button-hover: #d4c5b0;
+    --button-bg: #d4c5b0; /* Darker in light mode */
+    --button-hover: #c0b098; /* Even darker on hover */
     --modal-bg: #e9e6dc;
     --input-bg: #ffffff;
     --input-border: #8b6f47;
-    --dropdown-hover: #d4c5b0;
+    --dropdown-hover: #c0b098;
     --dropdown-border: #8b6f47;
     --shadow: rgba(0,0,0,0.1);
 }
@@ -154,31 +154,31 @@ body {
 /* Dark mode hamburger button styling - enhanced visibility */
 @media (prefers-color-scheme: dark) {
     .navbar .navbar-toggler {
-        border-color: var(--border-color);
+        border: none;
         background-color: rgba(58, 58, 58, 0.3); /* Subtle dark background */
     }
     
     .navbar .navbar-toggler:hover {
         background-color: var(--button-hover);
-        border-color: var(--border-color);
+        border: none;
     }
 }
 
 /* Manual dark mode hamburger button styling - enhanced visibility */
 [data-theme="dark"] .navbar .navbar-toggler {
-    border-color: var(--border-color);
+    border: none;
     background-color: rgba(58, 58, 58, 0.3); /* Subtle dark background */
 }
 
 [data-theme="dark"] .navbar .navbar-toggler:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Ensure hamburger has proper focus state for accessibility */
 .navbar .navbar-toggler:focus {
     box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Additional styling to ensure hamburger is always visible */
@@ -493,7 +493,7 @@ body {
         width: auto !important;
         min-width: unset;
         background-color: var(--button-bg);
-        border: 2px solid var(--border-color);
+        border: none;
         z-index: 1000; /* Ensure it's on top */
     }
     
@@ -532,7 +532,7 @@ body {
 /* Desktop dropdown menu styling */
 .dropdown-menu {
     background-color: var(--button-bg);
-    border: 2px solid var(--border-color);
+    border: none;
 }
 
 .dropdown-menu.show {
@@ -557,11 +557,11 @@ body {
 .modal-content {
     background-color: var(--modal-bg);
     color: var(--text-primary);
-    border: 2px solid var(--border-color);
+    border: none;
 }
 
 .modal-header {
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: none;
     background-color: var(--modal-bg);
 }
 
@@ -627,10 +627,33 @@ body {
 .about-content a {
     color: var(--border-color);
     text-decoration: underline;
+    transition: color 0.2s ease;
 }
 
 .about-content a:hover {
     color: var(--button-hover);
+}
+
+/* Enhanced link visibility for dark mode */
+@media (prefers-color-scheme: dark) {
+    .about-content a {
+        color: #6ba3d4; /* Light blue for better contrast in dark mode */
+        text-decoration: underline;
+    }
+    
+    .about-content a:hover {
+        color: #8dc1e6; /* Lighter blue on hover */
+    }
+}
+
+/* Manual dark mode link styling */
+[data-theme="dark"] .about-content a {
+    color: #6ba3d4; /* Light blue for better contrast in dark mode */
+    text-decoration: underline;
+}
+
+[data-theme="dark"] .about-content a:hover {
+    color: #8dc1e6; /* Lighter blue on hover */
 }
 
 /* Feature Highlights in About Modal */
@@ -639,7 +662,7 @@ body {
     padding: 1rem;
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     border-radius: 8px;
-    border: 1px solid var(--border-color);
+    border: none;
 }
 
 .feature-highlights h4 {
@@ -665,14 +688,13 @@ body {
     background: var(--bg-primary);
     opacity: 0.8;
     border-radius: 6px;
-    border: 1px solid var(--border-color);
+    border: none;
     transition: all 0.2s ease;
 }
 
 .feature-card:hover {
     background: var(--bg-primary);
     opacity: 1;
-    border-color: var(--border-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px var(--shadow);
 }
@@ -847,73 +869,74 @@ textarea.form-control:focus {
 .btn {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
 }
 
 .btn:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 .btn-light {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
 }
 
 .btn-light:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 .btn:focus {
     box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Dropdown toggle button styling - ensure consistent with other buttons */
 .dropdown-toggle {
     background-color: var(--button-bg) !important;
     color: var(--text-primary) !important;
-    border: 1px solid var(--border-color) !important;
+    border: none !important;
 }
 
 .dropdown-toggle:hover {
     background-color: var(--button-hover) !important;
-    border-color: var(--border-color) !important;
+    border: none !important;
 }
 
 .dropdown-toggle:focus {
     box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2) !important;
-    border-color: var(--border-color) !important;
+    border: none !important;
 }
 
 /* Ensure dropdown buttons in navbar match other buttons exactly */
 .navbar .dropdown-toggle {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
 }
 
 .navbar .dropdown-toggle:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 .navbar .dropdown-toggle:active {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Style the dropdown menus to match the theme */
 .dropdown-menu {
     background-color: var(--button-bg);
-    border: 2px solid var(--border-color);
+    border: none;
     border-radius: 4px;
     padding: 0.5rem 0;
     min-width: 10rem;
+    box-shadow: 0 2px 8px var(--shadow);
 }
 
 .dropdown-menu .dropdown-item {
@@ -947,7 +970,7 @@ textarea.form-control:focus {
     
     .dropdown-menu {
         background-color: var(--button-bg);
-        border: 2px solid var(--border-color);
+        border: none;
     }
     
     .dropdown-menu .dropdown-item {
@@ -961,27 +984,27 @@ textarea.form-control:focus {
 .navbar .btn {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
 }
 
 .navbar .btn:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 .navbar .btn.border-light {
-    border-color: var(--border-color);
+    border: none;
 }
 
 .navbar .btn.border-light:hover {
-    border-color: var(--border-color);
+    border: none;
 }
 
 .navbar .btn:active {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Ensure all navbar buttons (including Add, Delete, Edit, About) have consistent styling */
@@ -990,7 +1013,7 @@ textarea.form-control:focus {
 .navbar .btn[onclick*="openEditModal"] {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
 }
@@ -999,47 +1022,47 @@ textarea.form-control:focus {
 .navbar .btn[onclick*="deleteSong"]:hover,
 .navbar .btn[onclick*="openEditModal"]:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* URL submit button styling */
 .url-submit .btn {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
 }
 
 .url-submit .btn:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Import/Export buttons (when they exist) */
 #importExportContainer .btn {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
 }
 
 #importExportContainer .btn:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 /* Button group styling */
 .btn-group .btn {
     border-radius: 0;
     background-color: var(--button-bg);
-    border: 1px solid var(--border-color);
+    border: none;
 }
 
 .btn-group .btn:hover {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
 }
 
 .btn-group .btn:first-child {
@@ -1117,7 +1140,7 @@ textarea.form-control:focus {
 .font-size-controls button {
     background: var(--button-bg);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: none;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 3px;
@@ -1130,7 +1153,7 @@ textarea.form-control:focus {
 .font-size-controls button:hover {
     background: var(--button-hover);
     color: var(--text-primary);
-    border-color: var(--border-color);
+    border: none;
 }
 
 .lyrics-text {
@@ -1183,7 +1206,7 @@ textarea.form-control:focus {
 /* Active state for toggle buttons */
 .btn-group .btn.active {
     background-color: var(--button-hover);
-    border-color: var(--border-color);
+    border: none;
     color: var(--text-primary);
 }
 
