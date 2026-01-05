@@ -208,43 +208,18 @@ function importSongData(file) {
     });
 }
 
-function createImportExportButtons() {
-    const container = document.createElement('div');
-    container.className = 'btn-group me-2';
+function handleImportFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
     
-    const exportBtn = document.createElement('button');
-    exportBtn.className = 'btn btn-secondary border border-light';
-    exportBtn.textContent = 'Export';
-    exportBtn.onclick = exportSongData;
-    
-    const importBtn = document.createElement('button');
-    importBtn.className = 'btn btn-secondary border border-light';
-    importBtn.textContent = 'Import';
-    
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.lyriset';
-    fileInput.style.display = 'none';
-    
-    fileInput.onchange = async function(e) {
-        if (e.target.files.length > 0) {
-            try {
-                const count = await importSongData(e.target.files[0]);
-                alert(`Successfully imported ${count} songs`);
-                location.reload();
-            } catch (error) {
-                alert(`Import failed: ${error.message}`);
-            }
-        }
-    };
-    
-    importBtn.onclick = () => fileInput.click();
-    
-    container.appendChild(exportBtn);
-    container.appendChild(importBtn);
-    container.appendChild(fileInput);
-    
-    return container;
+    importSongData(file)
+        .then(count => {
+            alert(`Successfully imported ${count} songs`);
+            location.reload();
+        })
+        .catch(error => {
+            alert(`Import failed: ${error.message}`);
+        });
 }
 
 if (typeof window.displayLyrics === 'undefined') {

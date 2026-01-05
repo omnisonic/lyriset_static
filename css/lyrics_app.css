@@ -1217,6 +1217,187 @@ textarea.form-control:focus {
     color: var(--text-primary);
 }
 
+/* Navbar layout and button styling - Clean horizontal layout */
+.navbar .navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.navbar .navbar-nav .nav-item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.navbar .navbar-nav .nav-item .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Ensure proper spacing between navbar items */
+.navbar .navbar-nav > * {
+    margin-right: 0.25rem;
+    flex-shrink: 0;
+}
+
+.navbar .navbar-nav > *:last-child {
+    margin-right: 0;
+}
+
+/* Button group styling in navbar */
+.navbar .btn-group {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .btn-group .btn {
+    padding: 0.5rem 0.6rem;
+    min-width: 42px;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure proper spacing in button groups */
+.navbar .btn-group .btn:not(:first-child) {
+    border-left: 1px solid var(--border-color);
+}
+
+/* Mobile responsive navbar - wrap buttons to multiple lines */
+@media (max-width: 991.98px) {
+    .navbar .navbar-collapse {
+        overflow: visible;
+        background-color: var(--bg-primary);
+        border-top: 2px solid var(--border-color);
+        margin-top: 0.5rem;
+    }
+    
+    .navbar .navbar-nav {
+        gap: 0.25rem;
+        width: 100% !important;
+        justify-content: flex-start;
+        flex-wrap: wrap !important;
+        white-space: normal !important;
+        display: flex !important;
+        flex-direction: row !important;
+        padding: 0.5rem 0;
+    }
+    
+    .navbar .navbar-nav .nav-item {
+        margin-bottom: 0.25rem;
+        flex-shrink: 0;
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    .navbar .btn-group .btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.6rem 0.7rem;
+        font-size: 1.1em;
+    }
+    
+    .navbar .navbar-nav .nav-item .btn {
+        min-height: 44px;
+        font-size: 1em;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .navbar .dropdown-toggle {
+        min-height: 44px;
+        font-size: 1em;
+        padding: 0.6rem 0.8rem;
+    }
+}
+
+/* Tablet adjustments (768px - 991px) - also wrap */
+@media (min-width: 769px) and (max-width: 991.98px) {
+    .navbar .navbar-collapse {
+        overflow: visible;
+        background-color: var(--bg-primary);
+        border-top: 2px solid var(--border-color);
+        margin-top: 0.5rem;
+    }
+    
+    .navbar .navbar-nav {
+        gap: 0.25rem;
+        width: 100% !important;
+        justify-content: flex-start;
+        flex-wrap: wrap !important;
+        white-space: normal !important;
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    .navbar .navbar-nav .nav-item {
+        margin-bottom: 0.25rem;
+        flex-shrink: 0;
+        display: flex !important;
+        flex-direction: row !important;
+    }
+    
+    .navbar .btn-group .btn {
+        min-height: 40px;
+        min-width: 40px;
+        padding: 0.5rem 0.6rem;
+        font-size: 1em;
+    }
+    
+    .navbar .navbar-nav .nav-item .btn {
+        min-height: 40px;
+        padding: 0.5rem 0.7rem;
+    }
+    
+    .navbar .dropdown-toggle {
+        min-height: 40px;
+        padding: 0.5rem 0.7rem;
+        font-size: 1em;
+    }
+}
+
+/* Desktop adjustments (992px and above) */
+@media (min-width: 992px) {
+    .navbar .navbar-nav {
+        gap: 0.5rem;
+    }
+    
+    .navbar .btn-group .btn {
+        min-height: 36px;
+        min-width: 38px;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.95em;
+    }
+    
+    .navbar .navbar-nav .nav-item .btn {
+        min-height: 36px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.95em;
+    }
+    
+    .navbar .dropdown-toggle {
+        min-height: 36px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.95em;
+    }
+}
+
+/* Ensure icon sizing is consistent */
+.navbar .btn-group .icon,
+.navbar .nav-item .icon {
+    font-size: 1em;
+    line-height: 1;
+}
+
+/* Special styling for import/export icons to make them stand out */
+.navbar .btn-group .btn[onclick*="exportSongData"] .icon,
+.navbar .btn-group .btn[onclick*="importFileInput"] .icon {
+    font-size: 1.1em;
+}
+
 /* Responsive adjustments for icon buttons */
 @media (max-width: 768px) {
     /* Tablet adjustments - still make buttons bigger but slightly smaller than mobile */

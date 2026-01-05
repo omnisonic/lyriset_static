@@ -50,16 +50,15 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-  
-                <div class="d-flex align-items-center flex-wrap gap-2">
+                <div class="navbar-nav">
                     <div class="nav-item">
-                        <button class="btn  " data-bs-toggle="modal"
-                            data-bs-target="#aboutModal">
+                        <button class="btn" data-bs-toggle="modal" data-bs-target="#aboutModal">
                             About
                         </button>
                     </div>
-                    <div class="dropdown">
-                        <button class="btn   dropdown-toggle" type="button"
+
+                    <div class="nav-item dropdown">
+                        <button class="btn dropdown-toggle" type="button"
                             id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
                         <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
                             <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
@@ -75,91 +74,115 @@
                         </ul>
                     </div>
 
-                    <button class="btn   " data-bs-toggle="modal"
-                        data-bs-target="#lyricsModal">Add</button>
-                    <div class="dropdown">
-                        <button class="btn    dropdown-toggle" type="button"
+                    <div class="nav-item">
+                        <button class="btn" data-bs-toggle="modal" data-bs-target="#lyricsModal">Add</button>
+                    </div>
+
+                    <div class="nav-item dropdown">
+                        <button class="btn dropdown-toggle" type="button"
                             id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
                         <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
                     </div>
-                    <div >
-                        <a href="#" class="btn  " onclick="loadPrevSong()" title="Previous Song">
-                            <span class="icon">⏮</span>
-                        </a>
-                        <a href="#" class="btn  " onclick="loadNextSong()" title="Next Song">
-                            <span class="icon">⏭</span>
-                        </a>
-                        <button onclick="adjustFontSize(1)" class="btn " title="Increase Font Size">
-                            <span class="icon">🔍+</span>
-                        </button>
-                        <button onclick="adjustFontSize(-1)" class="btn " title="Decrease Font Size">
-                            <span class="icon">🔍-</span>
-                        </button>
-                        <button onclick="resetAutoFit()" class="btn " title="Reset Auto-Fit">
-                            <span class="icon">🔄</span>
-                        </button>
-                        <button class="btn " id="toggleCleanLyricsButton"
-                            onclick="toggleCleanLyrics()" title="Toggle Clean Lyrics">
-                            <span id="toggleCleanLyricsText" class="icon">✨</span>
-                        </button>
-                        <button class="btn " id="autoScrollButton"
-                            onclick="toggleAutoScroll()" title="Toggle Auto-Scroll">
-                            <span id="autoScrollText" class="icon">▶</span>
-                        </button>
-                        <button class="btn " id="themeToggle"
-                            onclick="toggleTheme()" title="Toggle Dark Mode">
-                            <span id="themeIcon" class="icon">🌙</span>
-                        </button>
 
-
-                        <button class="btn" onclick="deleteSong()">Delete</button>
-                        <button class="btn" onclick="openEditModal()">Edit</button> 
+                    <div class="nav-item">
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="exportSongData()" title="Export Collection">
+                                <span class="icon">💾</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFileInput').click()" title="Import Collection">
+                                <span class="icon">📂</span>
+                            </button>
+                            <input type="file" id="importFileInput" accept=".lyriset" style="display: none;" onchange="handleImportFile(event)">
+                        </div>
                     </div>
 
+                    <div class="nav-item">
+                        <div class="btn-group">
+                            <a href="#" class="btn" onclick="loadPrevSong()" title="Previous Song">
+                                <span class="icon">⏮</span>
+                            </a>
+                            <a href="#" class="btn" onclick="loadNextSong()" title="Next Song">
+                                <span class="icon">⏭</span>
+                            </a>
+                        </div>
+                    </div>
 
- 
+                    <div class="nav-item">
+                        <div class="btn-group">
+                            <button onclick="adjustFontSize(1)" class="btn" title="Increase Font Size">
+                                <span class="icon">🔍+</span>
+                            </button>
+                            <button onclick="adjustFontSize(-1)" class="btn" title="Decrease Font Size">
+                                <span class="icon">🔍-</span>
+                            </button>
+                            <button onclick="resetAutoFit()" class="btn" title="Reset Auto-Fit">
+                                <span class="icon">🔄</span>
+                            </button>
+                        </div>
+                    </div>
 
+                    <div class="nav-item">
+                        <div class="btn-group">
+                            <button class="btn" id="toggleCleanLyricsButton"
+                                onclick="toggleCleanLyrics()" title="Toggle Clean Lyrics">
+                                <span id="toggleCleanLyricsText" class="icon">✨</span>
+                            </button>
+                            <button class="btn" id="autoScrollButton"
+                                onclick="toggleAutoScroll()" title="Toggle Auto-Scroll">
+                                <span id="autoScrollText" class="icon">▶</span>
+                            </button>
+                            <button class="btn" id="themeToggle"
+                                onclick="toggleTheme()" title="Toggle Dark Mode">
+                                <span id="themeIcon" class="icon">🌙</span>
+                            </button>
+                        </div>
+                    </div>
 
-            
-
-                </div>
-
-                <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="lyricsModalLabel">Submit Lyrics</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="lyricsForm">
-                                    <div class="mb-3">
-                                        <label for="songInput" class="form-label">Song</label>
-                                        <input type="text" class="form-control border-0" id="songInput" name="song"
-                                            required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="artistInput" class="form-label">Artist</label>
-                                        <input type="text" class="form-control border-0" id="artistInput" name="artist"
-                                            required />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="lyricsText" class="form-label">Lyrics</label>
-                                        <textarea class="form-control border-0" id="lyricsText" name="lyrics" rows="10"
-                                            required></textarea>
-                                    </div>
-                                    <input type="hidden" id="formType" name="formType" value="add">
-                                    <button type="submit" class="btn btn-light">Submit</button>
-                                </form>
-                            </div>
+                    <div class="nav-item">
+                        <div class="btn-group">
+                            <button class="btn" onclick="deleteSong()">Delete</button>
+                            <button class="btn" onclick="openEditModal()">Edit</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- Lyrics Modal -->
+    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lyricsModalLabel">Submit Lyrics</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="lyricsForm">
+                        <div class="mb-3">
+                            <label for="songInput" class="form-label">Song</label>
+                            <input type="text" class="form-control border-0" id="songInput" name="song"
+                                required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="artistInput" class="form-label">Artist</label>
+                            <input type="text" class="form-control border-0" id="artistInput" name="artist"
+                                required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="lyricsText" class="form-label">Lyrics</label>
+                            <textarea class="form-control border-0" id="lyricsText" name="lyrics" rows="10"
+                                required></textarea>
+                        </div>
+                        <input type="hidden" id="formType" name="formType" value="add">
+                        <button type="submit" class="btn btn-light">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -324,18 +347,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const container = document.getElementById('importExportContainer');
-            if (container) {
-                container.appendChild(createImportExportButtons());
-            }
-            
-            // Initialize auto-fit button functionality
-            // The buttons are already in the HTML, but we need to ensure the functions are available
-            if (typeof addAutoFitButton === 'function') {
-                // The button is already added to HTML, but we can call this if needed
-                // addAutoFitButton(); // Not needed since buttons are in HTML
-            }
-            
             // Register Service Worker for PWA functionality
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').then(function(registration) {
