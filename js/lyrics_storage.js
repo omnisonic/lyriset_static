@@ -3,9 +3,8 @@ async function loadDefaultSongs() {
     try {
         // Check localStorage content before loading
         const existingSongs = Object.keys(localStorage);
-        console.log(`Current localStorage songs count: ${existingSongs.length}`);
         
-        const response = await fetch('../data/lyrics_data_2025-02-14.lyriset');
+        const response = await fetch('../data/lyrics_data_2026-01-05.lyriset');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -22,7 +21,6 @@ async function loadDefaultSongs() {
             }
         }
         if (cleanedCount > 0) {
-            console.log(`Cleaned up ${cleanedCount} old font size entries from localStorage`);
         }
 
         // Only load default songs if localStorage has 3 or fewer songs (after cleanup)
@@ -31,7 +29,6 @@ async function loadDefaultSongs() {
         ).length;
         
         if (currentSongsCount <= 3) {
-            console.log('localStorage has 3 or fewer songs, clearing and loading default songs from lyrics_data.lyriset');
             // Clear all except the cleanup we just did
             const keysToRemove = [];
             for (let i = 0; i < localStorage.length; i++) {
@@ -49,14 +46,11 @@ async function loadDefaultSongs() {
                 }
                 localStorage.setItem(song, JSON.stringify(data));
             });
-            console.log(`Loaded ${Object.keys(songs).length} default songs from lyrics_data.lyriset`);
             window.updateSongDropdown(window.currentSetNumber);
         } else {
-            console.log('Using existing songs from localStorage');
-            console.log('Songs in localStorage:', existingSongs);
         }
     } catch (error) {
-        console.error('Error loading default songs:', error);
+        // Error loading default songs
     }
 }
 
@@ -84,7 +78,7 @@ window.updateSongDropdown = function(setNumber = 1) {
                         });
                     }
                 } catch (e) {
-                    console.error(`Error parsing song: ${key}`, e);
+                    // Error parsing song
                 }
             }
         }
@@ -138,7 +132,7 @@ window.updateSongDropdown = function(setNumber = 1) {
             }
         }
     } else {
-        console.error('Dropdown element not found');
+        // Dropdown element not found
     }
 };
 
@@ -153,7 +147,6 @@ function exportSongData() {
                 try {
                     exportData[key] = JSON.parse(localStorage.getItem(key));
                 } catch (e) {
-                    console.warn(`Error parsing data for song: ${key}`, e);
                     exportData[key] = localStorage.getItem(key);
                 }
             }
@@ -172,7 +165,6 @@ function exportSongData() {
         link.click();
         document.body.removeChild(link);
     } catch (error) {
-        console.error("Error during exportSongData:", error);
         alert("Error during export. Please check the console for details.");
     }
 }
@@ -193,12 +185,10 @@ function importSongData(file) {
                 Object.entries(importData).forEach(([key, value]) => {
                     // Skip font size entries since we use auto-fit now
                     if (key.startsWith('lyrics-font-size-')) {
-                        console.log(`Skipping import of font size setting: ${key}`);
                         return;
                     }
                     // Skip metronome-bpm entries since metronome is removed
                     if (key.startsWith('metronome-bpm-')) {
-                        console.log(`Skipping import of metronome BPM setting: ${key}`);
                         return;
                     }
                     localStorage.setItem(key, JSON.stringify(value));
@@ -261,7 +251,6 @@ if (typeof window.displayLyrics === 'undefined') {
     window.displayLyrics = function(song, artist, lyrics) {
         const lyricsContainer = document.getElementById('lyricsDisplay');
         if (!lyricsContainer) {
-            console.error('Lyrics container not found');
             return;
         }
         

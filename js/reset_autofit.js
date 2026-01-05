@@ -5,7 +5,6 @@ function resetAutoFit() {
     const song = document.getElementById('songTitle').textContent;
     
     if (!song || song === 'Select a Song') {
-        console.warn('No song selected, cannot reset auto-fit.');
         return;
     }
 
@@ -15,7 +14,6 @@ function resetAutoFit() {
         // Remove manual font size from inline styles
         lyricsContainer.style.fontSize = '';
         
-        console.log(`Reset auto-fit for: ${song}`);
     }
 
     // Get song data and re-trigger auto-fit
@@ -30,7 +28,6 @@ function resetAutoFit() {
                 }
             } else {
                 // Fallback if autoFitLyrics isn't available yet
-                console.warn('autoFitLyrics not available, using displayLyrics');
                 if (typeof displayLyrics === 'function') {
                     displayLyrics(song, songData.artist, songData.lyrics);
                     // Update status indicator
@@ -40,7 +37,7 @@ function resetAutoFit() {
                 }
             }
         } catch (e) {
-            console.error('Error resetting auto-fit:', e);
+            // Error resetting auto-fit
         }
     }
 }

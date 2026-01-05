@@ -2,11 +2,9 @@
 
 function openEditModal() {
     const currentSong = document.getElementById('songTitle').textContent;
-    console.log('Current song:', currentSong);
     
     if (!currentSong || currentSong === 'Select a Song') {
         alert('Please select a song to edit.');
-        console.log('No song selected or default text detected.');
         return;
     }
 
@@ -14,7 +12,6 @@ function openEditModal() {
     
     if (!songData) {
         alert('Song data not found.');
-        console.log('Song data is empty or not found in localStorage.');
         return;
     }
 
@@ -40,17 +37,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (editLyricsForm) {
         editLyricsForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Editing lyrics...');
 
             const song = document.getElementById('editSongInput').value.trim();
             const artist = document.getElementById('editArtistInput').value.trim();
             const lyrics = document.getElementById('editLyricsText').value.trim();
             
-            console.log('Song:', song);
-            console.log('Artist:', artist);
             
             if (!song || !lyrics) {
-                console.log('Song or lyrics field is empty. Aborting save.');
                 return;
             }
 
@@ -60,10 +53,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 lyrics: lyrics,
                 set: window.currentSetNumber
             }));
-            console.log('Updated song data saved to localStorage');
 
             // Update the displayed lyrics
-            displayLyrics(song, artist, lyrics);
+            if (typeof autoFitLyrics === 'function') {
+                autoFitLyrics(song, artist, lyrics);
+            } else if (typeof displayLyrics === 'function') {
+                displayLyrics(song, artist, lyrics);
+            }
 
             // Close the modal using Bootstrap's getInstance
             const modalElement = document.getElementById('editLyricsModal');
@@ -72,6 +68,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 modalInstance.hide();
             }
         });
-        console.log('Edit lyrics form event listener added.');
     }
 });
