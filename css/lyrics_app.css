@@ -82,125 +82,326 @@ body {
     padding: 10px;
 }
 
-.brand {
-    text-align: left;
+
+.navbar {
+    background-color: var(--bg-primary);
+    border-bottom: 2px solid var(--border-color);
+    padding: 0;
+}
+
+/* Brand styling */
+.navbar .navbar-brand {
     color: var(--text-primary);
     font-weight: bold;
     font-size: 1.2rem;
-}
-
-.navbar {
-    /* padding: 0px; */
-    background-color: var(--bg-primary);
-    border-bottom: 2px solid var(--border-color);
-}
-
-/* Ensure brand and hamburger stay on same line on mobile */
-.navbar .brand {
     margin: 0;
-    line-height: 1;
+    padding: 0.5rem 0;
     white-space: nowrap;
 }
 
+.navbar .navbar-brand:hover {
+    color: var(--text-primary);
+}
+
+/* Hamburger button styling */
 .navbar .navbar-toggler {
-    margin: 0;
+    border: 2px solid var(--border-color);
+    background-color: var(--button-bg);
+    color: var(--text-primary);
     padding: 0.25rem 0.5rem;
-}
-
-/* On mobile, ensure brand and toggler are on same line */
-@media (max-width: 991.98px) {
-    .navbar .container-fluid {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        padding: 0.5rem 1rem;
-    }
-    
-    .navbar .brand {
-        font-size: 1.2rem;
-    }
-}
-
-/* On desktop, ensure proper spacing */
-@media (min-width: 992px) {
-    .navbar .container-fluid {
-        padding: 0 1rem;
-    }
-    
-    .navbar .brand {
-        font-size: 1.2rem;
-        margin-right: 1rem;
-    }
-    
-    .navbar .navbar-toggler {
-        display: none;
-    }
-}
-
-.navbar .navbar-toggler img {
-    width: 24px;
-    height: 24px;
-}
-
-/* Ensure hamburger button has good contrast in dark mode */
-.navbar .navbar-toggler {
-    background-color: transparent;
-    border: 2px solid transparent;
-    transition: all 0.2s ease;
-    border-radius: 4px;
-}
-
-/* Dark mode hamburger button styling - enhanced visibility */
-@media (prefers-color-scheme: dark) {
-    .navbar .navbar-toggler {
-        border: none;
-        background-color: rgba(58, 58, 58, 0.3); /* Subtle dark background */
-    }
-    
-    .navbar .navbar-toggler:hover {
-        background-color: var(--button-hover);
-        border: none;
-    }
-}
-
-/* Manual dark mode hamburger button styling - enhanced visibility */
-[data-theme="dark"] .navbar .navbar-toggler {
-    border: none;
-    background-color: rgba(58, 58, 58, 0.3); /* Subtle dark background */
-}
-
-[data-theme="dark"] .navbar .navbar-toggler:hover {
-    background-color: var(--button-hover);
-    border: none;
-}
-
-/* Ensure hamburger has proper focus state for accessibility */
-.navbar .navbar-toggler:focus {
-    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
-    border: none;
-}
-
-/* Additional styling to ensure hamburger is always visible */
-.navbar .navbar-toggler img {
-    width: 24px;
-    height: 24px;
-    filter: contrast(1.2); /* Slightly increase contrast */
-}
-
-/* Ensure hamburger button has proper padding and touch target */
-.navbar .navbar-toggler {
     min-width: 44px;
     min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    /* border-radius: 4px; */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Ensure hamburger is hidden on desktop - override any conflicting display rules */
+.navbar .navbar-toggler:hover {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+.navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.1rem rgba(139, 111, 71, 0.15);
+    border-color: var(--border-color);
+}
+
+.navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2851, 51, 51, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Dark mode hamburger icon */
+@media (prefers-color-scheme: dark) {
+    .navbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28192, 192, 192, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+}
+
+[data-theme="dark"] .navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28192, 192, 192, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Mobile menu container */
+.navbar .navbar-collapse {
+    background-color: var(--bg-primary);
+    border-top: 2px solid var(--border-color);
+    padding: 0.5rem 0;
+    margin-top: 0;
+}
+
+/* Mobile menu items */
+@media (max-width: 991.98px) {
+    .navbar .navbar-nav {
+        display: flex;
+        /* Use row layout with wrapping so buttons don't stack full-width
+           but still wrap to multiple lines when needed on small screens. */
+        flex-direction: row;
+        gap: 0.25rem;
+        width: 100%;
+        padding: 0.5rem 0;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    
+    .navbar .nav-item {
+        flex-shrink: 0;
+        margin-bottom: 0;
+    }
+    
+    .navbar .nav-item .btn,
+    .navbar .nav-item .dropdown-toggle {
+        width: auto;
+        justify-content: center;
+        text-align: center;
+        margin: 0;
+        /* border-radius: 4px; */
+        white-space: nowrap;
+    }
+    
+    .navbar .btn-group {
+        width: auto;
+        justify-content: flex-start;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+    }
+
+    /* Ensure dropdowns overlay other nav items on mobile instead of
+       becoming part of the flow and displacing buttons. */
+    .navbar .nav-item {
+        position: relative;
+    }
+
+    .navbar .nav-item .dropdown-menu {
+        position: absolute;
+        /* Force dropdown to open downward from the toggle to avoid
+           covering the whole menu or appearing above the navbar. Use
+           !important to override Popper inline placement when necessary. */
+        top: calc(100% + 6px) !important;
+        bottom: auto !important;
+        left: 0;
+        right: auto;
+        z-index: 1100;
+        /* Constrain dropdown size so it doesn't cover the whole menu */
+        max-width: 95vw;
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* If Popper or other code sets placement to 'top', prefer showing
+       a capped-height dropdown above rather than one that covers the
+       entire navbar. */
+    .navbar .nav-item .dropdown-menu[data-popper-placement^="top"] {
+        top: auto !important;
+        bottom: calc(100% + 6px) !important;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    .navbar .btn-group .btn {
+        flex: 0 1 auto;
+        min-height: 44px;
+        font-size: 1.1em;
+        min-width: 44px;
+    }
+    
+    /* On mobile, avoid forcing button groups to full-width so groups can
+       sit side-by-side and wrap naturally. Make `flex-grow-1` not force
+       full expansion in the navbar. */
+    .navbar .btn-group.flex-fill {
+        width: auto;
+        display: inline-flex;
+    }
+
+    .navbar .flex-grow-1 {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+}
+
+/* Desktop - ensure buttons are properly sized */
 @media (min-width: 992px) {
+    .navbar .btn-group.flex-fill {
+        flex-fill: fill;
+    }
+    
+    .navbar .flex-grow-1 {
+        flex-grow: 1;
+    }
+    
+    /* Constrain individual button widths for better organization */
+    .navbar .btn-group .btn {
+        min-width: 38px;
+        max-width: 60px;
+    }
+    
+    /* Allow text buttons to be wider */
+    .navbar .btn-group .btn:not(:has(.icon)) {
+        min-width: 70px;
+        max-width: 100px;
+    }
+}
+
+/* Additional width constraints for better organization */
+.navbar .btn-group {
+    /* Ensure button groups don't overflow */
+    max-width: 100%;
+}
+
+.navbar .btn-group .btn {
+    /* Prevent buttons from becoming too narrow */
+    min-width: 36px;
+    /* Allow shrinking but not below minimum */
+    flex-shrink: 1;
+}
+
+/* Specific width handling for icon-only vs text buttons */
+.navbar .btn-group .btn:has(.icon) {
+    /* Icon buttons can be smaller */
+    min-width: 36px;
+    max-width: 48px;
+}
+
+.navbar .btn-group .btn:not(:has(.icon)) {
+    /* Text buttons need more space */
+    min-width: 60px;
+    max-width: 120px;
+}
+
+/* Ensure proper spacing in button groups */
+/* .navbar .btn-group .btn:not(:first-child) {
+    border-left: 1px solid var(--border-color);
+} */
+
+/* Responsive width adjustments */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .navbar .btn-group .btn {
+        min-width: 32px;
+        max-width: 50px;
+    }
+    
+    .navbar .btn-group .btn:not(:has(.icon)) {
+        min-width: 55px;
+        max-width: 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar .btn-group .btn {
+        min-width: 44px; /* Better touch target */
+        max-width: none; /* Allow full width on mobile */
+    }
+    
+    .navbar .btn-group .btn:not(:has(.icon)) {
+        min-width: 60px;
+    }
+}
+
+/* Width constraint classes for individual buttons */
+.navbar .min-w-50 { min-width: 50px !important; }
+.navbar .min-w-60 { min-width: 60px !important; }
+.navbar .min-w-70 { min-width: 70px !important; }
+.navbar .min-w-80 { min-width: 80px !important; }
+
+.navbar .max-w-70 { max-width: 70px !important; }
+.navbar .max-w-80 { max-width: 80px !important; }
+.navbar .max-w-90 { max-width: 90px !important; }
+.navbar .max-w-100 { max-width: 100px !important; }
+
+.navbar .w-auto { width: auto !important; }
+
+/* Ensure individual buttons don't grow too much */
+.navbar .nav-item .btn.btn-link.nav-link {
+    flex-shrink: 1;
+    white-space: nowrap;
+}
+
+/* Mobile adjustments for individual buttons */
+@media (max-width: 991.98px) {
+    .navbar .min-w-50,
+    .navbar .min-w-60,
+    .navbar .min-w-70,
+    .navbar .min-w-80 {
+        min-width: 44px !important; /* Maintain touch target */
+    }
+    
+    .navbar .max-w-70,
+    .navbar .max-w-80,
+    .navbar .max-w-90,
+    .navbar .max-w-100 {
+        max-width: none !important; /* Allow full width on mobile */
+    }
+    
+    .navbar .nav-item .btn.btn-link.nav-link {
+        width: auto !important;
+        min-height: 44px;
+        white-space: nowrap;
+    }
+}
+
+/* Desktop adjustments for individual buttons */
+@media (min-width: 992px) {
+    .navbar .nav-item .btn.btn-link.nav-link {
+        max-width: 100px; /* Prevent buttons from getting too wide */
+    }
+    
+    /* Dropdowns should be slightly wider */
+    .navbar .nav-item.dropdown .btn.btn-link.nav-link {
+        max-width: 110px;
+    }
+}
+
+/* Desktop menu items */
+@media (min-width: 992px) {
+    .navbar .navbar-nav {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .navbar .nav-item {
+        margin-bottom: 0;
+    }
+    
+    .navbar .nav-item .btn,
+    .navbar .nav-item .dropdown-toggle {
+        margin: 0;
+        white-space: nowrap;
+    }
+    
+    .navbar .btn-group {
+        gap: 0;
+    }
+    
+    .navbar .btn-group .btn {
+        min-height: 36px;
+        font-size: 0.95em;
+    }
+    
+    /* Hide toggler on desktop */
     .navbar .navbar-toggler {
-        display: none !important;
+        display: none;
     }
 }
 
@@ -487,37 +688,18 @@ body {
     color: var(--text-primary) !important;
 }
 
-/* Fix dropdown menus on mobile to prevent running off screen */
+/* Mobile dropdown styling - optimized for viewport constraints */
 @media (max-width: 768px) {
-    .dropdown-menu {
-        position: fixed !important;
-        top: auto !important;
-        left: 10px !important;
-        right: 10px !important;
-        max-height: 70vh;
-        overflow-y: auto;
-        transform: none !important;
-        width: auto !important;
-        min-width: unset;
-        background-color: var(--button-bg);
-        border: none;
-        z-index: 1000; /* Ensure it's on top */
-    }
-    
-    .dropdown-menu.show {
-        display: block;
-    }
-    
-    /* Ensure dropdowns are properly positioned relative to viewport */
-    .dropdown {
-        position: relative;
-    }
-    
-    /* Mobile dropdown item hover - ensure it works with touch and mouse */
+    /* Ensure dropdown items are touch-friendly */
     .dropdown-menu .dropdown-item {
         background-color: var(--button-bg);
         color: var(--text-primary);
-        border-left: 3px solid transparent; /* Prepare for hover effect */
+        border-left: 3px solid transparent;
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+        font-size: 1.1em;
+        white-space: normal; /* Allow text wrapping */
+        word-wrap: break-word;
     }
     
     .dropdown-menu .dropdown-item:hover,
@@ -527,38 +709,77 @@ body {
         border-left-color: var(--border-color) !important;
     }
     
-    /* Additional mobile-specific hover fix */
-    @media (hover: hover) {
-        .dropdown-menu .dropdown-item:hover {
-            background-color: var(--dropdown-hover) !important;
-            border-left-color: var(--border-color) !important;
-        }
+    /* Make dropdown menu scrollable if it gets too long */
+    .dropdown-menu {
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        background-color: var(--button-bg);
+        border: none;
+        box-shadow: 0 2px 8px var(--shadow);
+        max-width: 90vw; /* Prevent dropdown from exceeding viewport width */
+    }
+    
+    /* Ensure dropdown toggle buttons are properly sized on mobile */
+    .navbar .dropdown-toggle {
+        font-size: 1em;
+        padding: 0.6rem 0.8rem;
+        min-height: 44px;
+        white-space: nowrap;
     }
 }
 
-/* Desktop dropdown menu styling */
+/* Desktop dropdown styling - ensure proper positioning */
+@media (min-width: 769px) {
+    .dropdown-menu {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+/* Universal dropdown positioning fixes for all screen sizes */
+.dropdown-menu {
+    /* Ensure dropdowns stay within viewport */
+    max-width: 95vw;
+    /* Bootstrap 5 with data-bs-boundary="viewport" will handle the rest */
+}
+
+/* Fix for dropdowns in collapsed navbar on mobile */
+@media (max-width: 991.98px) {
+    .navbar-collapse.show {
+        position: relative !important;
+        z-index: 1000;
+    }
+}
+
+/* Dropdown menu styling - let Bootstrap handle positioning */
 .dropdown-menu {
     background-color: var(--button-bg);
     border: none;
+    box-shadow: 0 2px 8px var(--shadow);
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    min-width: 10rem;
 }
 
 .dropdown-menu.show {
     display: block;
 }
 
-/* Ensure dropdown items work on both desktop and mobile */
+/* Dropdown items */
 .dropdown-menu .dropdown-item {
     background-color: var(--button-bg);
     color: var(--text-primary);
-    border-left: 3px solid transparent; /* Prepare for hover effect */
+    border-left: 3px solid transparent;
     transition: background-color 0.15s ease, border-left-color 0.15s ease;
+    padding: 0.5rem 1rem;
 }
 
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus {
-    background-color: var(--dropdown-hover) !important;
-    color: var(--text-primary) !important;
-    border-left-color: var(--border-color) !important;
+    background-color: var(--dropdown-hover);
+    color: var(--text-primary);
+    border-left-color: var(--border-color);
 }
 
 .modal-content {
@@ -993,7 +1214,7 @@ textarea.form-control:focus {
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    /* border-radius: 4px; */
 }
 
 .navbar .btn:hover {
@@ -1022,7 +1243,7 @@ textarea.form-control:focus {
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    /* border-radius: 4px; */
 }
 
 .navbar .btn[data-bs-toggle="modal"]:hover,
@@ -1263,35 +1484,39 @@ textarea.form-control:focus {
 }
 
 /* Ensure proper spacing in button groups */
-.navbar .btn-group .btn:not(:first-child) {
+/* .navbar .btn-group .btn:not(:first-child) {
     border-left: 1px solid var(--border-color);
-}
+} */
 
 /* Mobile responsive navbar - wrap buttons to multiple lines */
 @media (max-width: 991.98px) {
     .navbar .navbar-collapse {
-        overflow: visible;
+        /* Allow Bootstrap collapsing animation to control overflow during
+           the transition; default to visible when fully shown. */
         background-color: var(--bg-primary);
         border-top: 2px solid var(--border-color);
         margin-top: 0.5rem;
     }
-    
+
+    /* Use row layout with wrapping for mobile collapsed nav so buttons
+       can sit side-by-side and wrap naturally; avoid forcing `!important`
+       where possible so transitions work. */
     .navbar .navbar-nav {
         gap: 0.25rem;
         width: 100% !important;
         justify-content: flex-start;
         flex-wrap: wrap !important;
         white-space: normal !important;
-        display: flex !important;
-        flex-direction: row !important;
+        display: flex;
+        flex-direction: row;
         padding: 0.5rem 0;
     }
-    
+
     .navbar .navbar-nav .nav-item {
         margin-bottom: 0.25rem;
         flex-shrink: 0;
-        display: flex !important;
-        flex-direction: row !important;
+        display: inline-flex;
+        align-items: center;
     }
     
     .navbar .btn-group .btn {
@@ -1319,25 +1544,25 @@ textarea.form-control:focus {
     .navbar .navbar-collapse {
         overflow: visible;
         background-color: var(--bg-primary);
-        border-top: 2px solid var(--border-color);
+        /* : 2px solid var(--border-color); */
         margin-top: 0.5rem;
     }
     
     .navbar .navbar-nav {
         gap: 0.25rem;
-        width: 100% !important;
+        width: 100%;
         justify-content: flex-start;
-        flex-wrap: wrap !important;
-        white-space: normal !important;
-        display: flex !important;
-        flex-direction: row !important;
+        flex-wrap: wrap;
+        white-space: normal;
+        display: flex;
+        flex-direction: row;
     }
     
     .navbar .navbar-nav .nav-item {
         margin-bottom: 0.25rem;
         flex-shrink: 0;
-        display: flex !important;
-        flex-direction: row !important;
+        display: flex;
+        flex-direction: row;
     }
     
     .navbar .btn-group .btn {
@@ -1358,6 +1583,39 @@ textarea.form-control:focus {
         font-size: 1em;
     }
 }
+
+/* Very small screens: stack nav items vertically to improve touch targets */
+@media (max-width: 420px) {
+    .navbar .navbar-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .navbar .navbar-nav .nav-item,
+    .navbar .btn-group {
+        width: 100%;
+        display: block;
+    }
+
+    .navbar .btn-group .btn,
+    .navbar .navbar-nav .nav-item .btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+/* Hint to browser to promote collapsing element to the compositor layer
+   for smoother height transitions (non-invasive; doesn't override
+   Bootstrap timing). */
+.navbar .navbar-collapse.collapsing {
+    will-change: height;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Restore native Bootstrap collapse behavior: no manual overflow,
+   transition, or opacity overrides here so Bootstrap's JS/CSS can run
+   without interference. Dropdown positioning adjustments remain. */
 
 /* Desktop adjustments (992px and above) */
 @media (min-width: 992px) {
