@@ -143,6 +143,60 @@ body {
     height: 24px;
 }
 
+/* Ensure hamburger button has good contrast in dark mode */
+.navbar .navbar-toggler {
+    background-color: transparent;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+/* Dark mode hamburger button styling - enhanced visibility */
+@media (prefers-color-scheme: dark) {
+    .navbar .navbar-toggler {
+        border-color: var(--border-color);
+        background-color: rgba(58, 58, 58, 0.3); /* Subtle dark background */
+    }
+    
+    .navbar .navbar-toggler:hover {
+        background-color: var(--button-hover);
+        border-color: var(--border-color);
+    }
+}
+
+/* Manual dark mode hamburger button styling - enhanced visibility */
+[data-theme="dark"] .navbar .navbar-toggler {
+    border-color: var(--border-color);
+    background-color: rgba(58, 58, 58, 0.3); /* Subtle dark background */
+}
+
+[data-theme="dark"] .navbar .navbar-toggler:hover {
+    background-color: var(--button-hover);
+    border-color: var(--border-color);
+}
+
+/* Ensure hamburger has proper focus state for accessibility */
+.navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
+    border-color: var(--border-color);
+}
+
+/* Additional styling to ensure hamburger is always visible */
+.navbar .navbar-toggler img {
+    width: 24px;
+    height: 24px;
+    filter: contrast(1.2); /* Slightly increase contrast */
+}
+
+/* Ensure hamburger button has proper padding and touch target */
+.navbar .navbar-toggler {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media (max-width: 576px) {
     /* Make nav buttons and dropdowns bigger on mobile */
     .navbar .btn,

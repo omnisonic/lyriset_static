@@ -72,9 +72,9 @@ function updateHamburgerIcon(theme) {
     if (!hamburgerIcon) return;
     
     if (theme === 'dark') {
-        hamburgerIcon.src = 'img/hamburger-light.svg';
+        hamburgerIcon.src = 'img/hamburger-dark.svg';
     } else {
-        hamburgerIcon.src = 'img/hamburger-light.svg'; // Keep light for now, or add dark version
+        hamburgerIcon.src = 'img/hamburger-light.svg';
     }
 }
 
