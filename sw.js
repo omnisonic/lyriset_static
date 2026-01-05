@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lyriset-v1';
+const CACHE_NAME = 'lyriset-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -21,10 +21,12 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('Opened cache:', CACHE_NAME);
         return cache.addAll(urlsToCache);
       })
   );
+  // Force immediate activation
+  self.skipWaiting();
 });
 
 // Fetch event - serve from cache, fallback to network
@@ -46,10 +48,20 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
+  // Take control of all pages immediately
+  self.clients.claim();
+});
+
+// Listen for messages from client
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
