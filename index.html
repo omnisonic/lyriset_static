@@ -22,8 +22,8 @@
 </head>
 
 <body>
-<span class="brand">Lyriset</span>   
- <nav class="navbar navbar-expand-lg">
+ 
+ <nav class="navbar navbar-expand-lg"><span class="brand">Lyriset</span>  
         <div class="container-fluid">
             <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <img id="hamburgerIcon" src="img/hamburger-light.svg" alt="Menu" width="30" height="30">
@@ -33,13 +33,13 @@
   
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <div class="nav-item">
-                        <button class="btn border rounded-0" data-bs-toggle="modal"
+                        <button class="btn border border-light " data-bs-toggle="modal"
                             data-bs-target="#aboutModal">
                             About
                         </button>
                     </div>
                     <div class="dropdown">
-                        <button class="btn border rounded-0 dropdown-toggle" type="button"
+                        <button class="btn border border-light  dropdown-toggle" type="button"
                             id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
                         <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
                             <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
@@ -55,10 +55,10 @@
                         </ul>
                     </div>
 
-                    <button class="btn  border rounded-0" data-bs-toggle="modal"
+                    <button class="btn  border border-light " data-bs-toggle="modal"
                         data-bs-target="#lyricsModal">Add</button>
                     <div class="dropdown">
-                        <button class="btn  border rounded-0 dropdown-toggle" type="button"
+                        <button class="btn  border border-light  dropdown-toggle" type="button"
                             id="lyricsDropdown" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
                         <ul class="dropdown-menu" aria-labelledby="lyricsDropdown" id="songDropdown"></ul>
                     </div>
@@ -74,26 +74,27 @@
                             onclick="toggleCleanLyrics()">
                             <span id="toggleCleanLyricsText">✱</span>
                         </button>
+                        <button class="btn border border-light" id="autoScrollButton"
+                            onclick="toggleAutoScroll()">
+                            <span id="autoScrollText">▶</span>
+                        </button>
                     </div>
                     <div class="url-submit form-group flex-grow-1">
                         <form id="urlForm" class="d-flex">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="lyrics_url" name="lyrics_url" required
                                     placeholder="Enter URL" />
-                                <button type="submit" class="btn  border rounded-0">Submit</button>
+                                <button type="submit" class="btn  border border-light ">Submit</button>
                             </div>
                         </form>
                     </div>
 
                     <div id="importExportContainer"></div>
 
-                    <button class="btn border" onclick="deleteSong()">Delete</button>
-                    <button class="btn border rounded-0" onclick="openEditModal()">Edit</button>
+                    <button class="btn border border-light" onclick="deleteSong()">Delete</button>
+                    <button class="btn border border-light" onclick="openEditModal()">Edit</button>
+            
 
-                    <div class="theme-slider">
-                        <input type="range" id="themeSlider" min="0" max="100" value="50"
-                            title="Adjust color theme">
-                    </div>
                 </div>
 
                 <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
@@ -156,7 +157,7 @@
                         <li><strong>Navigation:</strong> Use the left (◀) and right (▶) arrow buttons or keys to move between songs.</li>
                         <li><strong>Text Size:</strong> Adjust text size with the A+ and A- buttons or the up and down arrow keys.</li>
                         <li><strong>Clean Lyrics:</strong> Toggle between original and cleaned lyrics using the ✱ button.</li>
-                        <li><strong>Theme:</strong> Adjust the color theme using the slider for optimal readability.</li>
+                        <li><strong>Theme:</strong> Neutral color scheme for optimal readability.</li>
                     </ul>
 
                     <h4 class="text-start">Managing Songs</h4>
@@ -247,7 +248,6 @@
     <script src="../js/lyrics_storage.js"></script>
     <script src="../js/lyrics_app.js"></script>
     <script src="../js/reset_autofit.js"></script>
-    <script src="../js/slider_color.js"></script>
     <script src="../js/edit.js"></script>
 
 

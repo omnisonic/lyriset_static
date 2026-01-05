@@ -1,3 +1,115 @@
+// Auto-scroll functionality for mobile
+let autoScrollInterval = null;
+let autoScrollActive = false;
+
+function toggleAutoScroll() {
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+    const autoScrollButton = document.getElementById('autoScrollButton');
+    const autoScrollText = document.getElementById('autoScrollText');
+    
+    if (!lyricsContainer) {
+        console.error('Lyrics container not found');
+        return;
+    }
+    
+    // Check if we're on mobile/tablet
+    const containerWidth = lyricsContainer.offsetWidth;
+    if (containerWidth >= 769) {
+        console.warn('Auto-scroll is only available on mobile/tablet');
+        return;
+    }
+    
+    const song = document.getElementById('songTitle').textContent;
+    if (!song || song === 'Select a Song') {
+        console.warn('No song selected, cannot auto-scroll.');
+        return;
+    }
+    
+    if (autoScrollActive) {
+        // Stop auto-scroll
+        stopAutoScroll();
+        autoScrollText.textContent = '▶';
+        autoScrollButton.classList.remove('active');
+    } else {
+        // Start auto-scroll
+        startAutoScroll();
+        autoScrollText.textContent = '⏸';
+        autoScrollButton.classList.add('active');
+    }
+}
+
+function startAutoScroll() {
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+    if (!lyricsContainer) {
+        console.error('Lyrics container not found for auto-scroll');
+        return;
+    }
+    
+    // Stop any existing scroll
+    stopAutoScroll();
+    
+    autoScrollActive = true;
+    console.log('Auto-scroll started');
+    
+    // Find the actual scrollable container
+    // The structure is: .lyrics-container > .lyrics > divs
+    // We need to scroll the .lyrics-container
+    const scrollContainer = document.querySelector('.lyrics-container');
+    if (!scrollContainer) {
+        console.error('Lyrics container wrapper not found');
+        return;
+    }
+    
+    console.log('Scroll container:', scrollContainer.className);
+    console.log('Container scrollHeight:', scrollContainer.scrollHeight);
+    console.log('Container clientHeight:', scrollContainer.clientHeight);
+    console.log('Container scrollTop:', scrollContainer.scrollTop);
+    console.log('Container overflow:', window.getComputedStyle(scrollContainer).overflowY);
+    
+    // Continuous smooth scroll function
+    const scrollStep = () => {
+        if (!autoScrollActive) return;
+        
+        const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        const currentScroll = scrollContainer.scrollTop;
+        
+        console.log(`Scrolling: ${currentScroll}/${maxScroll}`);
+        
+        if (maxScroll <= 0) {
+            console.log('No scrollable content');
+            stopAutoScroll();
+            return;
+        }
+        
+        if (currentScroll >= maxScroll - 2) {
+            stopAutoScroll();
+            console.log('Reached bottom, stopping auto-scroll');
+            return;
+        }
+        
+        // Continuous smooth scroll - small increments for smooth movement
+        scrollContainer.scrollBy({
+            top: 2,
+            behavior: 'smooth'
+        });
+        
+        // Continue scrolling with short interval for continuous movement
+        autoScrollInterval = setTimeout(scrollStep, 50); // 50ms for smooth continuous scroll
+    };
+    
+    // Start scrolling
+    scrollStep();
+}
+
+function stopAutoScroll() {
+    if (autoScrollInterval) {
+        clearTimeout(autoScrollInterval);
+        autoScrollInterval = null;
+    }
+    autoScrollActive = false;
+    console.log('Auto-scroll stopped');
+}
+
 function toggleCleanLyrics() {
     const lyricsContainer = document.getElementById('lyricsDisplay');
     const toggleButton = document.getElementById('toggleCleanLyricsButton');
@@ -18,25 +130,50 @@ function toggleCleanLyrics() {
 
     const song = document.getElementById('songTitle').textContent;
     const artist = document.getElementById('songArtist').textContent;
+    
+    // Stop auto-scroll when toggling lyrics
+    stopAutoScroll();
+    const autoScrollButton = document.getElementById('autoScrollButton');
+    const autoScrollText = document.getElementById('autoScrollText');
+    if (autoScrollButton && autoScrollText) {
+        autoScrollText.textContent = '▶';
+        autoScrollButton.classList.remove('active');
+    }
+    
     if (isClean) {
-        autoFitLyrics(song, artist, originalLyrics);
+        // Switching back to original lyrics
+        if (typeof autoFitLyrics === 'function') {
+            autoFitLyrics(song, artist, originalLyrics);
+        } else {
+            displayLyrics(song, artist, originalLyrics);
+        }
         toggleText.textContent = '✓';
         toggleButton.classList.add('active');
         lyricsContainer.setAttribute('data-clean', 'false');
     } else {
+        // Switching to cleaned lyrics
         const cleanedLyrics = cleanLyrics(originalLyrics);
         if (cleanedLyrics) {
-            autoFitLyrics(song, artist, cleanedLyrics);
+            if (typeof autoFitLyrics === 'function') {
+                autoFitLyrics(song, artist, cleanedLyrics);
+            } else {
+                displayLyrics(song, artist, cleanedLyrics);
+            }
             toggleText.textContent = '✱';
             toggleButton.classList.remove('active');
             lyricsContainer.setAttribute('data-clean', 'true');
         }
     }
     
-    // Ensure columns are adjusted after toggle
+    // Ensure layout is adjusted after toggle
     setTimeout(() => {
         const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
-        adjustColumnsForFontSize(currentSize);
+        const containerWidth = lyricsContainer.offsetWidth;
+        
+        // Only adjust columns on desktop (mobile uses vertical scrolling)
+        if (containerWidth >= 769) {
+            adjustColumnsForFontSize(currentSize);
+        }
         calculateUnusedSpace();
     }, 150);
 }
@@ -110,17 +247,26 @@ function adjustFontSize(delta) {
     }
     
     const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
-    const newSize = Math.min(Math.max(currentSize + delta, 8), 32);
-    lyricsContainer.style.fontSize = `${newSize}px`;
-    
-    // Get longest line with current font size to check if adjustment is needed
-    const longestLine = getLongestLineWidth(lyricsContainer, newSize);
     const containerWidth = lyricsContainer.offsetWidth;
     
-    console.log(`Font changed to ${newSize}px. Longest line: ${longestLine.width}px, Container: ${containerWidth}px`);
-    
-    // Adjust column count based on new font size to prevent line wrapping
-    adjustColumnsForFontSize(newSize);
+    // Mobile: Use smaller font size range
+    if (containerWidth < 769) {
+        const newSize = Math.min(Math.max(currentSize + delta, 12), 20);
+        lyricsContainer.style.fontSize = `${newSize}px`;
+        console.log(`Mobile font changed to ${newSize}px`);
+    } else {
+        // Desktop: Use larger font size range
+        const newSize = Math.min(Math.max(currentSize + delta, 8), 32);
+        lyricsContainer.style.fontSize = `${newSize}px`;
+        
+        // Get longest line with current font size to check if adjustment is needed
+        const longestLine = getLongestLineWidth(lyricsContainer, newSize);
+        
+        console.log(`Font changed to ${newSize}px. Longest line: ${longestLine.width}px, Container: ${containerWidth}px`);
+        
+        // Adjust column count based on new font size to prevent line wrapping
+        adjustColumnsForFontSize(newSize);
+    }
     
     // Recalculate space after a brief delay to allow DOM to update
     setTimeout(() => {
@@ -163,8 +309,15 @@ function adjustColumnsForFontSize(fontSize) {
     const lyricsContainer = document.getElementById('lyricsDisplay');
     if (!lyricsContainer) return;
     
+    // Check if we're on mobile/tablet (vertical scrolling layout)
     const containerWidth = lyricsContainer.offsetWidth;
+    if (containerWidth < 769) {
+        // Mobile/tablet layout - no columns needed, use vertical scrolling
+        console.log('Mobile/tablet detected - skipping column calculations');
+        return;
+    }
     
+    // Desktop: Use column-based layout
     // Find the longest line of text to determine minimum column width
     const longestLine = getLongestLineWidth(lyricsContainer, fontSize);
     
@@ -256,6 +409,60 @@ function calculateUnusedSpace() {
     const containerWidth = containerRect.width;
     const containerHeight = containerRect.height;
     
+    // Check if we're on mobile/tablet (vertical scrolling layout)
+    const isMobile = containerWidth < 769;
+    
+    if (isMobile) {
+        // Mobile: Vertical scrolling layout - simpler calculation
+        const lineDivs = Array.from(lyricsContainer.querySelectorAll('div'));
+        
+        // Calculate total lines and their combined height
+        let totalLines = 0;
+        let totalHeight = 0;
+        
+        lineDivs.forEach(div => {
+            if (div.textContent && div.textContent.trim()) {
+                totalLines++;
+                totalHeight += div.offsetHeight;
+            }
+        });
+        
+        // Calculate unused vertical space
+        const usedSpace = totalHeight;
+        const availableSpace = containerHeight;
+        const unusedSpace = Math.max(0, availableSpace - usedSpace);
+        
+        console.log('=== MOBILE LINE ANALYSIS ===');
+        console.log('Typography & Layout:', {
+            fontSize: fontSize.toFixed(2) + 'px',
+            lineHeight: lineHeight.toFixed(2) + 'px',
+            containerHeight: containerHeight.toFixed(2) + 'px'
+        });
+        console.log('Content Analysis:', {
+            totalLines: totalLines,
+            totalContentHeight: usedSpace.toFixed(2) + 'px',
+            unusedSpace: unusedSpace.toFixed(2) + 'px',
+            scrollable: usedSpace > containerHeight
+        });
+        
+        return {
+            lineHeight: lineHeight,
+            totalLines: totalLines,
+            hasWrappedLines: false, // Mobile doesn't wrap in columns
+            linesPerColumn: [totalLines], // All lines in one "column"
+            availableLinesPerColumn: Math.floor(containerHeight / lineHeight),
+            linesInLastColumn: totalLines,
+            lastTextColumnIndex: 0,
+            emptyLinesAfterText: Math.floor(unusedSpace / lineHeight),
+            emptyLines: Math.floor(unusedSpace / lineHeight),
+            columns: 1,
+            columnWidth: containerWidth,
+            fontSize: fontSize,
+            longestLine: getLongestLineWidth(lyricsContainer, fontSize)
+        };
+    }
+    
+    // Desktop: Column-based layout (original logic)
     // Calculate column width (accounting for gaps and padding)
     const columnWidth = (containerWidth - (columnCount - 1) * columnGap - (padding * 2)) / columnCount;
     
@@ -320,7 +527,7 @@ function calculateUnusedSpace() {
     
     
     // Log detailed line-based information
-    console.log('=== LINE ANALYSIS ===');
+    console.log('=== DESKTOP LINE ANALYSIS ===');
     console.log('Typography & Layout:', {
         fontSize: fontSize.toFixed(2) + 'px',
         lineHeight: actualLineHeight.toFixed(2) + 'px',
@@ -378,7 +585,7 @@ function autoFitLyrics(song, artist, lyrics) {
     setTimeout(() => {
         console.log(`DOM updated, starting font size tests...`);
         
-        // Get container height
+        // Get container dimensions
         const containerHeight = lyricsContainer.clientHeight;
         const containerWidth = lyricsContainer.offsetWidth;
         
@@ -389,6 +596,75 @@ function autoFitLyrics(song, artist, lyrics) {
             return;
         }
 
+        // Check if we're on mobile/tablet (vertical scrolling layout)
+        const isMobile = containerWidth < 769;
+        
+        if (isMobile) {
+            // Mobile/tablet: Calculate font size so longest line fits container width
+            console.log('Mobile/tablet detected - calculating optimal font size');
+            
+            // Get container width (accounting for padding)
+            const containerStyle = window.getComputedStyle(lyricsContainer);
+            const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
+            const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
+            const containerWidth = lyricsContainer.clientWidth - paddingLeft - paddingRight;
+            
+            // Measure longest line at reference font size (16px)
+            const referenceFontSize = 16;
+            lyricsContainer.style.fontSize = `${referenceFontSize}px`;
+            const forceReflow = lyricsContainer.offsetHeight;
+            
+            const longestLine = getLongestLineWidth(lyricsContainer, referenceFontSize);
+            console.log(`Longest line at ${referenceFontSize}px: ${longestLine.width}px`);
+            
+            // Calculate optimal font size to fit longest line in container
+            // Use 90% of container width for some breathing room
+            const targetWidth = containerWidth * 0.9;
+            let optimalFontSize = (targetWidth / longestLine.width) * referenceFontSize;
+            
+            // Apply limits
+            const minFontSize = 12;
+            const maxFontSize = 20;
+            optimalFontSize = Math.max(minFontSize, Math.min(maxFontSize, optimalFontSize));
+            
+            // Apply the calculated font size
+            lyricsContainer.style.fontSize = `${optimalFontSize}px`;
+            
+            // Verify no vertical overflow
+            const verifyReflow = lyricsContainer.offsetHeight;
+            const scrollHeight = lyricsContainer.scrollHeight;
+            const clientHeight = lyricsContainer.clientHeight;
+            const hasVerticalScrollbar = scrollHeight > clientHeight;
+            
+            if (hasVerticalScrollbar) {
+                // If vertical overflow, reduce font size until it fits
+                let adjustedSize = optimalFontSize;
+                while (adjustedSize > minFontSize && hasVerticalScrollbar) {
+                    adjustedSize -= 0.5;
+                    lyricsContainer.style.fontSize = `${adjustedSize}px`;
+                    const newReflow = lyricsContainer.offsetHeight;
+                    const newScrollHeight = lyricsContainer.scrollHeight;
+                    const newClientHeight = lyricsContainer.clientHeight;
+                    if (newScrollHeight <= newClientHeight) {
+                        break;
+                    }
+                }
+                optimalFontSize = adjustedSize;
+            }
+            
+            console.log(`Applied mobile font size: ${optimalFontSize.toFixed(1)}px (container: ${containerWidth}px, longest line: ${longestLine.width}px)`);
+            
+            // Update status indicator if available
+            if (typeof updateAutoFitStatus === 'function') {
+                updateAutoFitStatus(true);
+            }
+            
+            return; // Skip desktop column calculations
+        }
+        
+        // Desktop: Use column-based layout with complex calculations
+        console.log('Desktop detected - using column-based layout');
+        
         // Try different font sizes to find the maximum without overflow
         const minFontSize = 8;
         const maxFontSize = 32;
@@ -708,56 +984,87 @@ function addAutoFitButton() {
         return;
     }
 
-    // Check if button already exists
-    if (document.getElementById('autoFitButton')) {
-        console.log('Auto-fit button already exists');
-        return;
-    }
-
-    // Create the auto-fit button
-    const autoFitButton = document.createElement('button');
-    autoFitButton.id = 'autoFitButton';
-    autoFitButton.className = 'btn border border-light';
-    autoFitButton.textContent = '⚡';
-    autoFitButton.title = 'Auto-fit font size to screen';
-    autoFitButton.onclick = function() {
-        const song = document.getElementById('songTitle').textContent;
-        if (!song || song === 'Select a Song') {
-            console.warn('No song selected, cannot auto-fit.');
-            return;
-        }
-        
-        if (localStorage.getItem(song)) {
-            try {
-                const songData = JSON.parse(localStorage.getItem(song));
-                autoFitLyrics(song, songData.artist, songData.lyrics);
-            } catch (e) {
-                console.error('Error auto-fitting:', e);
+    // Check if auto-fit button already exists
+    if (!document.getElementById('autoFitButton')) {
+        // Create the auto-fit button
+        const autoFitButton = document.createElement('button');
+        autoFitButton.id = 'autoFitButton';
+        autoFitButton.className = 'btn border border-light';
+        autoFitButton.textContent = '⚡';
+        autoFitButton.title = 'Auto-fit font size to screen';
+        autoFitButton.onclick = function() {
+            const song = document.getElementById('songTitle').textContent;
+            if (!song || song === 'Select a Song') {
+                console.warn('No song selected, cannot auto-fit.');
+                return;
             }
+            
+            if (localStorage.getItem(song)) {
+                try {
+                    const songData = JSON.parse(localStorage.getItem(song));
+                    autoFitLyrics(song, songData.artist, songData.lyrics);
+                } catch (e) {
+                    console.error('Error auto-fitting:', e);
+                }
+            }
+        };
+
+        // Create status indicator
+        const statusSpan = document.createElement('span');
+        statusSpan.id = 'autoFitStatus';
+        statusSpan.style.cssText = 'margin-left: 5px; font-size: 0.7em; opacity: 0.6; color: #bb86fc;';
+        statusSpan.textContent = 'AUTO';
+
+        // Insert the button after the A- button (before the clean lyrics button)
+        const aMinusButton = controlsContainer.querySelector('button[onclick="adjustFontSize(-1)"]');
+        if (aMinusButton) {
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'inline-flex';
+            wrapper.style.alignItems = 'center';
+            wrapper.appendChild(autoFitButton);
+            wrapper.appendChild(statusSpan);
+            aMinusButton.parentNode.insertBefore(wrapper, aMinusButton.nextSibling);
+        } else {
+            // Fallback: add to the end
+            controlsContainer.appendChild(autoFitButton);
         }
-    };
 
-    // Create status indicator
-    const statusSpan = document.createElement('span');
-    statusSpan.id = 'autoFitStatus';
-    statusSpan.style.cssText = 'margin-left: 5px; font-size: 0.7em; opacity: 0.6; color: #bb86fc;';
-    statusSpan.textContent = 'AUTO';
-
-    // Insert the button after the A- button (before the clean lyrics button)
-    const aMinusButton = controlsContainer.querySelector('button[onclick="adjustFontSize(-1)"]');
-    if (aMinusButton) {
-        const wrapper = document.createElement('div');
-        wrapper.style.display = 'inline-flex';
-        wrapper.style.alignItems = 'center';
-        wrapper.appendChild(autoFitButton);
-        wrapper.appendChild(statusSpan);
-        aMinusButton.parentNode.insertBefore(wrapper, aMinusButton.nextSibling);
-    } else {
-        // Fallback: add to the end
-        controlsContainer.appendChild(autoFitButton);
+        console.log('Auto-fit button added to UI');
     }
 
-    console.log('Auto-fit button added to UI');
+    // Check if auto-scroll button already exists
+    if (!document.getElementById('autoScrollButton')) {
+        // Create the auto-scroll button
+        const autoScrollButton = document.createElement('button');
+        autoScrollButton.id = 'autoScrollButton';
+        autoScrollButton.className = 'btn border border-light';
+        autoScrollButton.textContent = '▶';
+        autoScrollButton.title = 'Auto-scroll through lyrics (mobile only)';
+        autoScrollButton.onclick = toggleAutoScroll;
+
+        // Create status indicator
+        const autoScrollText = document.createElement('span');
+        autoScrollText.id = 'autoScrollText';
+        autoScrollText.style.cssText = 'margin-left: 5px; font-size: 0.7em; opacity: 0.6; color: #bb86fc;';
+        autoScrollText.textContent = '▶';
+
+        // Insert the auto-scroll button after the auto-fit button
+        const autoFitWrapper = document.getElementById('autoFitButton')?.parentNode;
+        if (autoFitWrapper && autoFitWrapper.parentNode) {
+            const scrollWrapper = document.createElement('div');
+            scrollWrapper.style.display = 'inline-flex';
+            scrollWrapper.style.alignItems = 'center';
+            scrollWrapper.style.marginLeft = '5px';
+            scrollWrapper.appendChild(autoScrollButton);
+            scrollWrapper.appendChild(autoScrollText);
+            autoFitWrapper.parentNode.insertBefore(scrollWrapper, autoFitWrapper.nextSibling);
+        } else {
+            // Fallback: add to the end
+            controlsContainer.appendChild(autoScrollButton);
+        }
+
+        console.log('Auto-scroll button added to UI');
+    }
 }
 
 // Export functions for use in other files
@@ -792,9 +1099,21 @@ function displayLyrics(song, artist, lyrics) {
     lyricsContainer.innerHTML = '';
 
     const lyricsLines = (lyrics || '').split('\n');
+    const containerWidth = lyricsContainer.offsetWidth;
+    const isMobile = containerWidth < 769;
+    
     lyricsLines.forEach(line => {
         const lineDiv = document.createElement('div');
         lineDiv.textContent = line || '\u00A0';
+        
+        // Ensure mobile lines use full width
+    if (isMobile) {
+        lineDiv.style.width = '100%';
+        lineDiv.style.boxSizing = 'border-box';
+        lineDiv.style.display = 'block';
+        // Allow text wrapping for long lines
+    }
+        
         lyricsContainer.appendChild(lineDiv);
     });
     
@@ -809,7 +1128,12 @@ function displayLyrics(song, artist, lyrics) {
     // Use setTimeout to ensure DOM has updated
     setTimeout(() => {
         const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
-        adjustColumnsForFontSize(currentSize);
+        const containerWidth = lyricsContainer.offsetWidth;
+        
+        // Only adjust columns on desktop (mobile uses vertical scrolling)
+        if (containerWidth >= 769) {
+            adjustColumnsForFontSize(currentSize);
+        }
         calculateUnusedSpace();
     }, 100);
 
@@ -933,11 +1257,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, false);
     
         function handleSwipe() {
-            // Don't process swipes if color slider is active
-            if (window.isColorSliderActive) {
-                return;
-            }
-            
             const swipeDistance = touchEndX - touchStartX;
             
             if (Math.abs(swipeDistance) > swipeThreshold) {
@@ -988,9 +1307,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     height: entry.contentRect.height
                 });
                 
-                // Adjust columns when container resizes
+                const containerWidth = entry.contentRect.width;
                 const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
-                adjustColumnsForFontSize(currentSize);
+                
+                // Only adjust columns on desktop (mobile uses vertical scrolling)
+                if (containerWidth >= 769) {
+                    adjustColumnsForFontSize(currentSize);
+                }
                 
                 // Recalculate space after resize
                 setTimeout(() => {
@@ -1000,6 +1323,82 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         resizeObserver.observe(lyricsContainer);
+        
+        // Stop auto-scroll when user manually scrolls
+        let userScrollTimeout;
+        lyricsContainer.addEventListener('scroll', function() {
+            if (autoScrollActive) {
+                // Clear any existing timeout
+                if (userScrollTimeout) {
+                    clearTimeout(userScrollTimeout);
+                }
+                
+                // Wait a bit to see if this is a manual scroll or auto-scroll
+                userScrollTimeout = setTimeout(() => {
+                    // If auto-scroll is still active and we're not at the bottom, it was a manual scroll
+                    if (autoScrollActive) {
+                        const currentScroll = lyricsContainer.scrollTop;
+                        const maxScroll = lyricsContainer.scrollHeight - lyricsContainer.clientHeight;
+                        
+                        // If not at the bottom, stop auto-scroll
+                        if (currentScroll < maxScroll - 10) {
+                            stopAutoScroll();
+                            const autoScrollButton = document.getElementById('autoScrollButton');
+                            const autoScrollText = document.getElementById('autoScrollText');
+                            if (autoScrollButton && autoScrollText) {
+                                autoScrollText.textContent = '▶';
+                                autoScrollButton.classList.remove('active');
+                            }
+                            console.log('Auto-scroll stopped due to manual scroll');
+                        }
+                    }
+                }, 150); // Wait 150ms to distinguish manual from auto scroll
+            }
+        });
+        
+        // Handle touch interactions for auto-scroll - ONE FINGER TAP
+        lyricsContainer.addEventListener('touchstart', function(e) {
+            // Only handle single touch (one finger)
+            if (e.touches.length > 1) {
+                return; // Let multi-touch gestures (like zoom) pass through
+            }
+            
+            const containerWidth = lyricsContainer.offsetWidth;
+            if (containerWidth >= 769) {
+                // Desktop - touch does nothing
+                return;
+            }
+            
+            // Mobile - toggle auto-scroll with single tap
+            e.preventDefault();
+            
+            if (autoScrollActive) {
+                // Stop auto-scroll
+                stopAutoScroll();
+                const autoScrollButton = document.getElementById('autoScrollButton');
+                const autoScrollText = document.getElementById('autoScrollText');
+                if (autoScrollButton && autoScrollText) {
+                    autoScrollText.textContent = '▶';
+                    autoScrollButton.classList.remove('active');
+                }
+                console.log('Auto-scroll stopped via one-finger tap');
+            } else {
+                // Start auto-scroll
+                const song = document.getElementById('songTitle').textContent;
+                if (song && song !== 'Select a Song') {
+                    startAutoScroll();
+                    const autoScrollButton = document.getElementById('autoScrollButton');
+                    const autoScrollText = document.getElementById('autoScrollText');
+                    if (autoScrollButton && autoScrollText) {
+                        autoScrollText.textContent = '⏸';
+                        autoScrollButton.classList.add('active');
+                    }
+                    console.log('Auto-scroll started via one-finger tap');
+                } else {
+                    console.warn('No song selected, cannot start auto-scroll');
+                }
+            }
+        });
     }
     
     // Clean up old localStorage font size entries
