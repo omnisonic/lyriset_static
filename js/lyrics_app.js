@@ -1027,111 +1027,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-    // Enhanced mobile touch handling - side swipe for navigation + tap to scroll
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
-    let touchStartTime = 0;
-    let touchMoved = false;
-    let swipeIndicatorTimeout = null;
-    let tapHintTimeout = null;
-    
+    // Mobile touch handling variables (used by setupMobileTouchHandlers)
     const swipeThreshold = 50; // minimum distance for a swipe
     const tapThreshold = 15; // maximum movement for a tap
     const tapTimeThreshold = 300; // maximum time for a tap (ms)
 
-    // Create UI indicators
-    function createSwipeIndicator() {
-        const indicator = document.createElement('div');
-        indicator.className = 'swipe-indicator';
-        indicator.textContent = '← Previous | Next →';
-        document.body.appendChild(indicator);
-        return indicator;
-    }
-
-    function createTapHint() {
-        const hint = document.createElement('div');
-        hint.className = 'tap-hint';
-        hint.textContent = 'Tap to toggle auto-scroll';
-        document.body.appendChild(hint);
-        return hint;
-    }
-
-    function createAutoScrollStatus() {
-        const status = document.createElement('div');
-        status.className = 'auto-scroll-status';
-        status.textContent = 'Auto-scroll: ON';
-        document.body.appendChild(status);
-        return status;
-    }
-
-    // Initialize UI indicators
-    let swipeIndicator = null;
-    let tapHint = null;
-    let autoScrollStatus = null;
-
     // Show swipe indicator briefly when lyrics area is touched
     function showSwipeIndicator() {
-        if (!swipeIndicator) swipeIndicator = createSwipeIndicator();
-        
-        // Clear any existing timeout
-        if (swipeIndicatorTimeout) {
-            clearTimeout(swipeIndicatorTimeout);
+        // Create indicator if it doesn't exist
+        if (!window.swipeIndicator) {
+            const indicator = document.createElement('div');
+            indicator.className = 'swipe-indicator';
+            indicator.textContent = '← Previous | Next →';
+            document.body.appendChild(indicator);
+            window.swipeIndicator = indicator;
         }
         
-        swipeIndicator.classList.add('show');
-        swipeIndicatorTimeout = setTimeout(() => {
-            if (swipeIndicator) {
-                swipeIndicator.classList.remove('show');
+        // Clear any existing timeout
+        if (window.swipeIndicatorTimeout) {
+            clearTimeout(window.swipeIndicatorTimeout);
+        }
+        
+        window.swipeIndicator.classList.add('show');
+        window.swipeIndicatorTimeout = setTimeout(() => {
+            if (window.swipeIndicator) {
+                window.swipeIndicator.classList.remove('show');
             }
         }, 1500);
     }
 
-    // Show tap hint
-    function showTapHint() {
-        if (!tapHint) tapHint = createTapHint();
-        
-        // Clear any existing timeout
-        if (tapHintTimeout) {
-            clearTimeout(tapHintTimeout);
-        }
-        
-        tapHint.classList.add('show');
-        tapHintTimeout = setTimeout(() => {
-            if (tapHint) {
-                tapHint.classList.remove('show');
-            }
-        }, 2000);
-    }
-
-    // Update auto-scroll status indicator
-    function updateScrollStatusIndicator(isActive) {
-        if (!autoScrollStatus) autoScrollStatus = createAutoScrollStatus();
-        
-        if (isActive) {
-            autoScrollStatus.textContent = 'Auto-scroll: ON';
-            autoScrollStatus.classList.add('active');
-            setTimeout(() => {
-                if (autoScrollStatus) {
-                    autoScrollStatus.classList.remove('active');
-                }
-            }, 2000);
-        } else {
-            autoScrollStatus.textContent = 'Auto-scroll: OFF';
-            autoScrollStatus.classList.add('active');
-            setTimeout(() => {
-                if (autoScrollStatus) {
-                    autoScrollStatus.classList.remove('active');
-                }
-            }, 1000);
-        }
-    }
-
-    // Enhanced touch handler for lyrics container
+    // Simplified mobile touch handler - single unified handler
     function setupMobileTouchHandlers() {
         const lyricsContainer = document.getElementById('lyricsDisplay');
         if (!lyricsContainer) return;
+
+        // Single touch handler for iOS compatibility
+        let touchStartTime = 0;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchMoved = false;
 
         lyricsContainer.addEventListener('touchstart', function(e) {
             // Only handle single touch on mobile
@@ -1146,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', function() {
             touchStartY = e.touches[0].clientY;
             touchMoved = false;
 
-            // Show swipe indicator hint
+            // Show swipe indicator (briefly)
             showSwipeIndicator();
 
         }, { passive: true });
@@ -1162,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const deltaY = Math.abs(touchY - touchStartY);
 
                 // Check if moved significantly
-                if (deltaX > tapThreshold || deltaY > tapThreshold) {
+                if (deltaX > 15 || deltaY > 15) {
                     touchMoved = true;
 
                     // If auto-scroll is active and user starts manual scroll, stop it
@@ -1174,7 +1108,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             autoScrollText.textContent = '▶';
                             autoScrollButton.classList.remove('active');
                         }
-                        updateScrollStatusIndicator(false);
                         console.log('Auto-scroll stopped - user initiated manual scroll');
                     }
                 }
@@ -1195,13 +1128,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const absDeltaY = Math.abs(deltaY);
 
             // Check if this was a quick tap (not a scroll gesture)
-            const isQuickTap = touchDuration < tapTimeThreshold && 
-                              absDeltaX < tapThreshold && 
-                              absDeltaY < tapThreshold && 
+            const isQuickTap = touchDuration < 300 && 
+                              absDeltaX < 15 && 
+                              absDeltaY < 15 && 
                               !touchMoved;
 
             // Check if this was a side swipe (horizontal gesture)
-            const isSideSwipe = absDeltaX > swipeThreshold && 
+            const isSideSwipe = absDeltaX > 50 && 
                                absDeltaX > absDeltaY * 1.5; // More horizontal than vertical
 
             if (isQuickTap) {
@@ -1210,8 +1143,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const song = document.getElementById('songTitle').textContent;
                 if (!song || song === 'Select a Song') {
-                    showTapHint();
-                    return;
+                    return; // No hint, just silent return
                 }
 
                 if (autoScrollActive) {
@@ -1222,8 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         autoScrollText.textContent = '▶';
                         autoScrollButton.classList.remove('active');
                     }
-                    updateScrollStatusIndicator(false);
-                    showTapHint(); // Show hint again to confirm it stopped
+                    console.log('Auto-scroll stopped via tap');
                 } else {
                     startAutoScroll();
                     const autoScrollButton = document.getElementById('autoScrollButton');
@@ -1232,8 +1163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         autoScrollText.textContent = '⏸';
                         autoScrollButton.classList.add('active');
                     }
-                    updateScrollStatusIndicator(true);
-                    showTapHint(); // Show hint to confirm it started
+                    console.log('Auto-scroll started via tap');
                 }
             } else if (isSideSwipe) {
                 // SWIPE: Navigate between songs
@@ -1242,18 +1172,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (deltaX > 0) {
                     // Swipe right - previous song
                     loadPrevSong();
-                    showSwipeIndicator();
                 } else {
                     // Swipe left - next song
                     loadNextSong();
-                    showSwipeIndicator();
                 }
+                showSwipeIndicator();
             }
             // If it was a vertical scroll gesture, let it pass through naturally
 
         }, { passive: false }); // Non-passive to allow preventDefault on taps/swipes
 
-        // Add visual feedback for touch interactions
+        // Add subtle visual feedback for touch interactions
         lyricsContainer.addEventListener('touchstart', function(e) {
             const containerWidth = lyricsContainer.offsetWidth;
             if (containerWidth < 769) {
@@ -1277,18 +1206,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         setupMobileTouchHandlers();
     }
-
-    // Also set up global touch handlers for swipe indicators
-    document.addEventListener('touchstart', function(e) {
-        // Only show indicators if touching lyrics area
-        const lyricsContainer = document.getElementById('lyricsDisplay');
-        if (lyricsContainer && lyricsContainer.contains(e.target)) {
-            const containerWidth = lyricsContainer.offsetWidth;
-            if (containerWidth < 769) {
-                showSwipeIndicator();
-            }
-        }
-    }, { passive: true });
 
     // Add event listener for left and right arrow keys
     document.addEventListener('keydown', function(event) {
@@ -1375,118 +1292,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 150); // Wait 150ms to distinguish manual from auto scroll
             }
         });
-        
-    // Handle touch interactions for iOS - support both manual scroll and auto-scroll toggle
-    let touchStartTime = 0;
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchMoved = false;
-    
-    lyricsContainer.addEventListener('touchstart', function(e) {
-        // Only handle single touch (one finger)
-        if (e.touches.length > 1) {
-            return; // Let multi-touch gestures (like zoom) pass through
-        }
-        
-        const containerWidth = lyricsContainer.offsetWidth;
-        if (containerWidth >= 769) {
-            // Desktop - touch does nothing
-            return;
-        }
-        
-        // Record touch start position and time
-        touchStartTime = Date.now();
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        touchMoved = false;
-        
-        // Don't prevent default here - allow native scroll to start
-        // This is crucial for iOS manual scrolling
-        
-    }, { passive: true }); // Use passive listener for better scroll performance
-    
-    lyricsContainer.addEventListener('touchmove', function(e) {
-        const containerWidth = lyricsContainer.offsetWidth;
-        if (containerWidth >= 769) {
-            return;
-        }
-        
-        // If user is dragging, mark as moved
-        if (e.touches.length === 1) {
-            const touchX = e.touches[0].clientX;
-            const touchY = e.touches[0].clientY;
-            const deltaX = Math.abs(touchX - touchStartX);
-            const deltaY = Math.abs(touchY - touchStartY);
-            
-            // If moved significantly, it's a scroll gesture
-            if (deltaX > 5 || deltaY > 5) {
-                touchMoved = true;
-                
-                // If auto-scroll is active and user starts scrolling manually, stop it
-                if (autoScrollActive && deltaY > 5) {
-                    stopAutoScroll();
-                    const autoScrollButton = document.getElementById('autoScrollButton');
-                    const autoScrollText = document.getElementById('autoScrollText');
-                    if (autoScrollButton && autoScrollText) {
-                        autoScrollText.textContent = '▶';
-                        autoScrollButton.classList.remove('active');
-                    }
-                    console.log('Auto-scroll stopped - user initiated manual scroll');
-                }
-            }
-        }
-    }, { passive: true }); // Use passive listener
-    
-    lyricsContainer.addEventListener('touchend', function(e) {
-        const containerWidth = lyricsContainer.offsetWidth;
-        if (containerWidth >= 769) {
-            return;
-        }
-        
-        // Calculate touch duration and movement
-        const touchDuration = Date.now() - touchStartTime;
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-        const deltaX = touchEndX - touchStartX;
-        const deltaY = touchEndY - touchStartY;
-        
-        // Check if this was a quick tap (not a scroll gesture)
-        const isQuickTap = touchDuration < 300 && Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && !touchMoved;
-        
-        if (isQuickTap) {
-            // This was a tap - toggle auto-scroll
-            e.preventDefault(); // Prevent any default tap behavior
-            
-            if (autoScrollActive) {
-                // Stop auto-scroll
-                stopAutoScroll();
-                const autoScrollButton = document.getElementById('autoScrollButton');
-                const autoScrollText = document.getElementById('autoScrollText');
-                if (autoScrollButton && autoScrollText) {
-                    autoScrollText.textContent = '▶';
-                    autoScrollButton.classList.remove('active');
-                }
-                console.log('Auto-scroll stopped via tap');
-            } else {
-                // Start auto-scroll
-                const song = document.getElementById('songTitle').textContent;
-                if (song && song !== 'Select a Song') {
-                    startAutoScroll();
-                    const autoScrollButton = document.getElementById('autoScrollButton');
-                    const autoScrollText = document.getElementById('autoScrollText');
-                    if (autoScrollButton && autoScrollText) {
-                        autoScrollText.textContent = '⏸';
-                        autoScrollButton.classList.add('active');
-                    }
-                    console.log('Auto-scroll started via tap');
-                } else {
-                    console.warn('No song selected, cannot start auto-scroll');
-                }
-            }
-        }
-        // If it was a swipe or scroll gesture, let it pass through naturally
-    }, { passive: false }); // Non-passive to allow preventDefault on taps
     }
+    // Remove the duplicate iOS touch handlers that were causing issues
+    // The setupMobileTouchHandlers() function above handles everything properly
     
     // Clean up old localStorage font size entries
     // Remove any saved font sizes since we now use auto-fit on every load

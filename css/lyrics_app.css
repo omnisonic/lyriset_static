@@ -609,30 +609,7 @@ body {
     opacity: 1;
 }
 
-/* Tap gesture hint */
-.tap-hint {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(139, 111, 71, 0.95);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    text-align: center;
-    max-width: 200px;
-}
-
-.tap-hint.show {
-    opacity: 1;
-}
-
-/* Mobile touch feedback */
+/* Mobile touch feedback - subtle visual indicator */
 .lyrics-container:active {
     background-color: #e5e2d8;
 }
