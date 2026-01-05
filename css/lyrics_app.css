@@ -19,9 +19,9 @@ body {
 }
 
 .navbar {
-    padding: 0px;
-    background-color: #e9e6dc; /* White navbar background */
-    border-bottom: 1px solid #ddd; /* Subtle border */
+    /* padding: 0px; */
+    background-color: #e9e6dc; /* Base background */
+    border-bottom: 2px solid #8b6f47; /* Warm brown border */
 }
 
 /* Ensure brand and hamburger stay on same line on mobile */
@@ -300,12 +300,20 @@ body {
 
 .dropdown-item {
     color: #333;
-    background-color: #fff;
+    background-color: #e9e6dc; /* Base background */
 }
 
-.dropdown-item:hover {
-    background-color: #f0f0f0;
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #d4c5b0; /* Warm beige hover */
     color: #333;
+    border-left: 3px solid #8b6f47; /* Warm brown accent on hover */
+}
+
+/* Ensure hover states work properly */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #d4c5b0 !important;
+    color: #333 !important;
 }
 
 /* Fix dropdown menus on mobile to prevent running off screen */
@@ -320,6 +328,9 @@ body {
         transform: none !important;
         width: auto !important;
         min-width: unset;
+        background-color: #e9e6dc; /* Base background */
+        border: 2px solid #8b6f47; /* Warm brown border */
+        z-index: 1000; /* Ensure it's on top */
     }
     
     .dropdown-menu.show {
@@ -330,16 +341,76 @@ body {
     .dropdown {
         position: relative;
     }
+    
+    /* Mobile dropdown item hover - ensure it works with touch and mouse */
+    .dropdown-menu .dropdown-item {
+        background-color: #e9e6dc; /* Base background */
+        color: #333;
+        border-left: 3px solid transparent; /* Prepare for hover effect */
+    }
+    
+    .dropdown-menu .dropdown-item:hover,
+    .dropdown-menu .dropdown-item:focus {
+        background-color: #d4c5b0 !important; /* Warm beige hover */
+        color: #333 !important;
+        border-left-color: #8b6f47 !important; /* Warm brown accent */
+    }
+    
+    /* Additional mobile-specific hover fix */
+    @media (hover: hover) {
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #d4c5b0 !important;
+            border-left-color: #8b6f47 !important;
+        }
+    }
+}
+
+/* Desktop dropdown menu styling */
+.dropdown-menu {
+    background-color: #e9e6dc; /* Base background */
+    border: 2px solid #8b6f47; /* Warm brown border */
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+/* Ensure dropdown items work on both desktop and mobile */
+.dropdown-menu .dropdown-item {
+    background-color: #e9e6dc; /* Base background */
+    color: #333;
+    border-left: 3px solid transparent; /* Prepare for hover effect */
+    transition: background-color 0.15s ease, border-left-color 0.15s ease;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+    background-color: #d4c5b0 !important; /* Warm beige hover */
+    color: #333 !important;
+    border-left-color: #8b6f47 !important; /* Warm brown accent */
 }
 
 .modal-content {
-    background-color: #ffffff;
+    background-color: #e9e6dc; /* Base background color */
     color: #333;
-    border: 1px solid #ddd;
+    border: 2px solid #8b6f47; /* Warm brown border for better definition */
 }
 
 .modal-header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #8b6f47; /* Warm brown */
+    background-color: #e9e6dc; /* Base background */
+}
+
+/* Modal body - use base background */
+.modal-body {
+    background-color: #e9e6dc; /* Base background */
+}
+
+/* Form groups in modals */
+.modal .mb-3 {
+    background-color: transparent;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
 }
 
 .modal-title {
@@ -347,7 +418,7 @@ body {
 }
 
 .btn-close {
-    filter: invert(0%) !important; /* Keep close button dark */
+    filter: invert(0%) !important; /* Keep close button dark for contrast */
 }
 
 /* About modal styling */
@@ -390,22 +461,22 @@ body {
 }
 
 .about-content a {
-    color: #0066cc;
+    color: #8b6f47; /* Warm brown for links to match scheme */
     text-decoration: underline;
 }
 
 .about-content a:hover {
-    color: #004499;
+    color: #6b5538; /* Darker warm brown on hover */
 }
 
 .form-control {
-    background-color: #faf8f5; /* Warm off-white */
+    background-color: #e9e6dc; /* Base background */
     color: #333;
-    border: 1px solid #d4c5b0; /* Warm beige border */
+    border: 2px solid #8b6f47; /* Warm brown border - clear and defined */
 }
 
 .form-control:focus {
-    background-color: #faf8f5; /* Warm off-white */
+    background-color: #e9e6dc; /* Base background */
     color: #333;
     border-color: #8b6f47; /* Warm brown */
     box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2); /* Warm shadow */
@@ -413,45 +484,123 @@ body {
 
 /* Textarea specific styling */
 textarea.form-control {
-    background-color: #faf8f5; /* Warm off-white */
-    border-color: #d4c5b0; /* Warm beige */
+    background-color: #e9e6dc; /* Base background */
+    border: 2px solid #8b6f47; /* Warm brown border */
+    resize: vertical; /* Allow vertical resizing */
 }
 
 textarea.form-control:focus {
-    background-color: #faf8f5; /* Warm off-white */
+    background-color: #e9e6dc; /* Base background */
     border-color: #8b6f47; /* Warm brown */
 }
 
-.btn {
-    background-color: #e9e6dc;
+/* Input fields in modals specifically */
+.modal .form-control {
+    background-color: #ffffff; /* White for clear visibility */
+    border: 2px solid #8b6f47; /* Warm brown border */
+}
+
+.modal .form-control:focus {
+    background-color: #ffffff; /* White */
+    border-color: #8b6f47; /* Warm brown */
+}
+
+/* Ensure Add and Edit modal text fields are clearly visible */
+#lyricsModal .form-control,
+#editLyricsModal .form-control {
+    background-color: #ffffff; /* White background */
+    border: 2px solid #8b6f47; /* Warm brown border */
     color: #333;
-    border: 1px solid #ccc;
+}
+
+#lyricsModal .form-control:focus,
+#editLyricsModal .form-control:focus {
+    background-color: #ffffff;
+    border-color: #8b6f47;
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2);
+}
+
+/* Labels in modals */
+.modal .form-label {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.btn {
+    background-color: #e9e6dc; /* Base background */
+    color: #333;
+    border: 1px solid #ccc; /* Neutral border */
 }
 
 .btn:hover {
-    background-color: #f8f9fa;
-    border-color: #999;
+    background-color: #d4c5b0; /* Warm beige hover */
+    border-color: #8b6f47; /* Warm brown on hover */
 }
 
 .btn-light {
-    background-color: #fff;
+    background-color: #e9e6dc; /* Base background */
     color: #333;
-    border: 1px solid #ccc;
+    border: 1px solid #ccc; /* Neutral border */
 }
 
 .btn-light:hover {
-    background-color: #f0f0f0;
-    border-color: #999;
+    background-color: #d4c5b0; /* Warm beige hover */
+    border-color: #8b6f47; /* Warm brown on hover */
 }
 
 .btn:focus {
-    box-shadow: none;
-    border-color: #666;
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2); /* Warm shadow */
+    border-color: #8b6f47; /* Warm brown */
+}
+
+/* Dropdown toggle button styling */
+.dropdown-toggle {
+    background-color: #e9e6dc !important; /* Base background */
+    color: #333 !important;
+    border: 1px solid #ccc !important; /* Neutral border */
+}
+
+.dropdown-toggle:hover {
+    background-color: #d4c5b0 !important; /* Warm beige hover */
+    border-color: #8b6f47 !important; /* Warm brown on hover */
+}
+
+.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem rgba(139, 111, 71, 0.2) !important; /* Warm shadow */
+    border-color: #8b6f47 !important; /* Warm brown */
+}
+
+/* Navbar buttons specifically */
+.navbar .btn {
+    background-color: #e9e6dc;
+    color: #333;
+    border: 1px solid #ccc; /* Neutral border */
+}
+
+.navbar .btn:hover {
+    background-color: #d4c5b0;
+    border-color: #8b6f47; /* Warm brown on hover */
+}
+
+.navbar .btn.border-light {
+    border-color: #ccc; /* Neutral border */
+}
+
+.navbar .btn.border-light:hover {
+    border-color: #8b6f47; /* Warm brown on hover */
 }
 
 /* Button group styling */
 .btn-group .btn {
     border-radius: 0;
+    background-color: #e9e6dc; /* Base background */
+    border: 1px solid #ccc; /* Neutral border */
+}
+
+.btn-group .btn:hover {
+    background-color: #d4c5b0; /* Warm beige hover */
+    border-color: #8b6f47; /* Warm brown */
 }
 
 .btn-group .btn:first-child {
@@ -527,9 +676,9 @@ textarea.form-control:focus {
 }
 
 .font-size-controls button {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(233, 230, 220, 0.9); /* Base background with transparency */
     color: #333;
-    border: 1px solid #ccc;
+    border: 1px solid #ccc; /* Neutral border */
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 3px;
@@ -540,9 +689,9 @@ textarea.form-control:focus {
 }
 
 .font-size-controls button:hover {
-    background: rgba(240, 240, 240, 0.9);
+    background: rgba(212, 197, 176, 0.9); /* Warm beige hover */
     color: #333;
-    border-color: #999;
+    border-color: #8b6f47; /* Warm brown on hover */
 }
 
 .lyrics-text {
