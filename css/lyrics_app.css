@@ -308,6 +308,30 @@ body {
     color: #333;
 }
 
+/* Fix dropdown menus on mobile to prevent running off screen */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        position: fixed !important;
+        top: auto !important;
+        left: 10px !important;
+        right: 10px !important;
+        max-height: 70vh;
+        overflow-y: auto;
+        transform: none !important;
+        width: auto !important;
+        min-width: unset;
+    }
+    
+    .dropdown-menu.show {
+        display: block;
+    }
+    
+    /* Ensure dropdowns are properly positioned relative to viewport */
+    .dropdown {
+        position: relative;
+    }
+}
+
 .modal-content {
     background-color: #ffffff;
     color: #333;
