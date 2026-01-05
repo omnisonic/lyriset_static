@@ -73,23 +73,54 @@ body {
 }
 
 @media (max-width: 576px) {
-    .navbar-brand,
-    .btn,
-    .nav-item .btn,
-    .dropdown .btn {
-        font-size: 0.8em;
-        padding: 0.25rem 0.5rem;
+    /* Make nav buttons and dropdowns bigger on mobile */
+    .navbar .btn,
+    .navbar .nav-item .btn,
+    .navbar .dropdown .btn,
+    .navbar .dropdown-toggle {
+        font-size: 1.1em;
+        padding: 0.6rem 0.8rem;
+        min-height: 44px; /* Touch-friendly size */
+        min-width: 44px;
+        margin: 2px 0;
     }
+    
+    /* Make dropdown items bigger */
+    .dropdown-menu .dropdown-item {
+        font-size: 1.1em;
+        padding: 0.7rem 1rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Make button group icons bigger */
+    .btn-group .btn {
+        font-size: 1.2em;
+        padding: 0.6rem 0.7rem;
+        min-height: 44px;
+        min-width: 48px;
+    }
+    
+    /* Ensure proper spacing in flex container */
+    .navbar .d-flex {
+        gap: 0.5rem !important;
+    }
+    
+    /* Make the hamburger menu bigger */
     .navbar-toggler {
-        padding: 0.2rem 0.25rem;
-        margin-bottom: 0.30rem;
+        padding: 0.5rem 0.6rem;
+        min-height: 44px;
+        min-width: 44px;
     }
+    
     .navbar-toggler img {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
     }
+    
     body {
-        padding: 10px;
+        padding: 8px;
     }
 }
 
@@ -907,21 +938,31 @@ textarea.form-control:focus {
 
 /* Responsive adjustments for icon buttons */
 @media (max-width: 768px) {
+    /* Tablet adjustments - still make buttons bigger but slightly smaller than mobile */
+    .navbar .btn,
+    .navbar .nav-item .btn,
+    .navbar .dropdown .btn,
+    .navbar .dropdown-toggle {
+        font-size: 1em;
+        padding: 0.5rem 0.7rem;
+        min-height: 40px;
+    }
+    
     .btn-group .btn {
-        min-width: 38px;
-        padding: 5px 6px;
-        font-size: 0.9em;
+        min-width: 42px;
+        padding: 0.5rem 0.6rem;
+        font-size: 1.1em;
+        min-height: 40px;
     }
     
     .btn-group .icon {
-        font-size: 1em;
+        font-size: 1.1em;
     }
-}
-
-@media (max-width: 576px) {
-    .btn-group .btn {
-        min-width: 34px;
-        padding: 4px 5px;
-        font-size: 0.85em;
+    
+    /* Make dropdown items bigger on tablet too */
+    .dropdown-menu .dropdown-item {
+        font-size: 1em;
+        padding: 0.6rem 0.9rem;
+        min-height: 40px;
     }
 }
