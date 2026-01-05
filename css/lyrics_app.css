@@ -13,14 +13,63 @@ body {
 
 .brand {
     text-align: left;
-    padding-left: 15px;
     color: #333; /* Neutral dark text */
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 .navbar {
     padding: 0px;
     background-color: #e9e6dc; /* White navbar background */
     border-bottom: 1px solid #ddd; /* Subtle border */
+}
+
+/* Ensure brand and hamburger stay on same line on mobile */
+.navbar .brand {
+    margin: 0;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.navbar .navbar-toggler {
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+}
+
+/* On mobile, ensure brand and toggler are on same line */
+@media (max-width: 991.98px) {
+    .navbar .container-fluid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0.5rem 1rem;
+    }
+    
+    .navbar .brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* On desktop, ensure proper spacing */
+@media (min-width: 992px) {
+    .navbar .container-fluid {
+        padding: 0 1rem;
+    }
+    
+    .navbar .brand {
+        font-size: 1.2rem;
+        margin-right: 1rem;
+    }
+    
+    .navbar .navbar-toggler {
+        display: none;
+    }
+}
+
+.navbar .navbar-toggler img {
+    width: 24px;
+    height: 24px;
 }
 
 @media (max-width: 576px) {

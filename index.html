@@ -23,9 +23,10 @@
 
 <body>
  
- <nav class="navbar navbar-expand-lg"><span class="brand">Lyriset</span>  
+ <nav class="navbar navbar-expand-lg">  
         <div class="container-fluid">
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="brand d-lg-block">Lyriset</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <img id="hamburgerIcon" src="img/hamburger-light.svg" alt="Menu" width="30" height="30">
             </button>
 
@@ -67,9 +68,7 @@
                         <a href="#" class="btn  border border-light" onclick="loadNextSong()">▶</a>
                         <button onclick="adjustFontSize(1)" class="btn border border-light">A+</button>
                         <button onclick="adjustFontSize(-1)" class="btn border border-light">A-</button>
-                        <button onclick="autoFitLyrics(document.getElementById('songTitle').textContent, document.getElementById('songArtist').textContent, localStorage.getItem(document.getElementById('songTitle').textContent) ? JSON.parse(localStorage.getItem(document.getElementById('songTitle').textContent)).lyrics : '')" class="btn border border-light" title="Auto-fit font size to screen">⚡</button>
                         <button onclick="resetAutoFit()" class="btn border border-light" title="Reset auto-fit">↺</button>
-                        <button onclick="debugOverflow()" class="btn border border-light" title="Debug overflow">🐛</button>
                         <button class="btn border border-light" id="toggleCleanLyricsButton"
                             onclick="toggleCleanLyrics()">
                             <span id="toggleCleanLyricsText">✱</span>
