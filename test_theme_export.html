@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Export Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-primary, #f5f5f5);
+            color: var(--text-primary, #333);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-selector {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: var(--button-bg, #e0e0e0);
+            color: var(--text-primary, #333);
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--button-hover, #d0d0d0);
+        }
+
+        .export-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg-secondary, #f9f9f9);
+            border-radius: 4px;
+        }
+
+        .code-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .current-theme {
+            font-weight: bold;
+            color: var(--link-color, #007bff);
+        }
+
+        .import-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg-secondary, #f9f9f9);
+            border-radius: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Theme Configuration Test</h1>
+        
+        <div class="info">
+            <strong>Current Theme:</strong> <span id="currentTheme" class="current-theme">Loading...</span><br>
+            <strong>Theme Type:</strong> <span id="themeType">-</span>
+        </div>
+
+        <h2>Available Themes</h2>
+        <div class="theme-selector" id="themeButtons"></div>
+
+        <h2>Export Current Theme</h2>
+        <div class="export-section">
+            <p>Click the button below to export your current theme configuration as JSON:</p>
+            <button onclick="exportTheme()">📥 Export Current Theme</button>
+            <div id="exportStatus" class="status"></div>
+            <div id="exportResult" class="code-block" style="display:none;"></div>
+            <button id="downloadBtn" style="display:none;" onclick="downloadTheme()">💾 Download as JSON</button>
+        </div>
+
+        <h2>Import Theme</h2>
+        <div class="import-section">
+            <p>Paste a theme configuration JSON below to import it:</p>
+            <textarea id="importData" placeholder='{"name":"custom","timestamp":"2026-01-05T01:47:36.000Z","theme":{...}}'></textarea>
+            <button onclick="importTheme()">📤 Import Theme</button>
+            <div id="importStatus" class="status"></div>
+        </div>
+
+        <h2>Create Custom Theme</h2>
+        <div class="export-section">
+            <p>Create a custom theme with your own colors:</p>
+            <div style="display: grid; gap: 10px; margin: 10px 0;">
+                <input type="text" id="customName" placeholder="Theme Name (e.g., 'ocean')" style="padding: 8px;">
+                <input type="color" id="customBgPrimary" placeholder="Background Primary" style="padding: 5px; height: 40px;">
+                <input type="color" id="customTextPrimary" placeholder="Text Primary" style="padding: 5px; height: 40px;">
+                <select id="customType" style="padding: 8px;">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+            <button onclick="createCustomTheme()">🎨 Create Custom Theme</button>
+            <div id="customStatus" class="status"></div>
+        </div>
+
+        <h2>Features</h2>
+        <ul class="feature-list">
+            <li>Export current theme as JSON</li>
+            <li>Import themes from other projects</li>
+            <li>Create custom themes on the fly</li>
+            <li>Automatic light/dark mode detection</li>
+            <li>Persistent theme storage</li>
+            <li>Event listeners for theme changes</li>
+            <li>Multiple color schemes included</li>
+        </ul>
+
+        <div class="info" style="margin-top: 20px;">
+            <strong>Next Steps:</strong><br>
+            1. Export your current theme<br>
+            2. Copy the JSON to your new project<br>
+            3. Use the import function to apply it<br>
+            4. Or use the theme_config.js file directly
+        </div>
+    </div>
+
+    <!-- Include the theme configuration -->
+    <script src="theme_config.js"></script>
+
+    <script>
+        // Wait for theme manager to initialize
+        function waitForThemeManager() {
+            if (window.themeManager && window.themeManager.currentTheme !== null) {
+                initializeUI();
+            } else {
+                setTimeout(waitForThemeManager, 100);
+            }
+        }
+
+        function initializeUI() {
+            updateCurrentThemeDisplay();
+            createThemeButtons();
+            setupThemeListener();
+        }
+
+        function updateCurrentThemeDisplay() {
+            const info = window.themeManager.getCurrentThemeInfo();
+            document.getElementById('currentTheme').textContent = info.name;
+            document.getElementById('themeType').textContent = info.type.toUpperCase();
+        }
+
+        function createThemeButtons() {
+            const container = document.getElementById('themeButtons');
+            const themes = window.themeManager.getAvailableThemes();
+            
+            themes.forEach(themeName => {
+                const btn = document.createElement('button');
+                btn.textContent = themeName;
+                btn.onclick = () => applyTheme(themeName);
+                container.appendChild(btn);
+            });
+        }
+
+        function setupThemeListener() {
+            window.themeManager.onThemeChange((themeName, theme) => {
+                updateCurrentThemeDisplay();
+                showStatus('exportStatus', `Theme changed to: ${themeName}`, 'success');
+            });
+        }
+
+        function applyTheme(themeName) {
+            window.themeManager.applyTheme(themeName);
+            window.themeManager.saveTheme(themeName);
+        }
+
+        function exportTheme() {
+            try {
+                const exported = window.themeManager.exportCurrentTheme();
+                const jsonStr = JSON.stringify(exported, null, 2);
+                
+                document.getElementById('exportResult').textContent = jsonStr;
+                document.getElementById('exportResult').style.display = 'block';
+                document.getElementById('downloadBtn').style.display = 'inline-block';
+                
+                showStatus('exportStatus', 'Theme exported successfully! Copy the JSON or download it.', 'success');
+                
+                // Store for download
+                window.lastExportedTheme = exported;
+            } catch (error) {
+                showStatus('exportStatus', 'Export failed: ' + error.message, 'error');
+            }
+        }
+
+        function downloadTheme() {
+            if (!window.lastExportedTheme) {
+                showStatus('exportStatus', 'No theme to download. Export first!', 'error');
+                return;
+            }
+
+            const dataStr = JSON.stringify(window.lastExportedTheme, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `theme-${window.lastExportedTheme.name}-${Date.now()}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showStatus('exportStatus', 'Theme downloaded successfully!', 'success');
+        }
+
+        function importTheme() {
+            const textarea = document.getElementById('importData');
+            const jsonStr = textarea.value.trim();
+            
+            if (!jsonStr) {
+                showStatus('importStatus', 'Please paste theme JSON data', 'error');
+                return;
+            }
+
+            try {
+                const themeData = JSON.parse(jsonStr);
+                const success = window.themeManager.importTheme(themeData);
+                
+                if (success) {
+                    showStatus('importStatus', `Theme "${themeData.name}" imported and applied successfully!`, 'success');
+                    textarea.value = '';
+                } else {
+                    showStatus('importStatus', 'Import failed. Check the JSON format.', 'error');
+                }
+            } catch (error) {
+                showStatus('importStatus', 'Invalid JSON: ' + error.message, 'error');
+            }
+        }
+
+        function createCustomTheme() {
+            const name = document.getElementById('customName').value.trim();
+            const bgPrimary = document.getElementById('customBgPrimary').value;
+            const textPrimary = document.getElementById('customTextPrimary').value;
+            const type = document.getElementById('customType').value;
+
+            if (!name) {
+                showStatus('customStatus', 'Please enter a theme name', 'error');
+                return;
+            }
+
+            try {
+                const colors = {
+                    bgPrimary: bgPrimary,
+                    textPrimary: textPrimary
+                };
+
+                window.themeManager.createCustomTheme(name, colors, type);
+                window.themeManager.applyTheme(name);
+                window.themeManager.saveTheme(name);
+
+                // Add button for new theme
+                const container = document.getElementById('themeButtons');
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.onclick = () => applyTheme(name);
+                container.appendChild(btn);
+
+                showStatus('customStatus', `Custom theme "${name}" created and applied!`, 'success');
+
+                // Clear inputs
+                document.getElementById('customName').value = '';
+                document.getElementById('customBgPrimary').value = '#ffffff';
+                document.getElementById('customTextPrimary').value = '#000000';
+
+            } catch (error) {
+                showStatus('customStatus', 'Creation failed: ' + error.message, 'error');
+            }
+        }
+
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+            
+            setTimeout(() => {
+                element.className = 'status';
+            }, 5000);
+        }
+
+        // Initialize when ready
+        waitForThemeManager();
+    </script>
+</body>
+</html>
