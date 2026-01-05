@@ -66,7 +66,7 @@ function startAutoScroll() {
     console.log('Container scrollTop:', scrollContainer.scrollTop);
     console.log('Container overflow:', window.getComputedStyle(scrollContainer).overflowY);
     
-    // Continuous smooth scroll function
+    // Continuous scroll function optimized for iOS
     const scrollStep = () => {
         if (!autoScrollActive) return;
         
@@ -87,14 +87,15 @@ function startAutoScroll() {
             return;
         }
         
-        // Continuous smooth scroll - small increments for smooth movement
-        scrollContainer.scrollBy({
-            top: 2,
-            behavior: 'smooth'
-        });
+        // For iOS, use smaller increments with native scrolling
+        // This works better with iOS's scroll system
+        const scrollAmount = 1; // Smaller step for smoother iOS scrolling
         
-        // Continue scrolling with short interval for continuous movement
-        autoScrollInterval = setTimeout(scrollStep, 50); // 50ms for smooth continuous scroll
+        // Use scrollTop for better iOS compatibility
+        scrollContainer.scrollTop += scrollAmount;
+        
+        // Continue scrolling with short interval
+        autoScrollInterval = setTimeout(scrollStep, 50);
     };
     
     // Start scrolling
@@ -1140,21 +1141,86 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Handle touch interactions for auto-scroll - ONE FINGER TAP
-        lyricsContainer.addEventListener('touchstart', function(e) {
-            // Only handle single touch (one finger)
-            if (e.touches.length > 1) {
-                return; // Let multi-touch gestures (like zoom) pass through
-            }
+    // Handle touch interactions for iOS - support both manual scroll and auto-scroll toggle
+    let touchStartTime = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchMoved = false;
+    
+    lyricsContainer.addEventListener('touchstart', function(e) {
+        // Only handle single touch (one finger)
+        if (e.touches.length > 1) {
+            return; // Let multi-touch gestures (like zoom) pass through
+        }
+        
+        const containerWidth = lyricsContainer.offsetWidth;
+        if (containerWidth >= 769) {
+            // Desktop - touch does nothing
+            return;
+        }
+        
+        // Record touch start position and time
+        touchStartTime = Date.now();
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+        
+        // Don't prevent default here - allow native scroll to start
+        // This is crucial for iOS manual scrolling
+        
+    }, { passive: true }); // Use passive listener for better scroll performance
+    
+    lyricsContainer.addEventListener('touchmove', function(e) {
+        const containerWidth = lyricsContainer.offsetWidth;
+        if (containerWidth >= 769) {
+            return;
+        }
+        
+        // If user is dragging, mark as moved
+        if (e.touches.length === 1) {
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const deltaX = Math.abs(touchX - touchStartX);
+            const deltaY = Math.abs(touchY - touchStartY);
             
-            const containerWidth = lyricsContainer.offsetWidth;
-            if (containerWidth >= 769) {
-                // Desktop - touch does nothing
-                return;
+            // If moved significantly, it's a scroll gesture
+            if (deltaX > 5 || deltaY > 5) {
+                touchMoved = true;
+                
+                // If auto-scroll is active and user starts scrolling manually, stop it
+                if (autoScrollActive && deltaY > 5) {
+                    stopAutoScroll();
+                    const autoScrollButton = document.getElementById('autoScrollButton');
+                    const autoScrollText = document.getElementById('autoScrollText');
+                    if (autoScrollButton && autoScrollText) {
+                        autoScrollText.textContent = '▶';
+                        autoScrollButton.classList.remove('active');
+                    }
+                    console.log('Auto-scroll stopped - user initiated manual scroll');
+                }
             }
-            
-            // Mobile - toggle auto-scroll with single tap
-            e.preventDefault();
+        }
+    }, { passive: true }); // Use passive listener
+    
+    lyricsContainer.addEventListener('touchend', function(e) {
+        const containerWidth = lyricsContainer.offsetWidth;
+        if (containerWidth >= 769) {
+            return;
+        }
+        
+        // Calculate touch duration and movement
+        const touchDuration = Date.now() - touchStartTime;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+        
+        // Check if this was a quick tap (not a scroll gesture)
+        const isQuickTap = touchDuration < 300 && Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10 && !touchMoved;
+        
+        if (isQuickTap) {
+            // This was a tap - toggle auto-scroll
+            e.preventDefault(); // Prevent any default tap behavior
             
             if (autoScrollActive) {
                 // Stop auto-scroll
@@ -1165,7 +1231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     autoScrollText.textContent = '▶';
                     autoScrollButton.classList.remove('active');
                 }
-                console.log('Auto-scroll stopped via one-finger tap');
+                console.log('Auto-scroll stopped via tap');
             } else {
                 // Start auto-scroll
                 const song = document.getElementById('songTitle').textContent;
@@ -1177,12 +1243,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         autoScrollText.textContent = '⏸';
                         autoScrollButton.classList.add('active');
                     }
-                    console.log('Auto-scroll started via one-finger tap');
+                    console.log('Auto-scroll started via tap');
                 } else {
                     console.warn('No song selected, cannot start auto-scroll');
                 }
             }
-        });
+        }
+        // If it was a swipe or scroll gesture, let it pass through naturally
+    }, { passive: false }); // Non-passive to allow preventDefault on taps
     }
     
     // Clean up old localStorage font size entries

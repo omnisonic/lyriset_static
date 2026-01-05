@@ -132,6 +132,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow */
     overflow: hidden; /* Hide overflow at container level */
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+    touch-action: manipulation; /* Optimize touch behavior */
 }
 
 .lyrics {
@@ -146,6 +148,8 @@ body {
     font-family: Arial, sans-serif;
     color: #333; /* Dark text for readability */
     text-align: center;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+    touch-action: pan-y; /* Allow vertical scrolling, handle horizontal gestures */
 }
 
 /* Tablet adjustments - also use vertical scrolling for better readability */
@@ -164,6 +168,8 @@ body {
         background-color: #eae8dc;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+        touch-action: pan-y; /* Allow vertical scrolling */
     }
     
     .lyrics {
@@ -222,6 +228,8 @@ body {
         background-color: #eae8dc;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+        touch-action: pan-y; /* Allow vertical scrolling */
     }
     
     .lyrics {
