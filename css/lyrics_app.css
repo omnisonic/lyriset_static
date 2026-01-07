@@ -85,7 +85,7 @@ body {
 
 .navbar {
     background-color: var(--bg-primary);
-    border-bottom: 2px solid var(--border-color);
+    /* border-bottom: 2px solid var(--border-color); */
     padding: 0;
 }
 
@@ -105,8 +105,8 @@ body {
 
 /* Hamburger button styling */
 .navbar .navbar-toggler {
-    border: 2px solid var(--border-color);
-    background-color: var(--button-bg);
+    /* border: 2px solid var(--border-color); */
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     padding: 0.25rem 0.5rem;
     min-width: 44px;
@@ -140,13 +140,7 @@ body {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28192, 192, 192, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* Mobile menu container */
-.navbar .navbar-collapse {
-    background-color: var(--bg-primary);
-    border-top: 2px solid var(--border-color);
-    padding: 0.5rem 0;
-    margin-top: 0;
-}
+
 
 /* Mobile menu items */
 @media (max-width: 991.98px) {
@@ -238,28 +232,6 @@ body {
     }
 }
 
-/* Desktop - ensure buttons are properly sized */
-@media (min-width: 992px) {
-    .navbar .btn-group.flex-fill {
-        flex-fill: fill;
-    }
-    
-    .navbar .flex-grow-1 {
-        flex-grow: 1;
-    }
-    
-    /* Constrain individual button widths for better organization */
-    .navbar .btn-group .btn {
-        min-width: 38px;
-        max-width: 60px;
-    }
-    
-    /* Allow text buttons to be wider */
-    .navbar .btn-group .btn:not(:has(.icon)) {
-        min-width: 70px;
-        max-width: 100px;
-    }
-}
 
 /* Additional width constraints for better organization */
 .navbar .btn-group {
@@ -316,47 +288,10 @@ body {
     }
 }
 
-/* Width constraint classes for individual buttons */
-.navbar .min-w-50 { min-width: 50px !important; }
-.navbar .min-w-60 { min-width: 60px !important; }
-.navbar .min-w-70 { min-width: 70px !important; }
-.navbar .min-w-80 { min-width: 80px !important; }
 
-.navbar .max-w-70 { max-width: 70px !important; }
-.navbar .max-w-80 { max-width: 80px !important; }
-.navbar .max-w-90 { max-width: 90px !important; }
-.navbar .max-w-100 { max-width: 100px !important; }
-
-.navbar .w-auto { width: auto !important; }
-
-/* Ensure individual buttons don't grow too much */
-.navbar .nav-item .btn.btn-link.nav-link {
-    flex-shrink: 1;
-    white-space: nowrap;
-}
 
 /* Mobile adjustments for individual buttons */
-@media (max-width: 991.98px) {
-    .navbar .min-w-50,
-    .navbar .min-w-60,
-    .navbar .min-w-70,
-    .navbar .min-w-80 {
-        min-width: 44px !important; /* Maintain touch target */
-    }
-    
-    .navbar .max-w-70,
-    .navbar .max-w-80,
-    .navbar .max-w-90,
-    .navbar .max-w-100 {
-        max-width: none !important; /* Allow full width on mobile */
-    }
-    
-    .navbar .nav-item .btn.btn-link.nav-link {
-        width: auto !important;
-        min-height: 44px;
-        white-space: nowrap;
-    }
-}
+
 
 /* Desktop adjustments for individual buttons */
 @media (min-width: 992px) {
@@ -503,7 +438,7 @@ body {
 .lyrics {
     column-count: 4;
     column-gap: 0.8em;
-    column-rule: 1px solid var(--border-color);
+    /* column-rule: 1px solid var(--border-color); */
     column-fill: auto;
     height: 100%;
     width: 100%;
@@ -645,7 +580,7 @@ body {
     column-span: all;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
+    /* border-bottom: 1px solid var(--border-color); */
 }
 
 .song-title h3 {
@@ -672,7 +607,7 @@ body {
 
 .dropdown-item {
     color: var(--text-primary);
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
 }
 
 .dropdown-item:hover,
@@ -692,7 +627,7 @@ body {
 @media (max-width: 768px) {
     /* Ensure dropdown items are touch-friendly */
     .dropdown-menu .dropdown-item {
-        background-color: var(--button-bg);
+        /* background-color: var(--button-bg); */
         color: var(--text-primary);
         border-left: 3px solid transparent;
         min-height: 44px;
@@ -714,7 +649,7 @@ body {
         max-height: 60vh;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        background-color: var(--button-bg);
+        /* background-color: var(--button-bg); */
         border: none;
         box-shadow: 0 2px 8px var(--shadow);
         max-width: 90vw; /* Prevent dropdown from exceeding viewport width */
@@ -754,7 +689,7 @@ body {
 
 /* Dropdown menu styling - let Bootstrap handle positioning */
 .dropdown-menu {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     border: none;
     box-shadow: 0 2px 8px var(--shadow);
     border-radius: 4px;
@@ -768,7 +703,7 @@ body {
 
 /* Dropdown items */
 .dropdown-menu .dropdown-item {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border-left: 3px solid transparent;
     transition: background-color 0.15s ease, border-left-color 0.15s ease;
@@ -1145,7 +1080,7 @@ textarea.form-control:focus {
 }
 
 .btn {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
 }
@@ -1156,7 +1091,7 @@ textarea.form-control:focus {
 }
 
 .btn-light {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
 }
@@ -1173,7 +1108,7 @@ textarea.form-control:focus {
 
 /* Dropdown toggle button styling - ensure consistent with other buttons */
 .dropdown-toggle {
-    background-color: var(--button-bg) !important;
+    /* background-color: var(--button-bg) !important; */
     color: var(--text-primary) !important;
     border: none !important;
 }
@@ -1190,7 +1125,7 @@ textarea.form-control:focus {
 
 /* Ensure dropdown buttons in navbar match other buttons exactly */
 .navbar .dropdown-toggle {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
@@ -1209,7 +1144,7 @@ textarea.form-control:focus {
 
 /* Style the dropdown menus to match the theme */
 .dropdown-menu {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     border: none;
     border-radius: 4px;
     padding: 0.5rem 0;
@@ -1247,7 +1182,7 @@ textarea.form-control:focus {
     }
     
     .dropdown-menu {
-        background-color: var(--button-bg);
+        /* background-color: var(--button-bg); */
         border: none;
     }
     
@@ -1260,7 +1195,7 @@ textarea.form-control:focus {
 
 /* Navbar buttons specifically - ensure all buttons have consistent styling */
 .navbar .btn {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
@@ -1289,7 +1224,7 @@ textarea.form-control:focus {
 .navbar .btn[data-bs-toggle="modal"],
 .navbar .btn[onclick*="deleteSong"],
 .navbar .btn[onclick*="openEditModal"] {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
@@ -1305,7 +1240,7 @@ textarea.form-control:focus {
 
 /* URL submit button styling */
 .url-submit .btn {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
@@ -1319,7 +1254,7 @@ textarea.form-control:focus {
 
 /* Import/Export buttons (when they exist) */
 #importExportContainer .btn {
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     color: var(--text-primary);
     border: none;
     padding: 0.5rem 0.75rem;
@@ -1334,7 +1269,7 @@ textarea.form-control:focus {
 /* Button group styling */
 .btn-group .btn {
     border-radius: 0;
-    background-color: var(--button-bg);
+    /* background-color: var(--button-bg); */
     border: none;
 }
 
@@ -1416,7 +1351,7 @@ textarea.form-control:focus {
 }
 
 .font-size-controls button {
-    background: var(--button-bg);
+    /* background: var(--button-bg); */
     color: var(--text-primary);
     border: none;
     padding: 5px 10px;
@@ -1529,251 +1464,3 @@ textarea.form-control:focus {
     color: var(--text-primary);
 }
 
-/* Navbar layout and button styling - Clean horizontal layout */
-.navbar .navbar-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-}
-
-.navbar .navbar-nav .nav-item {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.navbar .navbar-nav .nav-item .btn {
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-/* Ensure proper spacing between navbar items */
-.navbar .navbar-nav > * {
-    margin-right: 0.25rem;
-    flex-shrink: 0;
-}
-
-.navbar .navbar-nav > *:last-child {
-    margin-right: 0;
-}
-
-/* Button group styling in navbar */
-.navbar .btn-group {
-    display: flex;
-    align-items: center;
-}
-
-.navbar .btn-group .btn {
-    padding: 0.5rem 0.6rem;
-    min-width: 42px;
-    min-height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Ensure proper spacing in button groups */
-/* .navbar .btn-group .btn:not(:first-child) {
-    border-left: 1px solid var(--border-color);
-} */
-
-/* Mobile responsive navbar - wrap buttons to multiple lines */
-@media (max-width: 991.98px) {
-    .navbar .navbar-collapse {
-        /* Allow Bootstrap collapsing animation to control overflow during
-           the transition; default to visible when fully shown. */
-        background-color: var(--bg-primary);
-        border-top: 2px solid var(--border-color);
-        margin-top: 0.5rem;
-    }
-
-    /* Use row layout with wrapping for mobile collapsed nav so buttons
-       can sit side-by-side and wrap naturally; avoid forcing `!important`
-       where possible so transitions work. */
-    .navbar .navbar-nav {
-        gap: 0.25rem;
-        width: 100% !important;
-        justify-content: flex-start;
-        flex-wrap: wrap !important;
-        white-space: normal !important;
-        display: flex;
-        flex-direction: row;
-        padding: 0.5rem 0;
-    }
-
-    .navbar .navbar-nav .nav-item {
-        margin-bottom: 0.25rem;
-        flex-shrink: 0;
-        display: inline-flex;
-        align-items: center;
-    }
-    
-    .navbar .btn-group .btn {
-        min-height: 44px;
-        min-width: 44px;
-        padding: 0.6rem 0.7rem;
-        font-size: 1.1em;
-    }
-    
-    .navbar .navbar-nav .nav-item .btn {
-        min-height: 44px;
-        font-size: 1em;
-        padding: 0.6rem 0.8rem;
-    }
-    
-    .navbar .dropdown-toggle {
-        min-height: 44px;
-        font-size: 1em;
-        padding: 0.6rem 0.8rem;
-    }
-}
-
-/* Tablet adjustments (768px - 991px) - also wrap */
-@media (min-width: 769px) and (max-width: 991.98px) {
-    .navbar .navbar-collapse {
-        overflow: visible;
-        background-color: var(--bg-primary);
-        /* : 2px solid var(--border-color); */
-        margin-top: 0.5rem;
-    }
-    
-    .navbar .navbar-nav {
-        gap: 0.25rem;
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        white-space: normal;
-        display: flex;
-        flex-direction: row;
-    }
-    
-    .navbar .navbar-nav .nav-item {
-        margin-bottom: 0.25rem;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: row;
-    }
-    
-    .navbar .btn-group .btn {
-        min-height: 40px;
-        min-width: 40px;
-        padding: 0.5rem 0.6rem;
-        font-size: 1em;
-    }
-    
-    .navbar .navbar-nav .nav-item .btn {
-        min-height: 40px;
-        padding: 0.5rem 0.7rem;
-    }
-    
-    .navbar .dropdown-toggle {
-        min-height: 40px;
-        padding: 0.5rem 0.7rem;
-        font-size: 1em;
-    }
-}
-
-/* Very small screens: stack nav items vertically to improve touch targets */
-@media (max-width: 420px) {
-    .navbar .navbar-nav {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .navbar .navbar-nav .nav-item,
-    .navbar .btn-group {
-        width: 100%;
-        display: block;
-    }
-
-    .navbar .btn-group .btn,
-    .navbar .navbar-nav .nav-item .btn {
-        width: 100%;
-        box-sizing: border-box;
-    }
-}
-
-/* Hint to browser to promote collapsing element to the compositor layer
-   for smoother height transitions (non-invasive; doesn't override
-   Bootstrap timing). */
-.navbar .navbar-collapse.collapsing {
-    will-change: height;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-}
-
-/* Restore native Bootstrap collapse behavior: no manual overflow,
-   transition, or opacity overrides here so Bootstrap's JS/CSS can run
-   without interference. Dropdown positioning adjustments remain. */
-
-/* Desktop adjustments (992px and above) */
-@media (min-width: 992px) {
-    .navbar .navbar-nav {
-        gap: 0.5rem;
-    }
-    
-    .navbar .btn-group .btn {
-        min-height: 36px;
-        min-width: 38px;
-        padding: 0.4rem 0.5rem;
-        font-size: 0.95em;
-    }
-    
-    .navbar .navbar-nav .nav-item .btn {
-        min-height: 36px;
-        padding: 0.4rem 0.6rem;
-        font-size: 0.95em;
-    }
-    
-    .navbar .dropdown-toggle {
-        min-height: 36px;
-        padding: 0.4rem 0.6rem;
-        font-size: 0.95em;
-    }
-}
-
-/* Ensure icon sizing is consistent */
-.navbar .btn-group .icon,
-.navbar .nav-item .icon {
-    font-size: 1em;
-    line-height: 1;
-}
-
-/* Special styling for import/export icons to make them stand out */
-.navbar .btn-group .btn[onclick*="exportSongData"] .icon,
-.navbar .btn-group .btn[onclick*="importFileInput"] .icon {
-    font-size: 1.1em;
-}
-
-/* Responsive adjustments for icon buttons */
-@media (max-width: 768px) {
-    /* Tablet adjustments - still make buttons bigger but slightly smaller than mobile */
-    .navbar .btn,
-    .navbar .nav-item .btn,
-    .navbar .dropdown .btn,
-    .navbar .dropdown-toggle {
-        font-size: 1em;
-        padding: 0.5rem 0.7rem;
-        min-height: 40px;
-    }
-    
-    .btn-group .btn {
-        min-width: 42px;
-        padding: 0.5rem 0.6rem;
-        font-size: 1.1em;
-        min-height: 40px;
-    }
-    
-    .btn-group .icon {
-        font-size: 1.1em;
-    }
-    
-    /* Make dropdown items bigger on tablet too */
-    .dropdown-menu .dropdown-item {
-        font-size: 1em;
-        padding: 0.6rem 0.9rem;
-        min-height: 40px;
-    }
-}
