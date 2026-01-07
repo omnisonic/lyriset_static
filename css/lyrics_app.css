@@ -653,6 +653,7 @@ body {
         border: none;
         box-shadow: 0 2px 8px var(--shadow);
         max-width: 90vw; /* Prevent dropdown from exceeding viewport width */
+        
     }
     
     /* Ensure dropdown toggle buttons are properly sized on mobile */
@@ -689,7 +690,7 @@ body {
 
 /* Dropdown menu styling - let Bootstrap handle positioning */
 .dropdown-menu {
-    /* background-color: var(--button-bg); */
+    background-color: var(--button-bg);
     border: none;
     box-shadow: 0 2px 8px var(--shadow);
     border-radius: 4px;
@@ -1143,14 +1144,6 @@ textarea.form-control:focus {
 }
 
 /* Style the dropdown menus to match the theme */
-.dropdown-menu {
-    /* background-color: var(--button-bg); */
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 0;
-    min-width: 10rem;
-    box-shadow: 0 2px 8px var(--shadow);
-}
 
 .dropdown-menu .dropdown-item {
     color: var(--text-primary);
