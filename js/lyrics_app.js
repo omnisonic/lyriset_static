@@ -964,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
 
-    // Simplified mobile touch handler - single unified handler
+    // Enhanced mobile touch handler - supports both single and two-finger gestures
     function setupMobileTouchHandlers() {
         // Attach to the lyrics container wrapper for better touch coverage
         const lyricsContainer = document.querySelector('.lyrics-container');
@@ -972,29 +972,41 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Single touch handler for iOS compatibility
+        // Touch tracking variables
         let touchStartTime = 0;
         let touchStartX = 0;
         let touchStartY = 0;
         let touchMoved = false;
+        
+        // Two-finger gesture tracking
+        let twoFingerStartX = 0;
+        let twoFingerStartY = 0;
+        let twoFingerStartTime = 0;
+        let twoFingerMoved = false;
 
         function handleTouchStart(e) {
-            // Only handle single touch on mobile
-            if (e.touches.length !== 1) return;
-            
             const containerWidth = window.innerWidth;
             if (containerWidth >= 769) return; // Desktop only
 
-            // Record touch start
-            touchStartTime = Date.now();
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            touchMoved = false;
-
-            
-
-            // Show swipe indicator (briefly)
-            showSwipeIndicator();
+            if (e.touches.length === 1) {
+                // Single touch - record for single-finger gestures
+                touchStartTime = Date.now();
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchMoved = false;
+                
+                // Show swipe indicator (briefly)
+                showSwipeIndicator();
+            } else if (e.touches.length === 2) {
+                // Two fingers - record for two-finger gestures
+                twoFingerStartTime = Date.now();
+                twoFingerStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                twoFingerStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                twoFingerMoved = false;
+                
+                // Show two-finger indicator
+                showTwoFingerIndicator();
+            }
         }
 
         function handleTouchMove(e) {
@@ -1021,6 +1033,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }
+            } else if (e.touches.length === 2) {
+                // Track two-finger movement
+                const currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                const deltaX = Math.abs(currentX - twoFingerStartX);
+                const deltaY = Math.abs(currentY - twoFingerStartY);
+
+                if (deltaX > 15 || deltaY > 15) {
+                    twoFingerMoved = true;
+                }
             }
         }
 
@@ -1028,65 +1050,100 @@ document.addEventListener('DOMContentLoaded', function() {
             const containerWidth = window.innerWidth;
             if (containerWidth >= 769) return;
 
-            // Calculate touch metrics
-            const touchDuration = Date.now() - touchStartTime;
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            const absDeltaX = Math.abs(deltaX);
-            const absDeltaY = Math.abs(deltaY);
+            // Handle single finger gestures
+            if (e.changedTouches.length === 1 && touchStartTime > 0) {
+                const touchDuration = Date.now() - touchStartTime;
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                const absDeltaX = Math.abs(deltaX);
+                const absDeltaY = Math.abs(deltaY);
 
-            
+                // Check if this was a quick tap (not a scroll gesture)
+                const isQuickTap = touchDuration < 300 && 
+                                  absDeltaX < 15 && 
+                                  absDeltaY < 15 && 
+                                  !touchMoved;
 
-            // Check if this was a quick tap (not a scroll gesture)
-            const isQuickTap = touchDuration < 300 && 
-                              absDeltaX < 15 && 
-                              absDeltaY < 15 && 
-                              !touchMoved;
+                // Check if this was a side swipe (horizontal gesture)
+                const isSideSwipe = absDeltaX > 50 && 
+                                   absDeltaX > absDeltaY * 1.5; // More horizontal than vertical
 
-            // Check if this was a side swipe (horizontal gesture)
-            const isSideSwipe = absDeltaX > 50 && 
-                               absDeltaX > absDeltaY * 1.5; // More horizontal than vertical
-
-            if (isQuickTap) {
-                // TAP: Toggle auto-scroll
-                e.preventDefault();
-                const song = document.getElementById('songTitle').textContent;
-                if (!song || song === 'Select a Song') {
-                    return; // No hint, just silent return
-                }
-
-                if (autoScrollActive) {
-                    stopAutoScroll();
-                    const autoScrollButton = document.getElementById('autoScrollButton');
-                    const autoScrollText = document.getElementById('autoScrollText');
-                    if (autoScrollButton && autoScrollText) {
-                        autoScrollText.className = 'bi bi-play-fill';
-                        autoScrollButton.classList.remove('active');
+                if (isQuickTap) {
+                    // TAP: Toggle auto-scroll
+                    e.preventDefault();
+                    const song = document.getElementById('songTitle').textContent;
+                    if (!song || song === 'Select a Song') {
+                        return; // No hint, just silent return
                     }
-                } else {
-                    startAutoScroll();
-                    const autoScrollButton = document.getElementById('autoScrollButton');
-                    const autoScrollText = document.getElementById('autoScrollText');
-                    if (autoScrollButton && autoScrollText) {
-                        autoScrollText.className = 'bi bi-pause-fill';
-                        autoScrollButton.classList.add('active');
+
+                    if (autoScrollActive) {
+                        stopAutoScroll();
+                        const autoScrollButton = document.getElementById('autoScrollButton');
+                        const autoScrollText = document.getElementById('autoScrollText');
+                        if (autoScrollButton && autoScrollText) {
+                            autoScrollText.className = 'bi bi-play-fill';
+                            autoScrollButton.classList.remove('active');
+                        }
+                    } else {
+                        startAutoScroll();
+                        const autoScrollButton = document.getElementById('autoScrollButton');
+                        const autoScrollText = document.getElementById('autoScrollText');
+                        if (autoScrollButton && autoScrollText) {
+                            autoScrollText.className = 'bi bi-pause-fill';
+                            autoScrollButton.classList.add('active');
+                        }
                     }
+                } else if (isSideSwipe) {
+                    // SWIPE: Navigate between songs
+                    e.preventDefault();
+                    if (deltaX > 0) {
+                        // Swipe right - previous song
+                        loadPrevSong();
+                    } else {
+                        // Swipe left - next song
+                        loadNextSong();
+                    }
+                    showSwipeIndicator();
                 }
-            } else if (isSideSwipe) {
-                // SWIPE: Navigate between songs
-                e.preventDefault();
-                if (deltaX > 0) {
-                    // Swipe right - previous song
-                    loadPrevSong();
-                } else {
-                    // Swipe left - next song
-                    loadNextSong();
-                }
-                showSwipeIndicator();
             }
-            // If it was a vertical scroll gesture, let it pass through naturally
+
+            // Handle two-finger gestures
+            if (e.changedTouches.length === 2 && twoFingerStartTime > 0) {
+                // Calculate the midpoint of the two fingers at end
+                const touch1 = e.changedTouches[0];
+                const touch2 = e.changedTouches[1];
+                const twoFingerEndX = (touch1.clientX + touch2.clientX) / 2;
+                const twoFingerEndY = (touch1.clientY + touch2.clientY) / 2;
+                
+                const deltaX = twoFingerEndX - twoFingerStartX;
+                const deltaY = twoFingerEndY - twoFingerStartY;
+                const absDeltaX = Math.abs(deltaX);
+                const absDeltaY = Math.abs(deltaY);
+                const touchDuration = Date.now() - twoFingerStartTime;
+
+                // Check if this was a two-finger horizontal swipe
+                const isTwoFingerSwipe = absDeltaX > 30 && 
+                                        absDeltaX > absDeltaY * 1.5 && 
+                                        touchDuration < 1000;
+
+                if (isTwoFingerSwipe) {
+                    e.preventDefault();
+                    if (deltaX > 0) {
+                        // Two-finger swipe right - previous song
+                        loadPrevSong();
+                    } else {
+                        // Two-finger swipe left - next song
+                        loadNextSong();
+                    }
+                    showTwoFingerIndicator();
+                }
+            }
+
+            // Reset tracking
+            touchStartTime = 0;
+            twoFingerStartTime = 0;
         }
 
         // Remove any existing listeners first to avoid duplicates
@@ -1121,6 +1178,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
     }
 
+    // Show two-finger swipe indicator
+    function showTwoFingerIndicator() {
+        // Create indicator if it doesn't exist
+        if (!window.twoFingerIndicator) {
+            const indicator = document.createElement('div');
+            indicator.className = 'swipe-indicator';
+            indicator.setAttribute('data-two-finger', 'true');
+            indicator.innerHTML = '<i class="bi bi-hand-index"></i> 2-Finger: ← Previous | Next →';
+            document.body.appendChild(indicator);
+            window.twoFingerIndicator = indicator;
+        }
+        
+        // Clear any existing timeout
+        if (window.twoFingerIndicatorTimeout) {
+            clearTimeout(window.twoFingerIndicatorTimeout);
+        }
+        
+        window.twoFingerIndicator.classList.add('show');
+        window.twoFingerIndicatorTimeout = setTimeout(() => {
+            if (window.twoFingerIndicator) {
+                window.twoFingerIndicator.classList.remove('show');
+            }
+        }, 1500);
+    }
+
     // Mobile handlers are now set up in the main DOMContentLoaded listener
 
     // Show/hide auto-scroll button based on screen size
@@ -1139,30 +1221,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update visibility on load and resize
     updateAutoScrollButtonVisibility();
     window.addEventListener('resize', updateAutoScrollButtonVisibility);
-
-    // Add event listener for left and right arrow keys
-    document.addEventListener('keydown', function(event) {
-        const lyricsModal = document.getElementById('lyricsModal');
-        const editLyricsModal = document.getElementById('editLyricsModal');
-
-        if (lyricsModal && lyricsModal.classList.contains('show')) {
-            return;
-        }
-
-        if (editLyricsModal && editLyricsModal.classList.contains('show')) {
-            return;
-        }
-
-        if (event.key === 'ArrowLeft') {
-            loadPrevSong();
-        } else if (event.key === 'ArrowRight') {
-            loadNextSong();
-        } else if (event.key === 'ArrowUp') {
-            adjustFontSize(1); // Increase font size
-        } else if (event.key === 'ArrowDown') {
-            adjustFontSize(-1); // Decrease font size
-        }
-    });
 
     // Initialize with Set 1
     window.currentSetNumber = 1;
@@ -1235,6 +1293,44 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Also remove the old global font size key
     localStorage.removeItem('lyrics-font-size');
+});
+
+// Arrow key event listener - moved outside DOMContentLoaded for immediate availability
+document.addEventListener('keydown', function(event) {
+    const lyricsModal = document.getElementById('lyricsModal');
+    const editLyricsModal = document.getElementById('editLyricsModal');
+
+    // Only process arrow keys if no modals are open
+    if (lyricsModal && lyricsModal.classList.contains('show')) {
+        return;
+    }
+
+    if (editLyricsModal && editLyricsModal.classList.contains('show')) {
+        return;
+    }
+
+    // Handle arrow key navigation and font adjustment
+    if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        if (typeof loadPrevSong === 'function') {
+            loadPrevSong();
+        }
+    } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        if (typeof loadNextSong === 'function') {
+            loadNextSong();
+        }
+    } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (typeof adjustFontSize === 'function') {
+            adjustFontSize(1); // Increase font size
+        }
+    } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (typeof adjustFontSize === 'function') {
+            adjustFontSize(-1); // Decrease font size
+        }
+    }
 });
 
 function deleteSong() {

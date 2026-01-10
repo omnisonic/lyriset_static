@@ -936,10 +936,26 @@ body {
     opacity: 1;
 }
 
+/* Two-finger swipe indicator - distinct styling */
+.swipe-indicator[data-two-finger="true"] {
+    background: rgba(139, 111, 71, 0.95); /* Accent color for two-finger */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    bottom: 60px; /* Position above single-finger indicator */
+}
+
 /* Ensure Bootstrap Icons in swipe indicator are white */
 .swipe-indicator .bi {
     color: white;
     font-size: 1em;
+}
+
+/* Two-finger indicator specific icon styling */
+.swipe-indicator[data-two-finger="true"] .bi {
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 /* About modal feature icons styling */
@@ -1456,4 +1472,3 @@ textarea.form-control:focus {
     border: none;
     color: var(--text-primary);
 }
-
