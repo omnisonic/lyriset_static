@@ -1,4 +1,5 @@
-const CACHE_NAME = 'lyriset-v2';
+// BUMP THIS VERSION ON EVERY DEPLOY to force cache refresh on all devices
+const CACHE_NAME = 'lyriset-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -10,10 +11,7 @@ const urlsToCache = [
   '/js/lyrics_app.js',
   '/js/reset_autofit.js',
   '/js/edit.js',
-  '/favicon.png',
-  '/icon-180.png',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/favicon.png'
 ];
 
 // Install event - cache resources
