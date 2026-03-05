@@ -393,15 +393,19 @@ body {
 }
 
 .container {
-    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 61px);
     padding: 0;
     margin: 0;
     max-width: 100%;
+    overflow: hidden;
 }
 
 .title-container {
     padding: 0.5rem 1rem;
     margin: 0;
+    flex-shrink: 0; /* Don't shrink */
 }
 
 .song-title {
@@ -414,8 +418,10 @@ body {
 
 .lyrics-main {
     margin-top: 1px;
-    height: calc(100% - 1em);
+    flex: 1; /* Take remaining space */
     position: relative;
+    min-height: 0; /* Important for flexbox children */
+    overflow: hidden;
 }
 
 .lyrics-container {
@@ -446,7 +452,6 @@ body {
     padding: 0.5em;
     font-family: Arial, sans-serif;
     color: var(--text-primary);
-    text-align: center;
     -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     touch-action: pan-y; /* Allow vertical scrolling, handle horizontal gestures */
 }
@@ -459,7 +464,7 @@ body {
         left: auto;
         transform: none;
         width: 100%;
-        height: calc(100vh - 180px);
+        height: 100%; /* Use full height of parent */
         overflow-y: auto;
         overflow-x: hidden;
         padding: 15px;
@@ -500,13 +505,14 @@ body {
     
     .lyrics-main {
         margin-top: 1px;
-        height: calc(100vh - 180px);
+        flex: 1; /* Take remaining space */
         position: relative;
         overflow: hidden;
+        min-height: 0;
     }
     
     .container {
-        height: calc(100vh - 150px);
+        height: calc(100vh - 61px);
         overflow: hidden;
     }
 }
@@ -519,7 +525,7 @@ body {
         left: auto;
         transform: none;
         width: 100%;
-        height: calc(100vh - 180px);
+        height: 100%; /* Use full height of parent */
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
@@ -560,13 +566,14 @@ body {
     
     .lyrics-main {
         margin-top: 1px;
-        height: calc(100vh - 180px);
+        flex: 1; /* Take remaining space */
         position: relative;
         overflow: hidden;
+        min-height: 0;
     }
     
     .container {
-        height: calc(100vh - 150px);
+        height: calc(100vh - 61px);
         overflow: hidden;
     }
 }
@@ -1056,11 +1063,78 @@ textarea.form-control {
     background-color: var(--input-bg);
     border: 2px solid var(--input-border);
     resize: vertical; /* Allow vertical resizing */
+    min-height: 200px; /* Minimum height for usability */
 }
 
 textarea.form-control:focus {
     background-color: var(--input-bg);
     border-color: var(--border-color);
+}
+
+/* Modal text area extension to viewport bottom */
+.modal .modal-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Important for flexbox children */
+    padding: 1rem;
+}
+
+.modal .modal-body form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.modal .modal-body .mb-3 {
+    flex-shrink: 0; /* Don't shrink labels/inputs */
+    margin-bottom: 0.75rem;
+}
+
+/* Make the lyrics textarea expand to fill available space */
+.modal .modal-body .mb-3:last-of-type {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 0;
+}
+
+.modal .modal-body .mb-3:last-of-type textarea {
+    flex: 1;
+    height: 100% !important;
+    min-height: 150px; /* Ensure it's usable even in small viewports */
+    resize: both; /* Allow both directions since it has space */
+}
+
+/* Ensure submit button stays at bottom */
+.modal .modal-body button[type="submit"] {
+    flex-shrink: 0;
+    margin-top: 1rem;
+}
+
+/* Modal content should respect viewport height */
+.modal-dialog.modal-dialog-centered {
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+}
+
+.modal-content {
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body {
+    overflow-y: auto; /* Allow scrolling if content exceeds viewport */
+}
+
+/* Ensure the textarea takes full available height in the form */
+#lyricsText, #editLyricsText {
+    flex: 1;
+    min-height: 200px;
+    height: 100% !important;
 }
 
 /* Input fields in modals specifically */
@@ -1471,4 +1545,48 @@ textarea.form-control:focus {
     background-color: var(--button-hover);
     border: none;
     color: var(--text-primary);
+}
+
+/* Chord diagram summary strip */
+.chord-summary {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 8px 4px 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chord-diagram-item {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: auto !important;
+}
+
+.chord-diagram-svg {
+    width: 46px;
+    height: 52px;
+    color: var(--text-primary);
+}
+
+@media (min-width: 992px) {
+    .chord-diagram-svg {
+        width: 70px;
+        height: 80px;
+    }
+}
+
+.chord-diagram-svg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.chord-diagram-name {
+    font-size: 9px;
+    text-align: center;
+    color: var(--text-secondary);
+    line-height: 1;
 }

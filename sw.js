@@ -1,11 +1,12 @@
 // BUMP THIS VERSION ON EVERY DEPLOY to force cache refresh on all devices
-const CACHE_NAME = 'lyriset-v3';
+const CACHE_NAME = 'lyriset-v4';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
   '/css/lyrics_app.css',
   '/js/clean_lyrics.js',
+  '/js/chord_diagrams.js',
   '/js/lyrics_storage.js',
   '/js/theme_toggle.js',
   '/js/lyrics_app.js',

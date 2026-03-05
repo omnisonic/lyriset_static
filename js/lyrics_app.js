@@ -1,8 +1,10 @@
 import { cleanLyrics } from './clean_lyrics.js';
+import { extractChords, renderChordSummary } from './chord_diagrams.js';
 
 // Auto-scroll functionality for mobile
 let autoScrollInterval = null;
 let autoScrollActive = false;
+let chordDiagramsActive = false;
 
 function toggleAutoScroll() {
     const lyricsContainer = document.getElementById('lyricsDisplay');
@@ -94,6 +96,32 @@ function stopAutoScroll() {
         autoScrollInterval = null;
     }
     autoScrollActive = false;
+}
+
+function insertChordSummary(lyrics) {
+    const lyricsContainer = document.getElementById('lyricsDisplay');
+    if (!lyricsContainer) return;
+    document.getElementById('chordSummary')?.remove();
+    const chords = extractChords(lyrics);
+    const html = renderChordSummary(chords);
+    if (!html) return;
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    lyricsContainer.insertBefore(div.firstElementChild, lyricsContainer.firstChild);
+}
+
+function toggleChordDiagrams() {
+    chordDiagramsActive = !chordDiagramsActive;
+    const btn = document.getElementById('toggleChordDiagramsButton');
+
+    if (chordDiagramsActive) {
+        btn?.classList.add('active');
+        const lyrics = document.getElementById('lyricsDisplay')?.getAttribute('data-original-lyrics');
+        if (lyrics) insertChordSummary(lyrics);
+    } else {
+        btn?.classList.remove('active');
+        document.getElementById('chordSummary')?.remove();
+    }
 }
 
 function toggleCleanLyrics() {
@@ -836,6 +864,10 @@ function displayLyrics(song, artist, lyrics) {
             lyricsContainer.setAttribute('data-clean', 'false');
         }
 
+        if (chordDiagramsActive) {
+            insertChordSummary(lyrics || '');
+        }
+
         // Adjust columns and calculate unused space after lyrics are displayed
         // Use setTimeout to ensure DOM has updated
         setTimeout(() => {
@@ -1442,6 +1474,7 @@ window.loadNextSong = loadNextSong;
 window.loadPrevSong = loadPrevSong;
 window.adjustFontSize = adjustFontSize;
 window.toggleCleanLyrics = toggleCleanLyrics;
+window.toggleChordDiagrams = toggleChordDiagrams;
 window.toggleAutoScroll = toggleAutoScroll;
 window.deleteSong = deleteSong;
 window.autoFitLyrics = autoFitLyrics;

@@ -74,14 +74,7 @@ export function cleanLyrics(text) {
         // For lyrics, strip leading whitespace but preserve the rest
         const currentLine = line.replace(/^\s+/, '');
         if (currentLine) {
-            // Remove one preceding blank line if it exists
-            if (cleanedLines.length > 0 && cleanedLines[cleanedLines.length - 1] === '') {
-                cleanedLines.pop(); // Remove the last empty line
-            }
-
-            // Add current line to cleaned lines
             cleanedLines.push(currentLine);
-        } else {
         }
     }
 

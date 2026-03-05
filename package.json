@@ -1,0 +1,19 @@
+{
+  "name": "lyriset-static",
+  "version": "1.0.0",
+  "description": "Browser-based songbook and setlist for gigging singers",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest --coverage",
+    "test:watch": "vitest watch"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
+    "jsdom": "^25.0.1",
+    "vitest": "^4.0.16"
+  }
+}
