@@ -872,7 +872,8 @@ function displayLyrics(song, artist, lyrics) {
         }
 
         if (chordDiagramsMode !== 'off') {
-            insertChordSummary(lyrics || '');
+            const originalLyrics = lyricsContainer.getAttribute('data-original-lyrics') || lyrics || '';
+            insertChordSummary(originalLyrics);
         }
 
         // Adjust columns and calculate unused space after lyrics are displayed
