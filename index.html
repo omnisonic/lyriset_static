@@ -66,16 +66,18 @@
                         <button class="btn btn-link nav-link dropdown-toggle w-auto min-w-60 max-w-80" type="button"
                             id="setDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">Set</button>
                         <ul class="dropdown-menu" aria-labelledby="setDropdownButton" id="setDropdown">
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(1)">Set 1</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(2)">Set 2</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(3)">Set 3</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(4)">Set 4</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(5)">Set 5</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(6)">Set 6</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(7)">Set 7</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(8)">Set 8</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(9)">Set 9</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateSongDropdown(10)">Set 10</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="1" onclick="updateSongDropdown(1)">Set 1</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="2" onclick="updateSongDropdown(2)">Set 2</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="3" onclick="updateSongDropdown(3)">Set 3</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="4" onclick="updateSongDropdown(4)">Set 4</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="5" onclick="updateSongDropdown(5)">Set 5</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="6" onclick="updateSongDropdown(6)">Set 6</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="7" onclick="updateSongDropdown(7)">Set 7</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="8" onclick="updateSongDropdown(8)">Set 8</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="9" onclick="updateSongDropdown(9)">Set 9</a></li>
+                            <li><a class="dropdown-item" href="#" data-set="10" onclick="updateSongDropdown(10)">Set 10</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="renameCurrentSet()"><i class="bi bi-pencil"></i> Rename this set...</a></li>
                         </ul>
                     </li>
 
@@ -93,10 +95,10 @@
 
                     <li class="nav-item">
                         <div class="btn-group flex-fill">
-                            <button class="btn flex-grow-1" onclick="exportSongData()" title="Export Collection">
+                            <button class="btn flex-grow-1" onclick="exportSongData()" title="Save .lyriset file">
                                 <i class="bi bi-download"></i>
                             </button>
-                            <button class="btn flex-grow-1" onclick="document.getElementById('importFileInput').click()" title="Import Collection">
+                            <button class="btn flex-grow-1" onclick="document.getElementById('importFileInput').click()" title="Load .lyriset file">
                                 <i class="bi bi-upload"></i>
                             </button>
                             <button class="btn btn-link nav-link flex-grow-1" onclick="deleteSong()" title="Delete Song">
@@ -205,13 +207,27 @@
                 <div class="modal-body about-content">
                     <!-- New Feature Highlights Section -->
                     <div class="feature-highlights">
-                        <h4 class="text-start">New UI Features</h4>
+                        <h4 class="text-start">Features</h4>
                         <div class="feature-grid">
                             <div class="feature-card">
                                 <div class="feature-icon"><i class="bi bi-bullseye"></i></div>
                                 <div class="feature-text">
                                     <strong>Smart Auto-Fit</strong>
                                     <p>Automatic font sizing to fit lyrics perfectly on screen</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i class="bi bi-search"></i></div>
+                                <div class="feature-text">
+                                    <strong>Song Search</strong>
+                                    <p>Search by title or artist across all your sets instantly</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon"><i class="bi bi-grid-3x3"></i></div>
+                                <div class="feature-text">
+                                    <strong>Chord Diagrams</strong>
+                                    <p>Toggle ukulele chord diagrams for any chords in the lyrics</p>
                                 </div>
                             </div>
                             <div class="feature-card">
@@ -250,6 +266,7 @@
                     <h4 class="text-start">Mobile Navigation</h4>
                     <ul>
                         <li><strong>Side Swipe:</strong> Swipe left or right on the lyrics area to go to next/previous song</li>
+                        <li><strong>Two-Finger Swipe:</strong> Two-finger swipe left/right also navigates between songs</li>
                         <li><strong>Tap to Scroll:</strong> Tap anywhere on the lyrics to start/stop auto-scrolling</li>
                         <li><strong>Manual Scroll:</strong> Drag up/down to scroll manually (stops auto-scroll)</li>
                         <li><strong>Auto-Scroll:</strong> Smooth continuous scrolling at optimal speed</li>
@@ -258,6 +275,7 @@
                     <h4 class="text-start">Main Features</h4>
                     <ul>
                         <li><strong>Add Song (<i class="bi bi-plus-lg"></i>):</strong> Submit new songs with lyrics from sites like guitaretab.com</li>
+                        <li><strong>Search (<i class="bi bi-search"></i>):</strong> Find any song by title or artist across all your sets</li>
                         <li><strong>Sets (Set ▼):</strong> Organize songs into sets (1-10) using the Set dropdown</li>
                         <li><strong>Song Selection (Song ▼):</strong> Choose songs from your current set</li>
                         <li><strong>Export (<i class="bi bi-download"></i>):</strong> Save your entire collection as a .lyriset file</li>
@@ -267,13 +285,14 @@
                         <li><strong>Navigation (<i class="bi bi-skip-start-fill"></i> <i class="bi bi-skip-end-fill"></i>):</strong> Move to previous or next song in your set</li>
                         <li><strong>Font Size (<i class="bi bi-zoom-in"></i> <i class="bi bi-zoom-out"></i> <i class="bi bi-arrow-clockwise"></i>):</strong> Increase, decrease, or reset text size</li>
                         <li><strong>Clean Lyrics (<i class="bi bi-stars"></i>):</strong> Toggle between original and chord-free lyrics</li>
+                        <li><strong>Chord Diagrams (<i class="bi bi-grid-3x3"></i>):</strong> Show/hide ukulele chord diagrams for chords detected in the lyrics</li>
                         <li><strong>Auto-Scroll (<i class="bi bi-play-fill"></i>):</strong> Enable/disable automatic scrolling</li>
                         <li><strong>Theme (<i class="bi bi-moon-stars"></i>):</strong> Toggle between light and dark mode</li>
                     </ul>
 
                     <h4 class="text-start">Button Groups & Layout</h4>
                     <ul>
-                        <li><strong>Top Navigation:</strong> About, Song, Set, Add buttons for main actions</li>
+                        <li><strong>Top Navigation:</strong> About, Song, Set, Add, and Search buttons for main actions</li>
                         <li><strong>File Management:</strong> Export, Import, Delete, Edit grouped together</li>
                         <li><strong>Song Navigation:</strong> Previous/Next buttons for quick browsing</li>
                         <li><strong>Display Controls:</strong> Font size and auto-scroll controls</li>
@@ -310,9 +329,11 @@
 
                     <h4 class="text-start">Navigation & Display Controls</h4>
                     <ul>
-                        <li><strong>Browse Songs:</strong> Use <i class="bi bi-skip-start-fill"></i> Previous and <i class="bi bi-skip-end-fill"></i> Next buttons to navigate through your set</li>
+                        <li><strong>Browse Songs:</strong> Use <i class="bi bi-skip-start-fill"></i> Previous and <i class="bi bi-skip-end-fill"></i> Next buttons, or left/right arrow keys on a keyboard</li>
+                        <li><strong>Search Songs:</strong> Click <i class="bi bi-search"></i> to search by title or artist across all sets</li>
                         <li><strong>Adjust Text Size:</strong> Use <i class="bi bi-zoom-in"></i> to increase, <i class="bi bi-zoom-out"></i> to decrease, or <i class="bi bi-arrow-clockwise"></i> to reset font size</li>
                         <li><strong>Clean View:</strong> Click <i class="bi bi-stars"></i> to toggle between original lyrics and chord-free version</li>
+                        <li><strong>Chord Diagrams:</strong> Click <i class="bi bi-grid-3x3"></i> to show/hide ukulele chord diagrams</li>
                         <li><strong>Auto-Scroll:</strong> Click <i class="bi bi-play-fill"></i> to enable/disable automatic scrolling during performance</li>
                         <li><strong>Theme:</strong> Click <i class="bi bi-moon-stars"></i> to switch between light and dark modes</li>
                     </ul>
@@ -321,6 +342,8 @@
                     <ul>
                         <li>Export your collection if you make changes so that you have a backup</li>
                         <li>The clean lyrics (<i class="bi bi-stars"></i> button) feature can help format text for better viewing. If you include chords in the lyrics, the clean lyrics will hide them.</li>
+                        <li>Use chord diagrams (<i class="bi bi-grid-3x3"></i> button) with lyrics that contain chords — it automatically detects and displays ukulele fingering charts.</li>
+                        <li>Use the search (<i class="bi bi-search"></i> button) to quickly jump to any song across all your sets without changing the active set.</li>
                     </ul>
 
                 </div>

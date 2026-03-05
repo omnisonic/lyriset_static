@@ -944,6 +944,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadDefaultSongs().then(() => {
         loadLastViewedSong();
+        refreshSetDropdownItems();
         const lastViewedSong = localStorage.getItem('lastViewedSong');
         if (lastViewedSong !== 'Select a Song') {
             updateSongDropdown(window.currentSetNumber, true);

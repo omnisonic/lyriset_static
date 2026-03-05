@@ -58,6 +58,37 @@ async function loadDefaultSongs() {
 
 window.currentSetNumber = 1;
 
+function getSetNames() {
+    try { return JSON.parse(localStorage.getItem('set-names')) || {}; }
+    catch(e) { return {}; }
+}
+
+function getSetName(setNumber) {
+    const names = getSetNames();
+    return names[setNumber] || `Set ${setNumber}`;
+}
+
+window.refreshSetDropdownItems = function() {
+    for (let i = 1; i <= 10; i++) {
+        const item = document.querySelector(`#setDropdown [data-set="${i}"]`);
+        if (item) item.textContent = getSetName(i);
+    }
+};
+
+window.renameCurrentSet = function() {
+    const n = window.currentSetNumber;
+    const current = getSetName(n);
+    const newName = prompt(`Rename "${current}":`, current);
+    if (newName !== null && newName.trim()) {
+        const names = getSetNames();
+        names[n] = newName.trim();
+        localStorage.setItem('set-names', JSON.stringify(names));
+        const btn = document.getElementById('setDropdownButton');
+        if (btn) btn.textContent = newName.trim();
+        window.refreshSetDropdownItems();
+    }
+};
+
 window.updateSongDropdown = function(setNumber = 1, skipAutoDisplay = false) {
     window.currentSetNumber = setNumber;
     const dropdown = document.getElementById('songDropdown');
@@ -86,7 +117,7 @@ window.updateSongDropdown = function(setNumber = 1, skipAutoDisplay = false) {
         // Update the set dropdown button text
         const setDropdownButton = document.getElementById('setDropdownButton');
         if (setDropdownButton) {
-            setDropdownButton.textContent = `Set ${setNumber}`;
+            setDropdownButton.textContent = getSetName(setNumber);
         }
         
         // Add songs to dropdown
