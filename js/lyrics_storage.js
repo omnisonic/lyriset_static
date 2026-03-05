@@ -58,7 +58,7 @@ async function loadDefaultSongs() {
 
 window.currentSetNumber = 1;
 
-window.updateSongDropdown = function(setNumber = 1) {
+window.updateSongDropdown = function(setNumber = 1, skipAutoDisplay = false) {
     window.currentSetNumber = setNumber;
     const dropdown = document.getElementById('songDropdown');
     if (dropdown) {
@@ -118,13 +118,19 @@ window.updateSongDropdown = function(setNumber = 1) {
             let songToDisplay = songs[0]; // Default to the first song
 
             if (lastViewedSong && lastViewedSong !== "") {
+                const found = songs.find(s => s.title === lastViewedSong);
+                if (found) {
+                    songToDisplay = found;
+                }
             }
 
             // Use autoFitLyrics if available, otherwise fallback to displayLyrics
-            if (typeof autoFitLyrics === 'function') {
-                autoFitLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
-            } else if (typeof displayLyrics === 'function') {
-                displayLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
+            if (!skipAutoDisplay) {
+                if (typeof autoFitLyrics === 'function') {
+                    autoFitLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
+                } else if (typeof displayLyrics === 'function') {
+                    displayLyrics(songToDisplay.title, songToDisplay.artist, songToDisplay.lyrics);
+                }
             }
         } else {
             if (typeof displayLyrics === 'function') {

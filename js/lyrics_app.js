@@ -945,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadLastViewedSong();
         const lastViewedSong = localStorage.getItem('lastViewedSong');
         if (lastViewedSong !== 'Select a Song') {
-            updateSongDropdown(window.currentSetNumber);
+            updateSongDropdown(window.currentSetNumber, true);
         }
     });
 
