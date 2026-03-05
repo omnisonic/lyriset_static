@@ -86,6 +86,12 @@
                     </li>
 
                     <li class="nav-item">
+                        <button class="btn btn-link nav-link w-auto min-w-50 max-w-70" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search Songs">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
                         <div class="btn-group flex-fill">
                             <button class="btn flex-grow-1" onclick="exportSongData()" title="Export Collection">
                                 <i class="bi bi-download"></i>
@@ -325,6 +331,22 @@
         </div>
     </div>
 
+    <!-- Search Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchModalLabel">Search Songs</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control border-0 mb-3" id="searchInput" placeholder="Search by title or artist..." autocomplete="off">
+                    <ul class="list-group" id="searchResults"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit Lyrics Modal -->
     <div class="modal fade" id="editLyricsModal" tabindex="-1" aria-labelledby="editLyricsModalLabel"
         aria-hidden="true">
@@ -381,6 +403,7 @@
     <script src="js/theme_toggle.js"></script>
     <script src="js/reset_autofit.js"></script>
     <script src="js/edit.js"></script>
+    <script src="js/search.js"></script>
 
 
     <script>

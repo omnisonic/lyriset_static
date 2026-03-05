@@ -1590,3 +1590,25 @@ textarea.form-control:focus {
     color: var(--text-secondary);
     line-height: 1;
 }
+
+/* Search modal */
+#searchModal .list-group-item {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+#searchModal .list-group-item:hover,
+#searchModal .list-group-item:focus {
+    background-color: var(--button-hover);
+    color: var(--text-primary);
+}
+
+#searchModal .list-group-item .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+#searchModal .badge {
+    background-color: var(--button-bg);
+    color: var(--text-primary);
+}
