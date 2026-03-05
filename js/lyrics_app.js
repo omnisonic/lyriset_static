@@ -850,6 +850,7 @@ function displayLyrics(song, artist, lyrics) {
         
         lyricsLines.forEach(line => {
             const lineDiv = document.createElement('div');
+            lineDiv.style.whiteSpace = 'pre';
             lineDiv.textContent = line || '\u00A0';
             
             // Ensure mobile lines use full width
