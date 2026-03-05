@@ -403,49 +403,39 @@
     <script src="js/theme_toggle.js"></script>
     <script src="js/reset_autofit.js"></script>
     <script src="js/edit.js"></script>
-    <script src="js/search.js"></script>
+    <script type="module" src="js/search.js"></script>
 
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Register Service Worker for PWA functionality with automatic updates
-            // DISABLED FOR LOCAL DEVELOPMENT - Uncomment to enable PWA features
-            /* 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                    console.log('Service Worker registered successfully');
-                    
                     // Check for updates on every page load
                     registration.update();
-                    
+
                     // Listen for service worker updates
                     registration.addEventListener('updatefound', function() {
                         const newWorker = registration.installing;
-                        console.log('New service worker found...');
-                        
+
                         newWorker.addEventListener('statechange', function() {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // New update is available - automatically activate it
-                                console.log('New version available, activating automatically...');
-                                
                                 // Skip waiting and activate new worker immediately
                                 newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                
+
                                 // Reload the page to use the new version
                                 window.location.reload();
                             }
                         });
                     });
                 }).catch(function(error) {
-                    console.log('Service Worker registration failed:', error);
+                    console.error('Service Worker registration failed:', error);
                 });
-                
+
                 // Listen for controller changes (when new SW takes over)
                 navigator.serviceWorker.addEventListener('controllerchange', function() {
-                    console.log('Service Worker controller changed - new version active');
+                    window.location.reload();
                 });
             }
-            */
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
