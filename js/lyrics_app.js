@@ -900,7 +900,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Always set up touch handlers, regardless of other elements
     setupMobileTouchHandlers();
     
-    const urlInput = document.getElementById('lyrics_url');
     const lyricsContainer = document.getElementById('lyricsDisplay');
 
     loadDefaultSongs().then(() => {
@@ -910,20 +909,6 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSongDropdown(window.currentSetNumber);
         }
     });
-
-    // Only proceed with the rest if these elements exist
-    if (!urlInput || !lyricsContainer) {
-        return;
-    }
-
-    // Don't load saved font sizes - we use auto-fit on every load
-    // Clear any existing font size to ensure clean state
-    lyricsContainer.style.fontSize = '';
-
-    const lyricsDisplay = lyricsContainer.textContent;
-    lyricsContainer.setAttribute('data-original-lyrics', lyricsDisplay);
-    const cleanedLyrics = cleanLyrics(lyricsDisplay);
-    lyricsContainer.textContent = cleanedLyrics;
 
     const lyricsForm = document.getElementById('lyricsForm');
     if (lyricsForm) {
