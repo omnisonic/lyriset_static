@@ -1,3 +1,5 @@
+import { cleanLyrics } from './clean_lyrics.js';
+
 // Auto-scroll functionality for mobile
 let autoScrollInterval = null;
 let autoScrollActive = false;
@@ -160,7 +162,7 @@ function toggleCleanLyrics() {
     }, 150);
 }
     
-function loadNextSong() {
+export function loadNextSong() {
     const currentSong = document.getElementById('songTitle').textContent;
     const songs = [];
     
@@ -192,14 +194,15 @@ function loadNextSong() {
     try {
         const songData = JSON.parse(localStorage.getItem(nextSong));
         if (songData) {
-            autoFitLyrics(nextSong, songData.artist, songData.lyrics);
+            const fn = window.autoFitLyrics || autoFitLyrics;
+            fn(nextSong, songData.artist, songData.lyrics);
         }
     } catch (e) {
         // Error loading next song
     }
 }
 
-function loadPrevSong() {
+export function loadPrevSong() {
     const currentSong = document.getElementById('songTitle').textContent;
     const songs = [];
     
@@ -232,20 +235,25 @@ function loadPrevSong() {
     try {
         const songData = JSON.parse(localStorage.getItem(prevSong));
         if (songData) {
-            autoFitLyrics(prevSong, songData.artist, songData.lyrics);
+            const fn = window.autoFitLyrics || autoFitLyrics;
+            fn(prevSong, songData.artist, songData.lyrics);
         }
     } catch (e) {
         // Error loading previous song
     }
 }
     
-function adjustFontSize(delta) {
+export function adjustFontSize(delta) {
     const lyricsContainer = document.getElementById('lyricsDisplay');
     if (!lyricsContainer) {
         return;
     }
 
-    const song = document.getElementById('songTitle').textContent;
+    const songTitle = document.getElementById('songTitle');
+    if (!songTitle) {
+        return;
+    }
+    const song = songTitle.textContent;
     if (!song || song === 'Select a Song') {
         return;
     }
@@ -271,7 +279,8 @@ function adjustFontSize(delta) {
     
     // Recalculate space after a brief delay to allow DOM to update
     setTimeout(() => {
-        calculateUnusedSpace();
+        const fn = window.calculateUnusedSpace || calculateUnusedSpace;
+        fn();
     }, 100);
 }
 
@@ -780,75 +789,87 @@ if (typeof window !== 'undefined') {
 }
 
 function displayLyrics(song, artist, lyrics) {
-    const lyricsContainer = document.getElementById('lyricsDisplay');
-    if (!lyricsContainer) {
-        return;
-    }
-    
-    const titleElement = document.getElementById('songTitle');
-    if (titleElement) {
-        titleElement.textContent = song || 'Select a Song';
-    }
-
-    const artistElement = document.getElementById('songArtist');
-    if (artistElement) {
-        artistElement.textContent = artist || '';
-    }
-
-    localStorage.setItem('lastViewedSong', song);
-
-    lyricsContainer.innerHTML = '';
-
-    const lyricsLines = (lyrics || '').split('\n');
-    const containerWidth = lyricsContainer.offsetWidth;
-    const isMobile = containerWidth < 769;
-    
-    lyricsLines.forEach(line => {
-        const lineDiv = document.createElement('div');
-        lineDiv.textContent = line || '\u00A0';
-        
-        // Ensure mobile lines use full width
-        if (isMobile) {
-            lineDiv.style.width = '100%';
-            lineDiv.style.boxSizing = 'border-box';
-            lineDiv.style.display = 'block';
-            // Allow text wrapping for long lines
+    try {
+        const lyricsContainer = document.getElementById('lyricsDisplay');
+        if (!lyricsContainer) {
+            console.error('lyricsDisplay element not found');
+            return;
         }
         
-        lyricsContainer.appendChild(lineDiv);
-    });
-    
-    const currentStoredSong = lyricsContainer.getAttribute('data-song-title');
-    if (!lyricsContainer.hasAttribute('data-original-lyrics') || currentStoredSong !== song) {
-        lyricsContainer.setAttribute('data-original-lyrics', lyrics || '');
-        lyricsContainer.setAttribute('data-song-title', song || '');
-        lyricsContainer.setAttribute('data-clean', 'false');
-    }
+        const titleElement = document.getElementById('songTitle');
+        if (titleElement) {
+            titleElement.textContent = song || 'Select a Song';
+        }
 
-    // Adjust columns and calculate unused space after lyrics are displayed
-    // Use setTimeout to ensure DOM has updated
-    setTimeout(() => {
-        const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
+        const artistElement = document.getElementById('songArtist');
+        if (artistElement) {
+            artistElement.textContent = artist || '';
+        }
+
+        localStorage.setItem('lastViewedSong', song);
+
+        lyricsContainer.innerHTML = '';
+
+        const lyricsLines = (lyrics || '').split('\n');
         const containerWidth = lyricsContainer.offsetWidth;
+        const isMobile = containerWidth < 769;
         
-        // Only adjust columns on desktop (mobile uses vertical scrolling)
-        if (containerWidth >= 769) {
-            adjustColumnsForFontSize(currentSize);
-        }
-        calculateUnusedSpace();
-    }, 100);
-
-    const lyricsModal = document.getElementById('lyricsModal');
-    if (lyricsModal) {
-        lyricsModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const formType = button.textContent.trim() === 'Add Song' ? 'add' : 'edit';
-            const formTypeInput = document.getElementById('formType');
-            if (formTypeInput) {
-                formTypeInput.value = formType;
+        lyricsLines.forEach(line => {
+            const lineDiv = document.createElement('div');
+            lineDiv.textContent = line || '\u00A0';
+            
+            // Ensure mobile lines use full width
+            if (isMobile) {
+                lineDiv.style.width = '100%';
+                lineDiv.style.boxSizing = 'border-box';
+                lineDiv.style.display = 'block';
+                // Allow text wrapping for long lines
             }
+            
+            lyricsContainer.appendChild(lineDiv);
         });
+        
+        const currentStoredSong = lyricsContainer.getAttribute('data-song-title');
+        if (!lyricsContainer.hasAttribute('data-original-lyrics') || currentStoredSong !== song) {
+            lyricsContainer.setAttribute('data-original-lyrics', lyrics || '');
+            lyricsContainer.setAttribute('data-song-title', song || '');
+            lyricsContainer.setAttribute('data-clean', 'false');
+        }
+
+        // Adjust columns and calculate unused space after lyrics are displayed
+        // Use setTimeout to ensure DOM has updated
+        setTimeout(() => {
+            const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
+            const containerWidth = lyricsContainer.offsetWidth;
+            
+            // Only adjust columns on desktop (mobile uses vertical scrolling)
+            if (containerWidth >= 769) {
+                adjustColumnsForFontSize(currentSize);
+            }
+            calculateUnusedSpace();
+        }, 100);
+
+        const lyricsModal = document.getElementById('lyricsModal');
+        if (lyricsModal) {
+            lyricsModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const formType = button.textContent.trim() === 'Add Song' ? 'add' : 'edit';
+                const formTypeInput = document.getElementById('formType');
+                if (formTypeInput) {
+                    formTypeInput.value = formType;
+                }
+            });
+        }
+        
+        console.log('✅ displayLyrics completed successfully for:', song);
+    } catch (error) {
+        console.error('❌ Error in displayLyrics:', error);
     }
+}
+
+// Make displayLyrics available globally
+if (typeof window !== 'undefined') {
+    window.displayLyrics = displayLyrics;
 }
 
 function loadLastViewedSong() {
@@ -908,31 +929,96 @@ document.addEventListener('DOMContentLoaded', function() {
     if (lyricsForm) {
         lyricsForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const song = document.getElementById('songInput').value.trim();
-            const artist = document.getElementById('artistInput').value.trim();
-            const lyrics = document.getElementById('lyricsText').value.trim();
+            
+            try {
+                const song = document.getElementById('songInput').value.trim();
+                const artist = document.getElementById('artistInput').value.trim();
+                const lyrics = document.getElementById('lyricsText').value.trim();
 
-            if (!song || !lyrics) return;
+                console.log('Form submission - Song:', song, 'Artist:', artist, 'Lyrics length:', lyrics.length);
 
-            localStorage.setItem(song, JSON.stringify({
-                artist: artist,
-                lyrics: lyrics,
-                set: window.currentSetNumber
-            }));
+                if (!song || !lyrics) {
+                    console.log('Validation failed - missing song or lyrics');
+                    return;
+                }
 
-            displayLyrics(song, artist, lyrics);
+                // Save to localStorage
+                localStorage.setItem(song, JSON.stringify({
+                    artist: artist,
+                    lyrics: lyrics,
+                    set: window.currentSetNumber || 1
+                }));
 
-            const formTypeInput = document.getElementById('formType');
-            if (formTypeInput && formTypeInput.value === 'add') {
-                updateSongDropdown(window.currentSetNumber);
-            }
+                console.log('Saved to localStorage:', song);
 
-            e.target.reset();
-            const modalInstance = bootstrap.Modal.getInstance(document.getElementById('lyricsModal'));
-            if (modalInstance) {
-                modalInstance.hide();
+                // Display the lyrics
+                if (typeof displayLyrics === 'function') {
+                    displayLyrics(song, artist, lyrics);
+                    console.log('displayLyrics called successfully');
+                } else {
+                    console.error('displayLyrics function not found');
+                }
+
+                // Update dropdown if it's an add operation
+                const formTypeInput = document.getElementById('formType');
+                if (formTypeInput && formTypeInput.value === 'add') {
+                    if (typeof updateSongDropdown === 'function') {
+                        updateSongDropdown(window.currentSetNumber || 1);
+                        console.log('updateSongDropdown called successfully');
+                    }
+                }
+
+                // Reset form
+                e.target.reset();
+                console.log('Form reset successfully');
+
+                // Close modal using Bootstrap
+                try {
+                    const lyricsModal = document.getElementById('lyricsModal');
+                    if (lyricsModal && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                        const modalInstance = bootstrap.Modal.getInstance(lyricsModal);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                            console.log('Modal closed successfully');
+                        } else {
+                            // Fallback: manually hide the modal
+                            lyricsModal.classList.remove('show');
+                            lyricsModal.style.display = 'none';
+                            document.body.classList.remove('modal-open');
+                            const backdrop = document.querySelector('.modal-backdrop');
+                            if (backdrop) {
+                                backdrop.remove();
+                            }
+                            console.log('Modal closed manually');
+                        }
+                    }
+                } catch (modalError) {
+                    console.error('Error closing modal:', modalError);
+                    // Fallback: manually close modal
+                    const lyricsModal = document.getElementById('lyricsModal');
+                    if (lyricsModal) {
+                        lyricsModal.classList.remove('show');
+                        lyricsModal.style.display = 'none';
+                        document.body.classList.remove('modal-open');
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) {
+                            backdrop.remove();
+                        }
+                    }
+                }
+
+                // Show success feedback
+                console.log('✅ Song added successfully:', song);
+
+            } catch (error) {
+                console.error('❌ Error during form submission:', error);
+                alert('Error saving song: ' + error.message);
             }
         });
+
+        console.log('✅ Lyrics form submit handler attached successfully');
+    } else {
+        console.warn('❌ Lyrics form not found');
     }
     
     // Mobile touch handling variables (used by setupMobileTouchHandlers)
@@ -1365,3 +1451,14 @@ function deleteSong() {
         autoFitLyrics(nextSong, songData.artist, songData.lyrics);
     }
 }
+
+// Export functions to window for HTML onclick handlers
+window.loadNextSong = loadNextSong;
+window.loadPrevSong = loadPrevSong;
+window.adjustFontSize = adjustFontSize;
+window.toggleCleanLyrics = toggleCleanLyrics;
+window.toggleAutoScroll = toggleAutoScroll;
+window.deleteSong = deleteSong;
+window.autoFitLyrics = autoFitLyrics;
+window.displayLyrics = displayLyrics;
+window.calculateUnusedSpace = calculateUnusedSpace;

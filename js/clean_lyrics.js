@@ -1,4 +1,4 @@
-function cleanLyrics(text) {
+export function cleanLyrics(text) {
     if (!text) {
         return "";
     }
