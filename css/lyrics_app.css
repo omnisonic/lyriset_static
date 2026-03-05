@@ -1562,6 +1562,7 @@ textarea.form-control:focus {
     padding: 8px 4px 10px;
     margin-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
+    column-span: all;
 }
 
 .chord-diagram-item {
