@@ -1,5 +1,5 @@
 // BUMP THIS VERSION ON EVERY DEPLOY to force cache refresh on all devices
-const CACHE_NAME = 'lyriset-v6';
+const CACHE_NAME = 'lyriset-v8';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -30,8 +30,12 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - serve from cache, fallback to network (same-origin only)
 self.addEventListener('fetch', event => {
+  // Skip cross-origin requests (CDN resources) — let browser handle them directly
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
   event.respondWith(
     caches.match(event.request)
       .then(response => {

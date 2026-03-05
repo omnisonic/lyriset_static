@@ -562,27 +562,6 @@ body {
         overflow-wrap: break-word;
     }
     
-    .lyrics div {
-        break-inside: auto;
-        page-break-inside: auto;
-        width: 100%; /* Use full width */
-        box-sizing: border-box; /* Include padding in width calculation */
-        min-width: 0; /* Prevent flex/grid issues */
-        display: block; /* Ensure block display for full width */
-    }
-    
-    .lyrics-main {
-        margin-top: 1px;
-        flex: 1; /* Take remaining space */
-        position: relative;
-        overflow: hidden;
-        min-height: 0;
-    }
-    
-    .container {
-        height: calc(100vh - 61px);
-        overflow: hidden;
-    }
 }
 
 .lyrics div {
@@ -644,9 +623,9 @@ body {
         /* background-color: var(--button-bg); */
         color: var(--text-primary);
         border-left: 3px solid transparent;
-        min-height: 44px;
-        padding: 0.75rem 1rem;
-        font-size: 1.1em;
+        min-height: 40px;
+        padding: 0.6rem 1rem;
+        font-size: 1em;
         white-space: normal; /* Allow text wrapping */
         word-wrap: break-word;
     }
@@ -674,7 +653,7 @@ body {
     .navbar .dropdown-toggle {
         font-size: 1em;
         padding: 0.6rem 0.8rem;
-        min-height: 44px;
+        min-height: 40px;
         white-space: nowrap;
     }
 }
@@ -1240,48 +1219,12 @@ textarea.form-control:focus {
     border: none;
 }
 
-/* Style the dropdown menus to match the theme */
-
-.dropdown-menu .dropdown-item {
-    color: var(--text-primary);
-    background-color: transparent;
-    padding: 0.5rem 1rem;
-    border-left: 3px solid transparent;
-    transition: background-color 0.15s ease, border-left-color 0.15s ease;
-}
-
-.dropdown-menu .dropdown-item:hover,
-.dropdown-menu .dropdown-item:focus {
-    background-color: var(--dropdown-hover);
-    color: var(--text-primary);
-    border-left-color: var(--border-color);
-}
-
 /* Ensure dropdowns work in both light and dark modes */
 [data-theme="dark"] .dropdown-menu,
 [data-theme="dark"] .dropdown-toggle {
     /* These are already handled by CSS variables */
 }
 
-/* Mobile dropdown styling adjustments */
-@media (max-width: 768px) {
-    .navbar .dropdown-toggle {
-        font-size: 1em;
-        padding: 0.6rem 0.8rem;
-        min-height: 40px;
-    }
-    
-    .dropdown-menu {
-        /* background-color: var(--button-bg); */
-        border: none;
-    }
-    
-    .dropdown-menu .dropdown-item {
-        font-size: 1em;
-        padding: 0.6rem 1rem;
-        min-height: 40px;
-    }
-}
 
 /* Navbar buttons specifically - ensure all buttons have consistent styling */
 .navbar .btn {
@@ -1562,6 +1505,8 @@ textarea.form-control:focus {
     padding: 8px 4px 10px;
     margin-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .chord-diagram-item {
