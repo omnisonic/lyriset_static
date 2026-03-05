@@ -4,7 +4,7 @@ import { extractChords, renderChordSummary } from './chord_diagrams.js';
 // Auto-scroll functionality for mobile
 let autoScrollInterval = null;
 let autoScrollActive = false;
-let chordDiagramsActive = false;
+let chordDiagramsMode = 'off'; // 'off' | 'guitar' | 'ukulele'
 
 function toggleAutoScroll() {
     const lyricsContainer = document.getElementById('lyricsDisplay');
@@ -103,23 +103,29 @@ function insertChordSummary(lyrics) {
     if (!lyricsContainer) return;
     document.getElementById('chordSummary')?.remove();
     const chords = extractChords(lyrics);
-    const html = renderChordSummary(chords);
+    const html = renderChordSummary(chords, chordDiagramsMode);
     if (!html) return;
     const div = document.createElement('div');
     div.innerHTML = html;
     lyricsContainer.insertBefore(div.firstElementChild, lyricsContainer.firstChild);
 }
 
+const CHORD_MODE_CYCLE = ['off', 'guitar', 'ukulele'];
+const CHORD_MODE_TITLES = { off: 'Chord Diagrams', guitar: 'Guitar Chords', ukulele: 'Ukulele Chords' };
+
 function toggleChordDiagrams() {
-    chordDiagramsActive = !chordDiagramsActive;
+    const nextIndex = (CHORD_MODE_CYCLE.indexOf(chordDiagramsMode) + 1) % CHORD_MODE_CYCLE.length;
+    chordDiagramsMode = CHORD_MODE_CYCLE[nextIndex];
     const btn = document.getElementById('toggleChordDiagramsButton');
 
-    if (chordDiagramsActive) {
+    if (chordDiagramsMode !== 'off') {
         btn?.classList.add('active');
+        btn?.setAttribute('title', CHORD_MODE_TITLES[chordDiagramsMode]);
         const lyrics = document.getElementById('lyricsDisplay')?.getAttribute('data-original-lyrics');
         if (lyrics) insertChordSummary(lyrics);
     } else {
         btn?.classList.remove('active');
+        btn?.setAttribute('title', CHORD_MODE_TITLES.off);
         document.getElementById('chordSummary')?.remove();
     }
 }
@@ -864,7 +870,7 @@ function displayLyrics(song, artist, lyrics) {
             lyricsContainer.setAttribute('data-clean', 'false');
         }
 
-        if (chordDiagramsActive) {
+        if (chordDiagramsMode !== 'off') {
             insertChordSummary(lyrics || '');
         }
 

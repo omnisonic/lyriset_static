@@ -17,8 +17,8 @@ function detectBarChord(chord) {
     return null;
 }
 
-function generateChordSVG(chord) {
-    const strings = 6, frets = 5, sd = 20, fd = 20, r = 5, top = 28, side = 18;
+function generateChordSVG(chord, numStrings = 6) {
+    const strings = numStrings, frets = 5, sd = 20, fd = 20, r = 5, top = 28, side = 18;
     const w = side * 2 + sd * (strings - 1);
     const h = top + fd * frets;
     const bar = detectBarChord(chord);
@@ -122,6 +122,47 @@ function getTabShape(name) {
     return CHORD_MAP[key] || null;
 }
 
+// Ukulele chord map (GCEA tuning, 4 characters: G C E A string positions)
+const UKULELE_CHORD_MAP = {
+    // Major
+    'c': '0003', 'cmaj': '0003',
+    'd': '2220', 'dmaj': '2220',
+    'e': '4442', 'emaj': '4442',
+    'f': '2010', 'fmaj': '2010',
+    'g': '0232', 'gmaj': '0232',
+    'a': '2100', 'amaj': '2100',
+    'b': '4322', 'bmaj': '4322',
+    // Minor
+    'am': '2000', 'amin': '2000',
+    'bm': '4222', 'bmin': '4222',
+    'cm': '0333', 'cmin': '0333',
+    'dm': '2210', 'dmin': '2210',
+    'em': '0432', 'emin': '0432',
+    'fm': '1013', 'fmin': '1013',
+    'gm': '0231', 'gmin': '0231',
+    // Dominant 7th
+    'a7': '0100', 'b7': '2322', 'c7': '0001',
+    'd7': '2223', 'e7': '1202', 'f7': '2313', 'g7': '0212',
+    // Major 7th
+    'amaj7': '1100', 'cmaj7': '0002',
+    'dmaj7': '2224', 'emaj7': '1302',
+    'fmaj7': '2410', 'gmaj7': '0222',
+    // Minor 7th
+    'am7': '0000', 'bm7': '2222', 'cm7': '0331',
+    'dm7': '2213', 'em7': '0202', 'fm7': '1313', 'gm7': '0211',
+    // Sharp/flat roots
+    'f#m': '2120', 'f#min': '2120',
+    'bb': '3211', 'bbmaj': '3211',
+    'bbm': '3111', 'bbmin': '3111',
+    'eb': '3331', 'ebmaj': '3331',
+    'db': '1114', 'dbmaj': '1114',
+};
+
+function getUkeTabShape(name) {
+    const key = name.toLowerCase().replace(/\s+/g, '').replace('♯', '#').replace('♭', 'b');
+    return UKULELE_CHORD_MAP[key] || null;
+}
+
 const BRACKET_RE = /\[([A-G][#b]?(?:m(?:aj)?|maj|aug|dim|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?)\]/gi;
 const CHORD_TOKEN_RE = /^[A-G][#b]?(?:m(?:aj)?|maj|aug|dim|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?$/i;
 
@@ -155,15 +196,18 @@ export function extractChords(text) {
     return chords;
 }
 
-export function renderChordSummary(chords) {
+export function renderChordSummary(chords, instrument = 'guitar') {
+    const isUke = instrument === 'ukulele';
+    const numStrings = isUke ? 4 : 6;
+
     const items = chords
         .map(name => {
             // For slash chords like G/B, look up the base chord
             const baseName = name.split('/')[0];
-            const tab = getTabShape(baseName);
+            const tab = isUke ? getUkeTabShape(baseName) : getTabShape(baseName);
             if (!tab) return null;
             return `<div class="chord-diagram-item">
-                <div class="chord-diagram-svg">${generateChordSVG(tab)}</div>
+                <div class="chord-diagram-svg">${generateChordSVG(tab, numStrings)}</div>
                 <div class="chord-diagram-name">${name}</div>
             </div>`;
         })
