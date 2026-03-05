@@ -107,7 +107,7 @@ function insertChordSummary(lyrics) {
     if (!html) return;
     const div = document.createElement('div');
     div.innerHTML = html;
-    lyricsContainer.insertBefore(div.firstElementChild, lyricsContainer.firstChild);
+    lyricsContainer.parentNode.insertBefore(div.firstElementChild, lyricsContainer);
 }
 
 const CHORD_MODE_CYCLE = ['off', 'guitar', 'ukulele'];
