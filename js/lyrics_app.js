@@ -1143,6 +1143,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const deltaX = Math.abs(touchX - touchStartX);
                 const deltaY = Math.abs(touchY - touchStartY);
 
+                // Prevent browser navigation (Firefox Android back/forward) on horizontal swipes
+                if (deltaX > 10 && deltaX > deltaY * 1.5) {
+                    e.preventDefault();
+                }
+
                 // Check if moved significantly
                 if (deltaX > 15 || deltaY > 15) {
                     touchMoved = true;
@@ -1277,7 +1282,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add event listeners with proper options
         lyricsContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
-        lyricsContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+        lyricsContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
         lyricsContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
 
         // Add subtle visual feedback for touch interactions (respecting theme)
