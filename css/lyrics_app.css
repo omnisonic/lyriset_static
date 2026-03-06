@@ -461,6 +461,18 @@ body {
     color: var(--text-primary);
     -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     touch-action: pan-y; /* Allow vertical scrolling, handle horizontal gestures */
+    transition: opacity 0.25s ease;
+}
+
+@keyframes autofit-pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.1; }
+}
+
+.lyrics.autofit-calculating {
+    opacity: 0.25;
+    animation: autofit-pulse 0.8s ease-in-out infinite;
+    transition: none;
 }
 
 /* Tablet adjustments - also use vertical scrolling for better readability */
