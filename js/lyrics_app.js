@@ -1276,23 +1276,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     if (lyricsContainer) {
+        let resizeDebounceTimer = null;
+        let resizeObserverInitialized = false;
+
         const resizeObserver = new ResizeObserver(entries => {
-            for (let entry of entries) {
-                const containerWidth = entry.contentRect.width;
-                const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
-                
-                // Only adjust columns on desktop (mobile uses vertical scrolling)
-                if (containerWidth >= 480) {
-                    adjustColumnsForFontSize(currentSize);
-                }
-                
-                // Recalculate space after resize
-                setTimeout(() => {
-                    calculateUnusedSpace();
-                }, 100);
+            // Skip the initial observation (fires immediately on observe())
+            if (!resizeObserverInitialized) {
+                resizeObserverInitialized = true;
+                return;
             }
+
+            clearTimeout(resizeDebounceTimer);
+            resizeDebounceTimer = setTimeout(() => {
+                const songTitle = document.getElementById('songTitle');
+                const currentSong = songTitle && songTitle.textContent;
+                if (!currentSong || currentSong === 'Select a Song') return;
+
+                try {
+                    const songData = JSON.parse(localStorage.getItem(currentSong));
+                    if (songData) {
+                        const isClean = lyricsContainer.getAttribute('data-clean') === 'true';
+                        const lyrics = isClean
+                            ? cleanLyrics(songData.lyrics)
+                            : songData.lyrics;
+                        autoFitLyrics(currentSong, songData.artist, lyrics);
+                    }
+                } catch (e) {
+                    // ignore parse errors
+                }
+            }, 300);
         });
-        
+
         resizeObserver.observe(lyricsContainer);
         
         // Stop auto-scroll when user manually scrolls
