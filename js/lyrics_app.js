@@ -1109,8 +1109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let twoFingerMoved = false;
 
         function handleTouchStart(e) {
-            const containerWidth = window.innerWidth;
-            if (containerWidth >= 480) return; // Desktop only
+            if (!window.matchMedia('(pointer: coarse)').matches) return; // Non-touch device
 
             if (e.touches.length === 1) {
                 // Single touch - record for single-finger gestures
@@ -1134,8 +1133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleTouchMove(e) {
-            const containerWidth = window.innerWidth;
-            if (containerWidth >= 480) return;
+            if (!window.matchMedia('(pointer: coarse)').matches) return;
 
             if (e.touches.length === 1) {
                 const touchX = e.touches[0].clientX;
@@ -1176,8 +1174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function handleTouchEnd(e) {
-            const containerWidth = window.innerWidth;
-            if (containerWidth >= 480) return;
+            if (!window.matchMedia('(pointer: coarse)').matches) return;
 
             // Handle single finger gestures
             if (e.changedTouches.length === 1 && touchStartTime > 0) {

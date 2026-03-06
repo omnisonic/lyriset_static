@@ -1,5 +1,5 @@
 // BUMP THIS VERSION ON EVERY DEPLOY to force cache refresh on all devices
-const CACHE_NAME = 'lyriset-v9';
+const CACHE_NAME = 'lyriset-v10';
 const urlsToCache = [
   '/',
   '/index.html',
