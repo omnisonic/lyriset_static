@@ -1279,14 +1279,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (lyricsContainer) {
         let resizeDebounceTimer = null;
-        let resizeObserverInitialized = false;
+        let lastObservedWidth = null;
 
         const resizeObserver = new ResizeObserver(entries => {
-            // Skip the initial observation (fires immediately on observe())
-            if (!resizeObserverInitialized) {
-                resizeObserverInitialized = true;
+            const newWidth = entries[0]?.contentRect.width ?? null;
+
+            // Skip initial observation and ignore height-only changes
+            // (font-size changes alter height but not width, so this prevents
+            // auto-fit triggering itself in a loop after each calculation)
+            if (lastObservedWidth === null || Math.abs(newWidth - lastObservedWidth) < 10) {
+                lastObservedWidth = newWidth;
                 return;
             }
+            lastObservedWidth = newWidth;
 
             clearTimeout(resizeDebounceTimer);
             resizeDebounceTimer = setTimeout(() => {
