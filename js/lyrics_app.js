@@ -576,14 +576,16 @@ function calculateUnusedSpace() {
 
 // Auto-fit functionality - finds maximum font size without vertical overflow
 // Uses overflow-y: auto to detect when font is too large
-function autoFitLyrics(song, artist, lyrics) {
+function autoFitLyrics(song, artist, lyrics, skipDisplay = false) {
     const lyricsContainer = document.getElementById('lyricsDisplay');
     if (!lyricsContainer) {
         return;
     }
 
-    // First display the lyrics with current settings
-    displayLyrics(song, artist, lyrics);
+    // On resize we skip re-rendering (content unchanged, just recalculate sizing)
+    if (!skipDisplay) {
+        displayLyrics(song, artist, lyrics);
+    }
 
     // Show loading state while auto-fit calculates
     lyricsContainer.classList.add('autofit-calculating');
@@ -1299,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const lyrics = isClean
                             ? cleanLyrics(songData.lyrics)
                             : songData.lyrics;
-                        autoFitLyrics(currentSong, songData.artist, lyrics);
+                        autoFitLyrics(currentSong, songData.artist, lyrics, true);
                     }
                 } catch (e) {
                     // ignore parse errors
