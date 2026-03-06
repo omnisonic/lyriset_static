@@ -4,7 +4,7 @@ import { extractChords, renderChordSummary } from './chord_diagrams.js';
 // Auto-scroll functionality for mobile
 let autoScrollInterval = null;
 let autoScrollActive = false;
-let chordDiagramsMode = 'off'; // 'off' | 'guitar' | 'ukulele'
+let chordDiagramsMode = 'guitar'; // 'off' | 'guitar' | 'ukulele'
 
 function toggleAutoScroll() {
     const lyricsContainer = document.getElementById('lyricsDisplay');
@@ -17,7 +17,7 @@ function toggleAutoScroll() {
     
     // Check if we're on mobile/tablet
     const containerWidth = lyricsContainer.offsetWidth;
-    if (containerWidth >= 769) {
+    if (containerWidth >= 480) {
         return;
     }
     
@@ -107,7 +107,12 @@ function insertChordSummary(lyrics) {
     if (!html) return;
     const div = document.createElement('div');
     div.innerHTML = html;
-    lyricsContainer.parentNode.insertBefore(div.firstElementChild, lyricsContainer);
+    const isMobile = (lyricsContainer.parentNode.offsetWidth || window.innerWidth) < 480;
+    if (isMobile) {
+        lyricsContainer.parentNode.insertBefore(div.firstElementChild, lyricsContainer);
+    } else {
+        lyricsContainer.prepend(div.firstElementChild);
+    }
 }
 
 const CHORD_MODE_CYCLE = ['off', 'guitar', 'ukulele'];
@@ -189,7 +194,7 @@ function toggleCleanLyrics() {
         const containerWidth = lyricsContainer.offsetWidth;
         
         // Only adjust columns on desktop (mobile uses vertical scrolling)
-        if (containerWidth >= 769) {
+        if (containerWidth >= 480) {
             adjustColumnsForFontSize(currentSize);
         }
         calculateUnusedSpace();
@@ -296,7 +301,7 @@ export function adjustFontSize(delta) {
     const containerWidth = lyricsContainer.offsetWidth;
     
     // Mobile: Use smaller font size range
-    if (containerWidth < 769) {
+    if (containerWidth < 480) {
         const newSize = Math.min(Math.max(currentSize + delta, 12), 20);
         lyricsContainer.style.fontSize = `${newSize}px`;
     } else {
@@ -355,7 +360,7 @@ function adjustColumnsForFontSize(fontSize) {
     
     // Check if we're on mobile/tablet (vertical scrolling layout)
     const containerWidth = lyricsContainer.offsetWidth;
-    if (containerWidth < 769) {
+    if (containerWidth < 480) {
         // Mobile/tablet layout - no columns needed, use vertical scrolling
         return;
     }
@@ -450,7 +455,7 @@ function calculateUnusedSpace() {
     const containerHeight = containerRect.height;
     
     // Check if we're on mobile/tablet (vertical scrolling layout)
-    const isMobile = containerWidth < 769;
+    const isMobile = containerWidth < 480;
     
     if (isMobile) {
         // Mobile: Vertical scrolling layout - simpler calculation
@@ -591,7 +596,7 @@ function autoFitLyrics(song, artist, lyrics) {
         }
 
         // Check if we're on mobile/tablet (vertical scrolling layout)
-        const isMobile = containerWidth < 769;
+        const isMobile = containerWidth < 480;
         
         if (isMobile) {
             // Mobile/tablet: Calculate font size so longest line fits container width
@@ -846,7 +851,7 @@ function displayLyrics(song, artist, lyrics) {
 
         const lyricsLines = (lyrics || '').split('\n');
         const containerWidth = lyricsContainer.offsetWidth;
-        const isMobile = containerWidth < 769;
+        const isMobile = containerWidth < 480;
         
         lyricsLines.forEach(line => {
             const lineDiv = document.createElement('div');
@@ -883,7 +888,7 @@ function displayLyrics(song, artist, lyrics) {
             const containerWidth = lyricsContainer.offsetWidth;
             
             // Only adjust columns on desktop (mobile uses vertical scrolling)
-            if (containerWidth >= 769) {
+            if (containerWidth >= 480) {
                 adjustColumnsForFontSize(currentSize);
             }
             calculateUnusedSpace();
@@ -936,7 +941,14 @@ function loadLastViewedSong() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    
+
+    // Reflect default chord mode on button
+    const chordBtn = document.getElementById('toggleChordDiagramsButton');
+    if (chordBtn) {
+        chordBtn.classList.add('active');
+        chordBtn.setAttribute('title', CHORD_MODE_TITLES[chordDiagramsMode]);
+    }
+
     // Always set up touch handlers, regardless of other elements
     setupMobileTouchHandlers();
     
@@ -1098,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function handleTouchStart(e) {
             const containerWidth = window.innerWidth;
-            if (containerWidth >= 769) return; // Desktop only
+            if (containerWidth >= 480) return; // Desktop only
 
             if (e.touches.length === 1) {
                 // Single touch - record for single-finger gestures
@@ -1123,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function handleTouchMove(e) {
             const containerWidth = window.innerWidth;
-            if (containerWidth >= 769) return;
+            if (containerWidth >= 480) return;
 
             if (e.touches.length === 1) {
                 const touchX = e.touches[0].clientX;
@@ -1160,7 +1172,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function handleTouchEnd(e) {
             const containerWidth = window.innerWidth;
-            if (containerWidth >= 769) return;
+            if (containerWidth >= 480) return;
 
             // Handle single finger gestures
             if (e.changedTouches.length === 1 && touchStartTime > 0) {
@@ -1271,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add subtle visual feedback for touch interactions (respecting theme)
         lyricsContainer.addEventListener('touchstart', function(e) {
             const containerWidth = window.innerWidth;
-            if (containerWidth < 769) {
+            if (containerWidth < 480) {
                 // Use CSS variables to respect current theme
                 this.style.backgroundColor = 'var(--bg-primary)';
                 this.style.opacity = '0.95';
@@ -1280,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         lyricsContainer.addEventListener('touchend', function(e) {
             const containerWidth = window.innerWidth;
-            if (containerWidth < 769) {
+            if (containerWidth < 480) {
                 setTimeout(() => {
                     // Restore original background and opacity
                     this.style.backgroundColor = 'var(--bg-secondary)';
@@ -1323,7 +1335,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!autoScrollButton) return;
         
         const containerWidth = window.innerWidth;
-        if (containerWidth < 769) {
+        if (containerWidth < 480) {
             autoScrollButton.style.display = 'flex'; // Show on mobile/tablet
         } else {
             autoScrollButton.style.display = 'none'; // Hide on desktop
@@ -1346,7 +1358,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
                 
                 // Only adjust columns on desktop (mobile uses vertical scrolling)
-                if (containerWidth >= 769) {
+                if (containerWidth >= 480) {
                     adjustColumnsForFontSize(currentSize);
                 }
                 

@@ -265,7 +265,7 @@ body {
 } */
 
 /* Responsive width adjustments */
-@media (max-width: 1200px) and (min-width: 768px) {
+@media (max-width: 1200px) and (min-width: 480px) {
     .navbar .btn-group .btn {
         min-width: 32px;
         max-width: 50px;
@@ -277,7 +277,7 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     .navbar .btn-group .btn {
         min-width: 44px; /* Better touch target */
         max-width: none; /* Allow full width on mobile */
@@ -294,7 +294,7 @@ body {
 
 
 /* Desktop adjustments for individual buttons */
-@media (min-width: 768px) {
+@media (min-width: 480px) {
     .navbar .nav-item .btn.btn-link.nav-link {
         max-width: 100px; /* Prevent buttons from getting too wide */
     }
@@ -306,14 +306,14 @@ body {
 }
 
 /* Hide brand on tablet — nav is fully expanded so it's redundant */
-@media (min-width: 768px) and (max-width: 991.98px) {
+@media (min-width: 480px) and (max-width: 991.98px) {
     .navbar .navbar-brand {
         display: none;
     }
 }
 
 /* Desktop menu items */
-@media (min-width: 768px) {
+@media (min-width: 480px) {
     .navbar .navbar-nav {
         display: flex;
         flex-direction: row;
@@ -464,7 +464,7 @@ body {
 }
 
 /* Tablet adjustments - also use vertical scrolling for better readability */
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     .lyrics-container {
         position: relative;
         top: auto;
@@ -617,7 +617,7 @@ body {
 }
 
 /* Mobile dropdown styling - optimized for viewport constraints */
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     /* Ensure dropdown items are touch-friendly */
     .dropdown-menu .dropdown-item {
         /* background-color: var(--button-bg); */
@@ -659,7 +659,7 @@ body {
 }
 
 /* Desktop dropdown styling - ensure proper positioning */
-@media (min-width: 769px) {
+@media (min-width: 480px) {
     .dropdown-menu {
         max-height: none;
         overflow-y: visible;
@@ -881,7 +881,7 @@ body {
 }
 
 /* Responsive adjustments for feature cards */
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     .feature-grid {
         grid-template-columns: 1fr;
         gap: 0.75rem;
@@ -978,7 +978,7 @@ body {
 }
 
 /* Mobile icon sizing adjustments */
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     .swipe-indicator .bi {
         font-size: 1.1em;
     }
@@ -1460,7 +1460,7 @@ textarea.form-control:focus {
 }
 
 /* Mobile icon sizing */
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     .bi {
         font-size: 1.2em;
     }
@@ -1523,7 +1523,7 @@ textarea.form-control:focus {
     color: var(--text-primary);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 479px) {
     .chord-diagram-svg {
         width: 46px;
         height: 52px;
