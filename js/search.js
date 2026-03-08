@@ -27,74 +27,171 @@ export function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-export function renderResults(query) {
-    const results = document.getElementById('searchResults');
-    if (!results) return;
+// --- External search state ---
 
-    const matches = filterSongs(getAllSongs(), query);
-    results.innerHTML = '';
+let lrclibState = null;   // null | 'loading' | Song[]
+let chordieState = null;  // null | 'loading' | Song[]
+let lrclibDebounce = null;
+let chordieDebounce = null;
 
-    if (matches.length === 0 && query.trim()) {
-        const li = document.createElement('li');
-        li.className = 'list-group-item text-muted';
-        li.textContent = 'No songs found in your library.';
-        results.appendChild(li);
-    }
+function getCurrentQuery() {
+    return document.getElementById('searchInput')?.value || '';
+}
 
-    const q = query.trim();
-    if (q) {
-        const encoded = encodeURIComponent(q.replace(/\s+/g, '+'));
-        const li = document.createElement('li');
-        li.className = 'list-group-item text-muted small';
-        li.innerHTML = `Find chords for "${escapeHtml(q)}" on: `
-            + `<a href="https://www.guitaretab.com/fetch/?type=tab&query=${encoded}" target="_blank" rel="noopener">Guitaretab</a>`
-            + ` &middot; `
-            + `<a href="http://www.chordie.com/results.php?q=${encoded}" target="_blank" rel="noopener">Chordie</a>`;
-        results.appendChild(li);
-    }
+function isLrclibEnabled() {
+    return document.getElementById('lrclibEnabled')?.checked ?? false;
+}
 
-    matches.forEach(song => {
-        const li = document.createElement('li');
-        li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
-        li.style.cursor = 'pointer';
+function isChordieEnabled() {
+    return document.getElementById('chordieEnabled')?.checked ?? false;
+}
 
-        const text = document.createElement('span');
-        text.innerHTML = `<strong>${escapeHtml(song.title)}</strong>${song.artist ? ` <span class="text-muted">— ${escapeHtml(song.artist)}</span>` : ''}`;
+// --- Render helpers ---
 
-        const badge = document.createElement('span');
-        badge.className = 'badge rounded-pill ms-2';
-        badge.style.fontSize = '0.7em';
-        badge.textContent = `Set ${song.set}`;
+function appendHeader(list, text) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item py-2 small fw-semibold';
+    li.style.cssText = 'pointer-events:none; border-top: 2px solid var(--bs-border-color, #dee2e6); background: var(--bs-tertiary-bg, #f8f9fa); color: var(--bs-secondary-color, #6c757d); letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.7em !important;';
+    li.textContent = text;
+    list.appendChild(li);
+}
 
-        li.appendChild(text);
-        li.appendChild(badge);
+function appendMsg(list, text) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item text-muted small';
+    li.textContent = text;
+    list.appendChild(li);
+}
 
-        li.addEventListener('click', () => {
-            if (typeof window.updateSongDropdown === 'function') {
-                window.updateSongDropdown(song.set, true);
-            }
-            if (typeof autoFitLyrics === 'function') {
-                autoFitLyrics(song.title, song.artist, song.lyrics);
-            } else if (typeof displayLyrics === 'function') {
-                displayLyrics(song.title, song.artist, song.lyrics);
-            }
-            const modal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
-            if (modal) modal.hide();
-        });
+function appendLoading(list) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item text-muted small d-flex align-items-center gap-2';
+    li.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+    list.appendChild(li);
+}
 
-        results.appendChild(li);
+function makeLocalItem(song) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+    li.style.cursor = 'pointer';
+
+    const text = document.createElement('span');
+    text.innerHTML = `<strong>${escapeHtml(song.title)}</strong>${song.artist ? ` <span class="text-muted">— ${escapeHtml(song.artist)}</span>` : ''}`;
+
+    const badge = document.createElement('span');
+    badge.className = 'badge rounded-pill ms-2';
+    badge.style.fontSize = '0.7em';
+    badge.textContent = `Set ${song.set}`;
+
+    li.appendChild(text);
+    li.appendChild(badge);
+
+    li.addEventListener('click', () => {
+        if (typeof window.updateSongDropdown === 'function') {
+            window.updateSongDropdown(song.set, true);
+        }
+        if (typeof autoFitLyrics === 'function') {
+            autoFitLyrics(song.title, song.artist, song.lyrics);
+        } else if (typeof displayLyrics === 'function') {
+            displayLyrics(song.title, song.artist, song.lyrics);
+        }
+        const modal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
+        if (modal) modal.hide();
     });
 
+    return li;
+}
+
+function makeLrclibItem(song) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+    const text = document.createElement('span');
+    text.innerHTML = `<strong>${escapeHtml(song.trackName)}</strong> <span class="text-muted">— ${escapeHtml(song.artistName)}</span>`;
+
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm btn-outline-secondary ms-2 flex-shrink-0';
+    btn.textContent = 'Add';
+    btn.addEventListener('click', () => addLrclibSong(song));
+
+    li.appendChild(text);
+    li.appendChild(btn);
+    return li;
+}
+
+function makeChordieItem(song) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+    const text = document.createElement('span');
+    text.innerHTML = `<strong>${escapeHtml(song.title)}</strong>${song.artist ? ` <span class="text-muted">— ${escapeHtml(song.artist)}</span>` : ''}`;
+
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm btn-outline-secondary ms-2 flex-shrink-0';
+    btn.textContent = 'Add';
+    btn.addEventListener('click', () => fetchAndAddChordie(song, btn));
+
+    li.appendChild(text);
+    li.appendChild(btn);
+    return li;
+}
+
+// --- Unified render ---
+
+function renderAllResults(query) {
+    const list = document.getElementById('searchResults');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const q = query.trim();
+    const local = filterSongs(getAllSongs(), query);
+    const lrclibOn = isLrclibEnabled();
+    const chordieOn = isChordieEnabled();
+    const anyExternal = lrclibOn || chordieOn;
+
+    // Chordie results
+    if (chordieOn && q.length >= 2) {
+        appendHeader(list, 'Chordie — chords & lyrics');
+        if (chordieState === 'loading') {
+            appendLoading(list);
+        } else if (Array.isArray(chordieState)) {
+            if (chordieState.length === 0) appendMsg(list, 'No chords found.');
+            else chordieState.forEach(song => list.appendChild(makeChordieItem(song)));
+        }
+    }
+
+    // lrclib results
+    if (lrclibOn && q.length >= 2) {
+        appendHeader(list, 'lrclib.net — lyrics only');
+        if (lrclibState === 'loading') {
+            appendLoading(list);
+        } else if (Array.isArray(lrclibState)) {
+            if (lrclibState.length === 0) appendMsg(list, 'No lyrics found.');
+            else lrclibState.forEach(song => list.appendChild(makeLrclibItem(song)));
+        }
+    }
+
+    // Local results
+    if (local.length === 0 && q) {
+        if (anyExternal) appendHeader(list, 'Library');
+        appendMsg(list, 'No songs found in your library.');
+    } else if (local.length > 0) {
+        if (anyExternal) appendHeader(list, 'Library');
+        local.forEach(song => list.appendChild(makeLocalItem(song)));
+    }
+
+    // Direct search links
     const chordLinks = document.getElementById('chordLinks');
     if (chordLinks) {
-        const q = query.trim();
         if (q) {
             const encoded = encodeURIComponent(q.replace(/\s+/g, '+'));
             chordLinks.style.display = 'block';
-            chordLinks.innerHTML = `Find chords for "${escapeHtml(q)}" on: `
+            chordLinks.innerHTML = `Find results for &ldquo;${escapeHtml(q)}&rdquo; directly on: `
                 + `<a href="https://www.guitaretab.com/fetch/?type=tab&query=${encoded}" target="_blank" rel="noopener">Guitaretab</a>`
                 + ` &middot; `
-                + `<a href="http://www.chordie.com/results.php?q=${encoded}" target="_blank" rel="noopener">Chordie</a>`;
+                + `<a href="http://www.chordie.com/results.php?q=${encoded}" target="_blank" rel="noopener">Chordie</a>`
+                + ` &middot; `
+                + `<a href="https://lrclib.net/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">lrclib.net</a>`;
         } else {
             chordLinks.style.display = 'none';
             chordLinks.innerHTML = '';
@@ -102,153 +199,84 @@ export function renderResults(query) {
     }
 }
 
-// --- lrclib.net lyrics search ---
-
-let lrclibDebounce = null;
-
-function triggerLrclibSearch(query) {
-    const section = document.getElementById('lrclibSection');
-    const results = document.getElementById('lrclibResults');
-    if (!section || !results) return;
-
-    clearTimeout(lrclibDebounce);
-
-    if (query.trim().length < 2) {
-        section.style.display = 'none';
-        results.innerHTML = '';
-        return;
-    }
-
-    section.style.display = 'block';
-    results.innerHTML = '<li class="list-group-item text-muted">Searching lyrics...</li>';
-
-    lrclibDebounce = setTimeout(() => fetchLrclibResults(query), 500);
+export function renderResults(query) {
+    renderAllResults(query);
 }
 
-async function fetchLrclibResults(query) {
-    const results = document.getElementById('lrclibResults');
-    if (!results) return;
+// --- lrclib.net ---
 
+async function fetchLrclibResults(query) {
     try {
         const res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error('Search failed');
         const songs = await res.json();
-        renderLrclibResults(songs.filter(s => s.plainLyrics).slice(0, 15));
+        const seen = new Set();
+        lrclibState = songs.filter(s => {
+            if (!s.plainLyrics) return false;
+            const key = `${s.trackName}|||${s.artistName}`.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        }).slice(0, 15);
     } catch {
-        results.innerHTML = '<li class="list-group-item text-muted">Could not reach lrclib.net</li>';
+        lrclibState = [];
     }
+    renderAllResults(getCurrentQuery());
 }
 
-function renderLrclibResults(songs) {
-    const results = document.getElementById('lrclibResults');
-    if (!results) return;
-    results.innerHTML = '';
-
-    if (songs.length === 0) {
-        const li = document.createElement('li');
-        li.className = 'list-group-item text-muted';
-        li.textContent = 'No lyrics found.';
-        results.appendChild(li);
-        return;
+function triggerLrclib(query) {
+    clearTimeout(lrclibDebounce);
+    const q = query.trim();
+    if (isLrclibEnabled() && q.length >= 2) {
+        lrclibState = 'loading';
+        lrclibDebounce = setTimeout(() => fetchLrclibResults(query), 500);
+    } else {
+        lrclibState = null;
     }
-
-    songs.forEach(song => {
-        const li = document.createElement('li');
-        li.className = 'list-group-item d-flex justify-content-between align-items-center';
-
-        const text = document.createElement('span');
-        text.innerHTML = `<strong>${escapeHtml(song.trackName)}</strong> <span class="text-muted">— ${escapeHtml(song.artistName)}</span>`;
-
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-sm btn-outline-secondary ms-2 flex-shrink-0';
-        btn.textContent = 'Add';
-        btn.addEventListener('click', () => addLrclibSong(song));
-
-        li.appendChild(text);
-        li.appendChild(btn);
-        results.appendChild(li);
-    });
 }
 
 function addLrclibSong(song) {
-    // Close search modal
     const searchModal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
     if (searchModal) searchModal.hide();
 
-    // Pre-fill add song modal
     document.getElementById('songInput').value = song.trackName;
     document.getElementById('artistInput').value = song.artistName;
     document.getElementById('lyricsText').value = song.plainLyrics;
+    const setSelect = document.getElementById('setSelect');
+    if (setSelect) setSelect.value = window.currentSetNumber || 1;
 
-    // Open add song modal
     const addModal = new bootstrap.Modal(document.getElementById('lyricsModal'));
     addModal.show();
 }
 
-// --- Chordie chords search ---
-
-function updateChordieButton(query) {
-    const btn = document.getElementById('chordieSearchBtn');
-    const results = document.getElementById('chordieResults');
-    if (!btn) return;
-
-    if (query.trim().length >= 2) {
-        btn.style.display = 'inline-block';
-        btn.dataset.query = query;
-    } else {
-        btn.style.display = 'none';
-        if (results) results.innerHTML = '';
-    }
-}
+// --- Chordie ---
 
 async function fetchChordieResults(query) {
-    const results = document.getElementById('chordieResults');
-    if (!results) return;
-
     try {
         const res = await fetch(`https://lyriset.netlify.app/.netlify/functions/search-chordie?query=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error('Search failed');
         const songs = await res.json();
-        renderChordieResults(songs);
+        chordieState = songs;
     } catch {
-        results.innerHTML = '<li class="list-group-item text-muted">Could not reach chordie.com</li>';
+        chordieState = [];
     }
+    renderAllResults(getCurrentQuery());
 }
 
-function renderChordieResults(songs) {
-    const results = document.getElementById('chordieResults');
-    if (!results) return;
-    results.innerHTML = '';
-
-    if (songs.length === 0) {
-        const li = document.createElement('li');
-        li.className = 'list-group-item text-muted';
-        li.textContent = 'No chords found.';
-        results.appendChild(li);
-        return;
+function triggerChordie(query) {
+    clearTimeout(chordieDebounce);
+    const q = query.trim();
+    if (isChordieEnabled() && q.length >= 2) {
+        chordieState = 'loading';
+        chordieDebounce = setTimeout(() => fetchChordieResults(query), 600);
+    } else {
+        chordieState = null;
     }
-
-    songs.forEach(song => {
-        const li = document.createElement('li');
-        li.className = 'list-group-item d-flex justify-content-between align-items-center';
-
-        const text = document.createElement('span');
-        text.innerHTML = `<strong>${escapeHtml(song.title)}</strong>${song.artist ? ` <span class="text-muted">— ${escapeHtml(song.artist)}</span>` : ''}`;
-
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-sm btn-outline-secondary ms-2 flex-shrink-0';
-        btn.textContent = 'Add';
-        btn.addEventListener('click', () => fetchAndAddChordie(song, btn));
-
-        li.appendChild(text);
-        li.appendChild(btn);
-        results.appendChild(li);
-    });
 }
 
 async function fetchAndAddChordie(song, btn) {
     btn.disabled = true;
-    btn.textContent = '...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
     try {
         const res = await fetch(`https://lyriset.netlify.app/.netlify/functions/fetch-chordie?path=${encodeURIComponent(song.path)}&title=${encodeURIComponent(song.title)}&artist=${encodeURIComponent(song.artist)}`);
@@ -261,12 +289,14 @@ async function fetchAndAddChordie(song, btn) {
         document.getElementById('songInput').value = song.title;
         document.getElementById('artistInput').value = song.artist;
         document.getElementById('lyricsText').value = chords;
+        const setSelect = document.getElementById('setSelect');
+        if (setSelect) setSelect.value = window.currentSetNumber || 1;
 
         const addModal = new bootstrap.Modal(document.getElementById('lyricsModal'));
         addModal.show();
     } catch {
         btn.disabled = false;
-        btn.textContent = 'Add';
+        btn.innerHTML = 'Add';
         alert('Could not fetch chords. Try again.');
     }
 }
@@ -281,30 +311,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchModal.addEventListener('shown.bs.modal', () => {
         searchInput.value = '';
-        renderResults('');
-        const lrclibSection = document.getElementById('lrclibSection');
-        if (lrclibSection) lrclibSection.style.display = 'none';
+        lrclibState = null;
+        chordieState = null;
+        renderAllResults('');
         const chordLinks = document.getElementById('chordLinks');
         if (chordLinks) chordLinks.style.display = 'none';
-        const chordieBtn = document.getElementById('chordieSearchBtn');
-        if (chordieBtn) { chordieBtn.style.display = 'none'; }
-        const chordieResults = document.getElementById('chordieResults');
-        if (chordieResults) chordieResults.innerHTML = '';
         searchInput.focus();
     });
 
-    searchInput.addEventListener('input', () => {
-        renderResults(searchInput.value);
-        triggerLrclibSearch(searchInput.value);
-        updateChordieButton(searchInput.value);
+    searchModal.addEventListener('hidden.bs.modal', () => {
+        document.getElementById('lrclibEnabled').checked = false;
+        document.getElementById('chordieEnabled').checked = false;
     });
 
-    const chordieSearchBtn = document.getElementById('chordieSearchBtn');
-    if (chordieSearchBtn) {
-        chordieSearchBtn.addEventListener('click', () => {
-            const query = chordieSearchBtn.dataset.query || searchInput.value;
-            fetchChordieResults(query);
-            chordieSearchBtn.style.display = 'none';
-        });
-    }
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value;
+        triggerLrclib(query);
+        triggerChordie(query);
+        renderAllResults(query);
+    });
+
+    document.getElementById('lrclibEnabled')?.addEventListener('change', () => {
+        const query = searchInput.value;
+        if (!isLrclibEnabled()) { lrclibState = null; }
+        triggerLrclib(query);
+        renderAllResults(query);
+    });
+
+    document.getElementById('chordieEnabled')?.addEventListener('change', () => {
+        const query = searchInput.value;
+        if (!isChordieEnabled()) { chordieState = null; }
+        triggerChordie(query);
+        renderAllResults(query);
+    });
 });

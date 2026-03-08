@@ -181,6 +181,31 @@
                             <input type="text" class="form-control border-0" id="artistInput" name="artist"
                                 required />
                         </div>
+                        <div class="mb-3 d-flex align-items-center gap-3 flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="form-label mb-0" for="setSelect">Set</label>
+                                <select class="form-select form-select-sm border-0" id="setSelect" style="width:auto">
+                                    <option value="1">Set 1</option>
+                                    <option value="2">Set 2</option>
+                                    <option value="3">Set 3</option>
+                                    <option value="4">Set 4</option>
+                                    <option value="5">Set 5</option>
+                                    <option value="6">Set 6</option>
+                                    <option value="7">Set 7</option>
+                                    <option value="8">Set 8</option>
+                                    <option value="9">Set 9</option>
+                                    <option value="10">Set 10</option>
+                                </select>
+                            </div>
+                            <div id="moveCopyToggle" style="display:none" class="d-flex gap-3 small text-muted">
+                                <label class="d-flex align-items-center gap-1" style="cursor:pointer">
+                                    <input type="radio" name="moveCopy" value="move" checked> Move
+                                </label>
+                                <label class="d-flex align-items-center gap-1" style="cursor:pointer">
+                                    <input type="radio" name="moveCopy" value="copy"> Copy
+                                </label>
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label for="lyricsText" class="form-label">Lyrics</label>
                             <textarea class="form-control border-0" id="lyricsText" name="lyrics" rows="10"
@@ -218,7 +243,7 @@
                                 <div class="feature-icon"><i class="bi bi-search"></i></div>
                                 <div class="feature-text">
                                     <strong>Song Search</strong>
-                                    <p>Search by title or artist across all your sets instantly</p>
+                                    <p>Search your library plus chords and lyrics from Chordie and lrclib.net</p>
                                 </div>
                             </div>
                             <div class="feature-card">
@@ -309,12 +334,10 @@
 
                     <h4 class="text-start">Adding Songs to Your Collection</h4>
                     <ul>
-                        <li><strong>Step 1:</strong> Click the <i class="bi bi-plus-lg"></i> button (top navigation) to open the Submit Lyrics form</li>
-                        <li><strong>Step 2:</strong> Visit a lyrics site like <a href="https://www.guitaretab.com/" target="_blank">www.guitaretab.com</a> and copy the song lyrics</li>
-                        <li><strong>Step 3:</strong> Paste the lyrics into the form along with the song title and artist</li>
-                        <li><strong>Step 4:</strong> Click "Submit" to add the song to your current set</li>
-                        <li><strong>Step 5:</strong> Use the <i class="bi bi-download"></i> Export button (in the file management group) to save your collection as a .lyriset file</li>
-                        <li><strong>Result:</strong> Your songs are now in your setlist and safely saved in your .lyriset file!</li>
+                        <li><strong>From Search:</strong> Click <i class="bi bi-search"></i>, type a song name, and optionally enable Chordie (chords &amp; lyrics) or lrclib.net (lyrics only). Click <strong>Add</strong> on any result to pre-fill the form — choose your target set, then Submit.</li>
+                        <li><strong>Manually:</strong> Click <i class="bi bi-plus-lg"></i>, paste lyrics from any site, choose a set, and Submit.</li>
+                        <li><strong>Edit after adding:</strong> External results may vary — use the <i class="bi bi-pencil"></i> Edit button to clean up after adding.</li>
+                        <li><strong>Save your collection:</strong> Use the <i class="bi bi-download"></i> Export button to save a .lyriset backup file.</li>
                     </ul>
 
                     <h4 class="text-start">Managing Your Songs</h4>
@@ -323,6 +346,7 @@
                         <li><strong>Edit a Song:</strong> Select a song, then click the <i class="bi bi-pencil"></i> Edit button to modify it</li>
                         <li><strong>Delete a Song:</strong> Select a song, then click the <i class="bi bi-trash"></i> Delete button to remove it</li>
                         <li><strong>Switch Sets:</strong> Use the Set ▼ dropdown to organize songs into different sets (1-10)</li>
+                        <li><strong>Move / Copy between sets:</strong> Open the add form with a song already in your library — a Move/Copy option appears. Move changes the song's set; Copy saves it to the new set under a new title, keeping the original.</li>
                     </ul>
 
                     <h4 class="text-start">Navigation & Display Controls</h4>
@@ -342,6 +366,8 @@
                         <li>The clean lyrics (<i class="bi bi-stars"></i> button) feature can help format text for better viewing. If you include chords in the lyrics, the clean lyrics will hide them.</li>
                         <li>Use chord diagrams (<i class="bi bi-grid-3x3"></i> button) with lyrics that contain chords — click to cycle through guitar and ukulele fingering charts.</li>
                         <li>Use the search (<i class="bi bi-search"></i> button) to quickly jump to any song across all your sets without changing the active set.</li>
+                        <li>When adding from Chordie or lrclib.net, review and edit the lyrics in the form before submitting — external results may vary.</li>
+                        <li>Use "Find results directly on" links in search for full site browsing when the built-in search doesn't find what you need.</li>
                     </ul>
 
                 </div>
@@ -361,17 +387,18 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control border-0 mb-3" id="searchInput" placeholder="Search by title or artist..." autocomplete="off">
+                    <input type="text" class="form-control border-0 mb-2" id="searchInput" placeholder="Search by title or artist..." autocomplete="off">
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-3 small text-muted">
+                        <label class="d-flex align-items-center gap-1" style="cursor:pointer">
+                            <input type="checkbox" id="chordieEnabled"> Chordie <span class="text-muted">(chords &amp; lyrics)</span>
+                        </label>
+                        <label class="d-flex align-items-center gap-1" style="cursor:pointer">
+                            <input type="checkbox" id="lrclibEnabled"> lrclib.net <span class="text-muted">(lyrics only)</span>
+                        </label>
+                        <span style="font-size:0.85em">Results may vary — edit with <i class="bi bi-pencil"></i> after adding</span>
+                    </div>
                     <div id="chordLinks" style="display:none" class="text-muted small mb-3"></div>
-                    <ul class="list-group mb-3" id="searchResults"></ul>
-                    <div id="lrclibSection" style="display:none">
-                        <p class="text-muted small mb-1">From lrclib.net</p>
-                        <ul class="list-group mb-3" id="lrclibResults"></ul>
-                    </div>
-                    <div id="chordieSection">
-                        <button id="chordieSearchBtn" class="btn btn-sm btn-outline-secondary mb-2" style="display:none">Search chords on chordie.com</button>
-                        <ul class="list-group" id="chordieResults"></ul>
-                    </div>
+                    <ul class="list-group" id="searchResults"></ul>
                 </div>
             </div>
         </div>

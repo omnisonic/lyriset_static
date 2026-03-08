@@ -822,12 +822,31 @@ function displayLyrics(song, artist, lyrics) {
         if (lyricsModal) {
             lyricsModal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
-                const formType = button.textContent.trim() === 'Add Song' ? 'add' : 'edit';
-                const formTypeInput = document.getElementById('formType');
-                if (formTypeInput) {
-                    formTypeInput.value = formType;
+                if (button) {
+                    const formType = button.textContent.trim() === 'Add Song' ? 'add' : 'edit';
+                    const formTypeInput = document.getElementById('formType');
+                    if (formTypeInput) formTypeInput.value = formType;
                 }
+                // Default set selector to current set
+                const setSelect = document.getElementById('setSelect');
+                if (setSelect) setSelect.value = window.currentSetNumber || 1;
+                // Hide move/copy until title match detected
+                const toggle = document.getElementById('moveCopyToggle');
+                if (toggle) toggle.style.display = 'none';
+                const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
+                if (moveRadio) moveRadio.checked = true;
             });
+
+            // Show move/copy toggle when title matches an existing library song
+            const songInputEl = document.getElementById('songInput');
+            if (songInputEl) {
+                songInputEl.addEventListener('input', function () {
+                    const title = songInputEl.value.trim();
+                    const toggle = document.getElementById('moveCopyToggle');
+                    if (!toggle) return;
+                    toggle.style.display = (title && localStorage.getItem(title)) ? 'flex' : 'none';
+                });
+            }
         }
         
         console.log('✅ displayLyrics completed successfully for:', song);
@@ -904,28 +923,43 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
+                // Determine target set
+                const setSelect = document.getElementById('setSelect');
+                const targetSet = parseInt(setSelect?.value) || window.currentSetNumber || 1;
+                const moveCopy = document.querySelector('input[name="moveCopy"]:checked')?.value || 'move';
+
+                // Handle copy: save under a new title, keep original
+                let titleToSave = song;
+                const existing = localStorage.getItem(song);
+                if (moveCopy === 'copy' && existing) {
+                    const existingData = JSON.parse(existing);
+                    if (existingData.set !== targetSet) {
+                        titleToSave = `${song} (Set ${targetSet})`;
+                    }
+                }
+
                 // Save to localStorage
-                localStorage.setItem(song, JSON.stringify({
+                localStorage.setItem(titleToSave, JSON.stringify({
                     artist: artist,
                     lyrics: lyrics,
-                    set: window.currentSetNumber || 1
+                    set: targetSet
                 }));
 
-                console.log('Saved to localStorage:', song);
+                console.log('Saved to localStorage:', titleToSave, 'set:', targetSet);
 
                 // Display the lyrics
                 if (typeof displayLyrics === 'function') {
-                    displayLyrics(song, artist, lyrics);
+                    displayLyrics(titleToSave, artist, lyrics);
                     console.log('displayLyrics called successfully');
                 } else {
                     console.error('displayLyrics function not found');
                 }
 
-                // Update dropdown if it's an add operation
+                // Update dropdown
                 const formTypeInput = document.getElementById('formType');
                 if (formTypeInput && formTypeInput.value === 'add') {
                     if (typeof updateSongDropdown === 'function') {
-                        updateSongDropdown(window.currentSetNumber || 1);
+                        updateSongDropdown(targetSet);
                         console.log('updateSongDropdown called successfully');
                     }
                 }
