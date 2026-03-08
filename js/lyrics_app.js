@@ -133,6 +133,7 @@ function toggleChordDiagrams() {
         btn?.setAttribute('title', CHORD_MODE_TITLES.off);
         document.getElementById('chordSummary')?.remove();
     }
+    autoFitLyrics(undefined, undefined, undefined, true);
 }
 
 function toggleCleanLyrics() {
@@ -325,7 +326,8 @@ export function adjustFontSize(delta) {
 
 // Helper function to find the longest line width
 function getLongestLineWidth(lyricsContainer, fontSize) {
-    const lineDivs = Array.from(lyricsContainer.querySelectorAll('div'));
+    const chordSummary = lyricsContainer.querySelector('#chordSummary');
+    const lineDivs = Array.from(lyricsContainer.querySelectorAll('div')).filter(div => !chordSummary || !chordSummary.contains(div));
     let longestLineWidth = 0;
     let longestLineText = '';
     
@@ -710,7 +712,15 @@ function autoFitLyrics(song, artist, lyrics, skipDisplay = false) {
         // CRITICAL: After applying font size, ensure columns are properly set
         // This ensures the final configuration is correct
         adjustColumnsForFontSize(bestSize);
-        
+
+        // If horizontal overflow persists, reduce font size until it clears
+        while (bestSize > minFontSize && lyricsContainer.scrollWidth > lyricsContainer.clientWidth) {
+            bestSize -= stepSize;
+            lyricsContainer.style.fontSize = `${bestSize}px`;
+            adjustColumnsForFontSize(bestSize);
+            const forceReflow = lyricsContainer.offsetHeight;
+        }
+
         // Verify the font size was actually applied
         const appliedSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
         
@@ -833,26 +843,12 @@ function displayLyrics(song, artist, lyrics) {
                     document.getElementById('lyricsText').value = '';
                     const setSelect = document.getElementById('setSelect');
                     if (setSelect) setSelect.value = window.currentSetNumber || 1;
-                    const toggle = document.getElementById('moveCopyToggle');
-                    if (toggle) toggle.style.display = 'none';
-                    const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
-                    if (moveRadio) moveRadio.checked = true;
                     const label = document.getElementById('lyricsModalLabel');
                     if (label) label.textContent = 'Add Song';
                 }
                 // If no relatedTarget (programmatic open from openEditModal or search), leave as-is
             });
 
-            // Show move/copy toggle when title matches an existing library song
-            const songInputEl = document.getElementById('songInput');
-            if (songInputEl) {
-                songInputEl.addEventListener('input', function () {
-                    const title = songInputEl.value.trim();
-                    const toggle = document.getElementById('moveCopyToggle');
-                    if (!toggle) return;
-                    toggle.style.display = (title && localStorage.getItem(title)) ? 'flex' : 'none';
-                });
-            }
         }
         
         console.log('✅ displayLyrics completed successfully for:', song);
@@ -925,24 +921,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!song || !lyrics) return;
 
                 const targetSet = parseInt(document.getElementById('setSelect')?.value) || window.currentSetNumber || 1;
-                const moveCopy = document.querySelector('input[name="moveCopy"]:checked')?.value || 'move';
                 const originalTitle = document.getElementById('originalSongTitle')?.value || '';
+                const formType = document.getElementById('formType')?.value || 'add';
+                const titleToSave = song;
 
-                let titleToSave = song;
-                if (moveCopy === 'copy') {
-                    // Keep original, save under new title if set differs
-                    const existing = localStorage.getItem(song);
-                    if (existing) {
-                        const existingData = JSON.parse(existing);
-                        if (existingData.set !== targetSet) {
-                            titleToSave = `${song} (Set ${targetSet})`;
-                        }
-                    }
-                } else {
-                    // Move: if title changed, remove old entry
-                    if (originalTitle && originalTitle !== song) {
-                        localStorage.removeItem(originalTitle);
-                    }
+                // Block overwriting an existing song when adding (not editing)
+                if (formType === 'add' && localStorage.getItem(titleToSave)) {
+                    alert(`"${titleToSave}" already exists. Please use a different title or edit the existing song.`);
+                    return;
+                }
+
+                // If title changed during edit, remove old entry
+                if (formType === 'edit' && originalTitle && originalTitle !== titleToSave) {
+                    localStorage.removeItem(originalTitle);
                 }
 
                 localStorage.setItem(titleToSave, JSON.stringify({ artist, lyrics, set: targetSet }));
