@@ -363,7 +363,9 @@ function adjustColumnsForFontSize(fontSize) {
     // Check if we're on mobile/tablet (vertical scrolling layout)
     const containerWidth = lyricsContainer.offsetWidth;
     if (containerWidth < 480) {
-        // Mobile/tablet layout - no columns needed, use vertical scrolling
+        // Mobile/tablet layout - reset any column layout and use vertical scrolling
+        lyricsContainer.style.columnCount = '1';
+        lyricsContainer.style.overflowY = 'auto';
         return;
     }
     
@@ -606,8 +608,12 @@ function autoFitLyrics(song, artist, lyrics, skipDisplay = false) {
         const isMobile = containerWidth < 480;
         
         if (isMobile) {
+            // Mobile/tablet: Reset any column layout left from landscape mode
+            lyricsContainer.style.columnCount = '1';
+            lyricsContainer.style.overflowY = 'auto';
+
             // Mobile/tablet: Calculate font size so longest line fits container width
-            
+
             // Get container width (accounting for padding)
             const containerStyle = window.getComputedStyle(lyricsContainer);
             const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
