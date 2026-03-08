@@ -362,7 +362,16 @@
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control border-0 mb-3" id="searchInput" placeholder="Search by title or artist..." autocomplete="off">
-                    <ul class="list-group" id="searchResults"></ul>
+                    <div id="chordLinks" style="display:none" class="text-muted small mb-3"></div>
+                    <ul class="list-group mb-3" id="searchResults"></ul>
+                    <div id="lrclibSection" style="display:none">
+                        <p class="text-muted small mb-1">From lrclib.net</p>
+                        <ul class="list-group mb-3" id="lrclibResults"></ul>
+                    </div>
+                    <div id="chordieSection">
+                        <button id="chordieSearchBtn" class="btn btn-sm btn-outline-secondary mb-2" style="display:none">Search chords on chordie.com</button>
+                        <ul class="list-group" id="chordieResults"></ul>
+                    </div>
                 </div>
             </div>
         </div>
