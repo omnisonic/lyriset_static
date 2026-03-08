@@ -22,7 +22,7 @@
         --bg-primary: #1a1a1a;
         --bg-secondary: #2d2d2d;
         --text-primary: #c0c0c0;
-        --text-secondary: #707070;
+        --text-secondary: #999999;
         --border-color: #3a3a3a;
         --button-bg: #2d2d2d;
         --button-hover: #3a3a3a;
@@ -40,7 +40,7 @@
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
     --text-primary: #c0c0c0;
-    --text-secondary: #707070;
+    --text-secondary: #999999;
     --border-color: #3a3a3a;
     --button-bg: #2d2d2d;
     --button-hover: #3a3a3a;
@@ -1551,6 +1551,16 @@ textarea.form-control:focus {
 }
 
 /* Search modal */
+#searchModal .text-muted,
+#searchModal .text-muted span,
+#searchModal #chordLinks {
+    color: var(--text-secondary) !important;
+}
+
+#searchModal .modal-body label {
+    color: var(--text-primary);
+}
+
 #searchModal .list-group-item {
     background-color: var(--bg-secondary);
     color: var(--text-primary);
