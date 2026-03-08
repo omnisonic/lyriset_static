@@ -239,11 +239,23 @@ function addLrclibSong(song) {
     const searchModal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
     if (searchModal) searchModal.hide();
 
+    const formTypeInput = document.getElementById('formType');
+    if (formTypeInput) formTypeInput.value = 'add';
+    const origInput = document.getElementById('originalSongTitle');
+    if (origInput) origInput.value = '';
+    const label = document.getElementById('lyricsModalLabel');
+    if (label) label.textContent = 'Add Song';
+
     document.getElementById('songInput').value = song.trackName;
     document.getElementById('artistInput').value = song.artistName;
     document.getElementById('lyricsText').value = song.plainLyrics;
     const setSelect = document.getElementById('setSelect');
     if (setSelect) setSelect.value = window.currentSetNumber || 1;
+
+    const toggle = document.getElementById('moveCopyToggle');
+    if (toggle) toggle.style.display = (song.trackName && localStorage.getItem(song.trackName)) ? 'flex' : 'none';
+    const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
+    if (moveRadio) moveRadio.checked = true;
 
     const addModal = new bootstrap.Modal(document.getElementById('lyricsModal'));
     addModal.show();
@@ -286,11 +298,23 @@ async function fetchAndAddChordie(song, btn) {
         const searchModal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
         if (searchModal) searchModal.hide();
 
+        const formTypeInput = document.getElementById('formType');
+        if (formTypeInput) formTypeInput.value = 'add';
+        const origInput = document.getElementById('originalSongTitle');
+        if (origInput) origInput.value = '';
+        const label = document.getElementById('lyricsModalLabel');
+        if (label) label.textContent = 'Add Song';
+
         document.getElementById('songInput').value = song.title;
         document.getElementById('artistInput').value = song.artist;
         document.getElementById('lyricsText').value = chords;
         const setSelect = document.getElementById('setSelect');
         if (setSelect) setSelect.value = window.currentSetNumber || 1;
+
+        const toggle = document.getElementById('moveCopyToggle');
+        if (toggle) toggle.style.display = (song.title && localStorage.getItem(song.title)) ? 'flex' : 'none';
+        const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
+        if (moveRadio) moveRadio.checked = true;
 
         const addModal = new bootstrap.Modal(document.getElementById('lyricsModal'));
         addModal.show();

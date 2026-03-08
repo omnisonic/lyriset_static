@@ -823,18 +823,24 @@ function displayLyrics(song, artist, lyrics) {
             lyricsModal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
                 if (button) {
-                    const formType = button.textContent.trim() === 'Add Song' ? 'add' : 'edit';
+                    // Opened via navbar add button — reset to add mode
                     const formTypeInput = document.getElementById('formType');
-                    if (formTypeInput) formTypeInput.value = formType;
+                    if (formTypeInput) formTypeInput.value = 'add';
+                    const origInput = document.getElementById('originalSongTitle');
+                    if (origInput) origInput.value = '';
+                    document.getElementById('songInput').value = '';
+                    document.getElementById('artistInput').value = '';
+                    document.getElementById('lyricsText').value = '';
+                    const setSelect = document.getElementById('setSelect');
+                    if (setSelect) setSelect.value = window.currentSetNumber || 1;
+                    const toggle = document.getElementById('moveCopyToggle');
+                    if (toggle) toggle.style.display = 'none';
+                    const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
+                    if (moveRadio) moveRadio.checked = true;
+                    const label = document.getElementById('lyricsModalLabel');
+                    if (label) label.textContent = 'Add Song';
                 }
-                // Default set selector to current set
-                const setSelect = document.getElementById('setSelect');
-                if (setSelect) setSelect.value = window.currentSetNumber || 1;
-                // Hide move/copy until title match detected
-                const toggle = document.getElementById('moveCopyToggle');
-                if (toggle) toggle.style.display = 'none';
-                const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
-                if (moveRadio) moveRadio.checked = true;
+                // If no relatedTarget (programmatic open from openEditModal or search), leave as-is
             });
 
             // Show move/copy toggle when title matches an existing library song
@@ -910,101 +916,60 @@ document.addEventListener('DOMContentLoaded', function() {
     if (lyricsForm) {
         lyricsForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             try {
                 const song = document.getElementById('songInput').value.trim();
                 const artist = document.getElementById('artistInput').value.trim();
                 const lyrics = document.getElementById('lyricsText').value.trim();
 
-                console.log('Form submission - Song:', song, 'Artist:', artist, 'Lyrics length:', lyrics.length);
+                if (!song || !lyrics) return;
 
-                if (!song || !lyrics) {
-                    console.log('Validation failed - missing song or lyrics');
-                    return;
-                }
-
-                // Determine target set
-                const setSelect = document.getElementById('setSelect');
-                const targetSet = parseInt(setSelect?.value) || window.currentSetNumber || 1;
+                const targetSet = parseInt(document.getElementById('setSelect')?.value) || window.currentSetNumber || 1;
                 const moveCopy = document.querySelector('input[name="moveCopy"]:checked')?.value || 'move';
+                const originalTitle = document.getElementById('originalSongTitle')?.value || '';
 
-                // Handle copy: save under a new title, keep original
                 let titleToSave = song;
-                const existing = localStorage.getItem(song);
-                if (moveCopy === 'copy' && existing) {
-                    const existingData = JSON.parse(existing);
-                    if (existingData.set !== targetSet) {
-                        titleToSave = `${song} (Set ${targetSet})`;
-                    }
-                }
-
-                // Save to localStorage
-                localStorage.setItem(titleToSave, JSON.stringify({
-                    artist: artist,
-                    lyrics: lyrics,
-                    set: targetSet
-                }));
-
-                console.log('Saved to localStorage:', titleToSave, 'set:', targetSet);
-
-                // Display the lyrics
-                if (typeof displayLyrics === 'function') {
-                    displayLyrics(titleToSave, artist, lyrics);
-                    console.log('displayLyrics called successfully');
-                } else {
-                    console.error('displayLyrics function not found');
-                }
-
-                // Update dropdown
-                const formTypeInput = document.getElementById('formType');
-                if (formTypeInput && formTypeInput.value === 'add') {
-                    if (typeof updateSongDropdown === 'function') {
-                        updateSongDropdown(targetSet);
-                        console.log('updateSongDropdown called successfully');
-                    }
-                }
-
-                // Reset form
-                e.target.reset();
-                console.log('Form reset successfully');
-
-                // Close modal using Bootstrap
-                try {
-                    const lyricsModal = document.getElementById('lyricsModal');
-                    if (lyricsModal && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                        const modalInstance = bootstrap.Modal.getInstance(lyricsModal);
-                        if (modalInstance) {
-                            modalInstance.hide();
-                            console.log('Modal closed successfully');
-                        } else {
-                            // Fallback: manually hide the modal
-                            lyricsModal.classList.remove('show');
-                            lyricsModal.style.display = 'none';
-                            document.body.classList.remove('modal-open');
-                            const backdrop = document.querySelector('.modal-backdrop');
-                            if (backdrop) {
-                                backdrop.remove();
-                            }
-                            console.log('Modal closed manually');
+                if (moveCopy === 'copy') {
+                    // Keep original, save under new title if set differs
+                    const existing = localStorage.getItem(song);
+                    if (existing) {
+                        const existingData = JSON.parse(existing);
+                        if (existingData.set !== targetSet) {
+                            titleToSave = `${song} (Set ${targetSet})`;
                         }
                     }
-                } catch (modalError) {
-                    console.error('Error closing modal:', modalError);
-                    // Fallback: manually close modal
-                    const lyricsModal = document.getElementById('lyricsModal');
-                    if (lyricsModal) {
+                } else {
+                    // Move: if title changed, remove old entry
+                    if (originalTitle && originalTitle !== song) {
+                        localStorage.removeItem(originalTitle);
+                    }
+                }
+
+                localStorage.setItem(titleToSave, JSON.stringify({ artist, lyrics, set: targetSet }));
+
+                // Auto-fit the saved song
+                autoFitLyrics(titleToSave, artist, lyrics);
+
+                // Update dropdown
+                if (typeof updateSongDropdown === 'function') {
+                    updateSongDropdown(targetSet);
+                }
+
+                // Reset form and close modal
+                e.target.reset();
+                const lyricsModal = document.getElementById('lyricsModal');
+                if (lyricsModal && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const modalInstance = bootstrap.Modal.getInstance(lyricsModal);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    } else {
                         lyricsModal.classList.remove('show');
                         lyricsModal.style.display = 'none';
                         document.body.classList.remove('modal-open');
                         const backdrop = document.querySelector('.modal-backdrop');
-                        if (backdrop) {
-                            backdrop.remove();
-                        }
+                        if (backdrop) backdrop.remove();
                     }
                 }
-
-                // Show success feedback
-                console.log('✅ Song added successfully:', song);
 
             } catch (error) {
                 console.error('❌ Error during form submission:', error);

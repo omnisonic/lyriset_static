@@ -165,7 +165,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="lyricsModalLabel">Add Lyrics</h5>
+                    <h5 class="modal-title" id="lyricsModalLabel">Add Song</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -212,6 +212,7 @@
                                 required></textarea>
                         </div>
                         <input type="hidden" id="formType" name="formType" value="add">
+                        <input type="hidden" id="originalSongTitle" name="originalSongTitle" value="">
                         <button type="submit" class="btn btn-light">Submit</button>
                     </form>
                 </div>
@@ -399,39 +400,6 @@
                     </div>
                     <div id="chordLinks" style="display:none" class="text-muted small mb-3"></div>
                     <ul class="list-group" id="searchResults"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Lyrics Modal -->
-    <div class="modal fade" id="editLyricsModal" tabindex="-1" aria-labelledby="editLyricsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editLyricsModalLabel">Edit Lyrics</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editLyricsForm">
-                        <div class="mb-3">
-                            <label for="editSongInput" class="form-label">Song</label>
-                            <input type="text" class="form-control border-0" id="editSongInput" name="song" required />
-                        </div>
-                        <div class="mb-3">
-                            <label for="editArtistInput" class="form-label">Artist</label>
-                            <input type="text" class="form-control border-0" id="editArtistInput" name="artist"
-                                required />
-                        </div>
-                        <div class="mb-3">
-                            <label for="editLyricsText" class="form-label">Lyrics</label>
-                            <textarea class="form-control border-0" id="editLyricsText" name="lyrics" rows="10"
-                                required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-light">Save Changes</button>
-                    </form>
                 </div>
             </div>
         </div>
