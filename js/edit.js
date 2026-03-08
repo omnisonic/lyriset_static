@@ -31,12 +31,6 @@ function openEditModal() {
     const setSelect = document.getElementById('setSelect');
     if (setSelect) setSelect.value = songData.set || 1;
 
-    // Show move/copy toggle (editing an existing song)
-    const toggle = document.getElementById('moveCopyToggle');
-    if (toggle) toggle.style.display = 'flex';
-    const moveRadio = document.querySelector('input[name="moveCopy"][value="move"]');
-    if (moveRadio) moveRadio.checked = true;
-
     // Update modal title
     const label = document.getElementById('lyricsModalLabel');
     if (label) label.textContent = 'Edit Song';

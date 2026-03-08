@@ -1,4 +1,11 @@
+import { checkOrigin, checkRateLimit, forbiddenResponse, rateLimitResponse } from './_utils.mjs';
+
 export const handler = async (event) => {
+    if (!checkOrigin(event.headers)) return forbiddenResponse();
+
+    const ip = event.headers['x-forwarded-for']?.split(',')[0].trim() || 'unknown';
+    if (!checkRateLimit(ip)) return rateLimitResponse();
+
     const path = event.queryStringParameters?.path || '';
     const title = event.queryStringParameters?.title || '';
     const artist = event.queryStringParameters?.artist || '';
