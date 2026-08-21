@@ -137,25 +137,28 @@ function toggleChordDiagrams() {
     autoFitLyrics(undefined, undefined, undefined, true);
 }
 
+const LYRICS_MODE_CYCLE = ['original', 'clean', 'chordsAboveLine'];
+const LYRICS_MODE_ICONS = { original: 'bi-stars', clean: 'bi-stars', chordsAboveLine: 'bi-music-note-list' };
+const LYRICS_MODE_TITLES = { original: 'Toggle Clean Lyrics', clean: 'Toggle Clean Lyrics', chordsAboveLine: 'Chords Above Lines' };
+
 function toggleCleanLyrics() {
     const lyricsContainer = document.getElementById('lyricsDisplay');
     const toggleButton = document.getElementById('toggleCleanLyricsButton');
     const toggleText = document.getElementById('toggleCleanLyricsText');
-    
+
     if (!lyricsContainer) {
         return;
     }
-    
+
     const originalLyrics = lyricsContainer.getAttribute('data-original-lyrics');
-    const isClean = lyricsContainer.getAttribute('data-clean') === 'true';
-    
+
     if (!originalLyrics) {
         return;
     }
 
     const song = document.getElementById('songTitle').textContent;
     const artist = document.getElementById('songArtist').textContent;
-    
+
     // Stop auto-scroll when toggling lyrics
     stopAutoScroll();
     const autoScrollButton = document.getElementById('autoScrollButton');
@@ -164,37 +167,33 @@ function toggleCleanLyrics() {
         autoScrollText.className = 'bi bi-play-fill';
         autoScrollButton.classList.remove('active');
     }
-    
-    if (isClean) {
-        // Switching back to original lyrics
-        if (typeof autoFitLyrics === 'function') {
-            autoFitLyrics(song, artist, originalLyrics);
-        } else {
-            displayLyrics(song, artist, originalLyrics);
-        }
-        toggleText.className = 'bi bi-stars';
-        toggleButton.classList.add('active');
-        lyricsContainer.setAttribute('data-clean', 'false');
-    } else {
-        // Switching to cleaned lyrics
-        const cleanedLyrics = cleanLyrics(originalLyrics);
-        if (cleanedLyrics) {
-            if (typeof autoFitLyrics === 'function') {
-                autoFitLyrics(song, artist, cleanedLyrics);
-            } else {
-                displayLyrics(song, artist, cleanedLyrics);
-            }
-            toggleText.className = 'bi bi-stars';
-            toggleButton.classList.remove('active');
-            lyricsContainer.setAttribute('data-clean', 'true');
-        }
+
+    const currentMode = lyricsContainer.getAttribute('data-lyrics-mode') || 'original';
+    const nextMode = LYRICS_MODE_CYCLE[(LYRICS_MODE_CYCLE.indexOf(currentMode) + 1) % LYRICS_MODE_CYCLE.length];
+
+    let lyricsToShow = originalLyrics;
+    if (nextMode === 'clean') {
+        lyricsToShow = cleanLyrics(originalLyrics) || originalLyrics;
+    } else if (nextMode === 'chordsAboveLine') {
+        lyricsToShow = moveChordsAboveLines(originalLyrics);
     }
-    
+
+    if (typeof autoFitLyrics === 'function') {
+        autoFitLyrics(song, artist, lyricsToShow);
+    } else {
+        displayLyrics(song, artist, lyricsToShow);
+    }
+
+    toggleText.className = `bi ${LYRICS_MODE_ICONS[nextMode]}`;
+    toggleButton.setAttribute('title', LYRICS_MODE_TITLES[nextMode]);
+    toggleButton.classList.toggle('active', nextMode !== 'original');
+    lyricsContainer.setAttribute('data-lyrics-mode', nextMode);
+
     // Ensure layout is adjusted after toggle
     setTimeout(() => {
         const currentSize = parseFloat(window.getComputedStyle(lyricsContainer).fontSize);
         const containerWidth = lyricsContainer.offsetWidth;
-        
+
         // Only adjust columns on desktop (mobile uses vertical scrolling)
         if (containerWidth >= 480) {
             adjustColumnsForFontSize(currentSize);
@@ -814,7 +813,7 @@ function displayLyrics(song, artist, lyrics) {
         if (!lyricsContainer.hasAttribute('data-original-lyrics') || currentStoredSong !== song) {
             lyricsContainer.setAttribute('data-original-lyrics', lyrics || '');
             lyricsContainer.setAttribute('data-song-title', song || '');
-            lyricsContainer.setAttribute('data-clean', 'false');
+            lyricsContainer.setAttribute('data-lyrics-mode', 'original');
         }
 
         if (chordDiagramsMode !== 'off') {
@@ -923,7 +922,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const song = document.getElementById('songInput').value.trim();
                 const artist = document.getElementById('artistInput').value.trim();
-                const lyrics = moveChordsAboveLines(document.getElementById('lyricsText').value.trim());
+                const lyrics = document.getElementById('lyricsText').value.trim();
 
                 if (!song || !lyrics) return;
 
@@ -1299,10 +1298,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const songData = JSON.parse(localStorage.getItem(currentSong));
                     if (songData) {
-                        const isClean = lyricsContainer.getAttribute('data-clean') === 'true';
-                        const lyrics = isClean
-                            ? cleanLyrics(songData.lyrics)
-                            : songData.lyrics;
+                        const mode = lyricsContainer.getAttribute('data-lyrics-mode') || 'original';
+                        let lyrics = songData.lyrics;
+                        if (mode === 'clean') {
+                            lyrics = cleanLyrics(songData.lyrics) || songData.lyrics;
+                        } else if (mode === 'chordsAboveLine') {
+                            lyrics = moveChordsAboveLines(songData.lyrics);
+                        }
                         autoFitLyrics(currentSong, songData.artist, lyrics, true);
                     }
                 } catch (e) {

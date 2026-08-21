@@ -228,9 +228,6 @@ function importSongData(file) {
                     if (key.startsWith('metronome-bpm-')) {
                         return;
                     }
-                    if (value && typeof value.lyrics === 'string' && typeof window.moveChordsAboveLines === 'function') {
-                        value.lyrics = window.moveChordsAboveLines(value.lyrics);
-                    }
                     localStorage.setItem(key, JSON.stringify(value));
                 });
 
@@ -292,7 +289,7 @@ if (typeof window.displayLyrics === 'undefined') {
         if (!lyricsContainer.hasAttribute('data-original-lyrics') || currentStoredSong !== song) {
             lyricsContainer.setAttribute('data-original-lyrics', lyrics || '');
             lyricsContainer.setAttribute('data-song-title', song || '');
-            lyricsContainer.setAttribute('data-clean', 'false');
+            lyricsContainer.setAttribute('data-lyrics-mode', 'original');
         }
     };
 }
