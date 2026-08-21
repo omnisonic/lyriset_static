@@ -196,6 +196,53 @@ export function extractChords(text) {
     return chords;
 }
 
+// Finds where to break a long line: the comma closest to the midpoint (only
+// if it falls within the middle portion of the line, so a comma near either
+// end doesn't produce a lopsided split), or otherwise the space closest to
+// the midpoint. Returns -1 if the line has no break point (e.g. a single
+// long word).
+function findSplitPoint(text) {
+    const midpoint = text.length / 2;
+    // A comma outside this middle band is too close to an edge to produce a
+    // reasonably balanced split, so it's ignored in favor of a space.
+    const bandStart = text.length * 0.25;
+    const bandEnd = text.length * 0.75;
+
+    let bestComma = -1, bestCommaDist = Infinity;
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === ',' && i >= bandStart && i <= bandEnd) {
+            const dist = Math.abs(i - midpoint);
+            if (dist < bestCommaDist) { bestCommaDist = dist; bestComma = i; }
+        }
+    }
+    if (bestComma !== -1) return bestComma + 1; // break after the comma
+
+    let bestSpace = -1, bestSpaceDist = Infinity;
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === ' ') {
+            const dist = Math.abs(i - midpoint);
+            if (dist < bestSpaceDist) { bestSpaceDist = dist; bestSpace = i; }
+        }
+    }
+    return bestSpace; // break before the space (space itself is dropped)
+}
+
+// Splits a plain text line into multiple lines if it exceeds maxLength,
+// breaking at the comma nearest the midpoint or, failing that, the nearest
+// space. Recurses so very long lines can split more than once.
+export function splitLongLine(text, maxLength = 50) {
+    if (!text || text.length <= maxLength) return [text];
+
+    const splitAt = findSplitPoint(text);
+    if (splitAt <= 0 || splitAt >= text.length) return [text];
+
+    const first = text.slice(0, splitAt).trimEnd();
+    const second = text.slice(splitAt).trimStart();
+    if (!first || !second) return [text];
+
+    return [...splitLongLine(first, maxLength), ...splitLongLine(second, maxLength)];
+}
+
 // Moves inline [Chord] tags onto their own line directly above the line they
 // were found in, joined with " | ", and strips the brackets from the lyric line.
 export function moveChordsAboveLines(text) {
@@ -218,6 +265,90 @@ export function moveChordsAboveLines(text) {
         const chordLine = chords.join(' | ');
         return strippedLine ? `${chordLine}\n${strippedLine}` : chordLine;
     }).join('\n');
+}
+
+// Renders inline [Chord] tags as a chord row positioned directly above the
+// lyric line, with each chord starting at the column of the character it
+// preceded (ChordPro-style). When chords would overlap in the chord row
+// (e.g. back-to-back tags like [G][D]the), later chords are pushed right
+// just far enough to leave a single space of separation.
+export function alignChordsToLyrics(text, maxLength = 50) {
+    if (!text) return text;
+
+    return text.split('\n').map(line => {
+        // Walk the line splitting on chord tags, tracking each tag's column
+        // in the lyric-only text being built up. Every removed tag leaves a
+        // space behind so words on either side don't glue together (e.g.
+        // "damp[C]When" or back-to-back "within[G][D]the"), matching
+        // moveChordsAboveLines — but only if one isn't already there, so the
+        // string is never mutated after columns are recorded (a later
+        // whitespace collapse would desync chord columns from their text).
+        const chords = [];
+        let lyricLine = '';
+        let lastIndex = 0;
+        BRACKET_RE.lastIndex = 0;
+        let m;
+        while ((m = BRACKET_RE.exec(line)) !== null) {
+            lyricLine += line.slice(lastIndex, m.index);
+            const nextChar = line[BRACKET_RE.lastIndex];
+            const needsSpace = lyricLine.length > 0 && !/\s$/.test(lyricLine) &&
+                nextChar !== undefined && nextChar !== ' ' && nextChar !== '[';
+            if (needsSpace) {
+                lyricLine += ' ';
+            }
+            chords.push({ name: m[1], column: lyricLine.length });
+            lastIndex = BRACKET_RE.lastIndex;
+        }
+        lyricLine += line.slice(lastIndex);
+        lyricLine = lyricLine.trim();
+
+        if (chords.length === 0) return lyricLine;
+
+        return buildAlignedRowPairs(lyricLine, chords, maxLength).join('\n');
+    }).join('\n');
+}
+
+// Builds chord-row/lyric-row line pairs for one source line, splitting the
+// lyric line (at the comma/space nearest its midpoint, same rule as
+// splitLongLine) when it exceeds maxLength, and partitioning the chords
+// between the resulting rows so each chord stays above the character it
+// preceded.
+function buildAlignedRowPairs(lyricLine, chords, maxLength) {
+    if (lyricLine.length <= maxLength) {
+        return [renderChordRow(chords), lyricLine].filter(Boolean);
+    }
+
+    const splitAt = findSplitPoint(lyricLine);
+    if (splitAt <= 0 || splitAt >= lyricLine.length) {
+        return [renderChordRow(chords), lyricLine].filter(Boolean);
+    }
+
+    const firstLyric = lyricLine.slice(0, splitAt).trimEnd();
+    const secondRaw = lyricLine.slice(splitAt);
+    const secondLyric = secondRaw.trimStart();
+    const leadTrim = secondRaw.length - secondLyric.length;
+    if (!firstLyric || !secondLyric) {
+        return [renderChordRow(chords), lyricLine].filter(Boolean);
+    }
+
+    const firstChords = chords.filter(c => c.column <= firstLyric.length);
+    const secondChords = chords
+        .filter(c => c.column > firstLyric.length)
+        .map(c => ({ name: c.name, column: Math.max(0, c.column - splitAt - leadTrim) }));
+
+    return [
+        ...buildAlignedRowPairs(firstLyric, firstChords, maxLength),
+        ...buildAlignedRowPairs(secondLyric, secondChords, maxLength)
+    ];
+}
+
+function renderChordRow(chords) {
+    let chordRow = '';
+    chords.forEach(({ name, column }) => {
+        const startAt = Math.max(column, chordRow.length === 0 ? 0 : chordRow.length + 1);
+        chordRow = chordRow.padEnd(startAt, ' ') + name;
+    });
+    return chordRow;
 }
 
 export function renderChordSummary(chords, instrument = 'guitar') {

@@ -1,6 +1,8 @@
 import { cleanLyrics } from './clean_lyrics.js';
-import { extractChords, renderChordSummary, moveChordsAboveLines } from './chord_diagrams.js';
+import { extractChords, renderChordSummary, moveChordsAboveLines, alignChordsToLyrics, splitLongLine } from './chord_diagrams.js';
+window.cleanLyrics = cleanLyrics;
 window.moveChordsAboveLines = moveChordsAboveLines;
+window.alignChordsToLyrics = alignChordsToLyrics;
 
 // Auto-scroll functionality for mobile
 let autoScrollInterval = null;
@@ -137,9 +139,9 @@ function toggleChordDiagrams() {
     autoFitLyrics(undefined, undefined, undefined, true);
 }
 
-const LYRICS_MODE_CYCLE = ['original', 'clean', 'chordsAboveLine'];
-const LYRICS_MODE_ICONS = { original: 'bi-stars', clean: 'bi-stars', chordsAboveLine: 'bi-music-note-list' };
-const LYRICS_MODE_TITLES = { original: 'Toggle Clean Lyrics', clean: 'Toggle Clean Lyrics', chordsAboveLine: 'Chords Above Lines' };
+const LYRICS_MODE_CYCLE = ['original', 'clean', 'chordsAboveLine', 'chordsAligned'];
+const LYRICS_MODE_ICONS = { original: 'bi-stars', clean: 'bi-stars', chordsAboveLine: 'bi-music-note-list', chordsAligned: 'bi-music-note-beamed' };
+const LYRICS_MODE_TITLES = { original: 'Toggle Clean Lyrics', clean: 'Toggle Clean Lyrics', chordsAboveLine: 'Chords Above Lines', chordsAligned: 'Chords Aligned to Lyrics' };
 
 function toggleCleanLyrics() {
     const lyricsContainer = document.getElementById('lyricsDisplay');
@@ -176,7 +178,11 @@ function toggleCleanLyrics() {
         lyricsToShow = cleanLyrics(originalLyrics) || originalLyrics;
     } else if (nextMode === 'chordsAboveLine') {
         lyricsToShow = moveChordsAboveLines(originalLyrics);
+    } else if (nextMode === 'chordsAligned') {
+        lyricsToShow = alignChordsToLyrics(originalLyrics);
     }
+
+    lyricsContainer.classList.toggle('chords-aligned-mode', nextMode === 'chordsAligned');
 
     if (typeof autoFitLyrics === 'function') {
         autoFitLyrics(song, artist, lyricsToShow);
@@ -789,10 +795,17 @@ function displayLyrics(song, artist, lyrics) {
 
         lyricsContainer.innerHTML = '';
 
-        const lyricsLines = (lyrics || '').split('\n');
         const containerWidth = lyricsContainer.offsetWidth;
         const isMobile = containerWidth < 480;
-        
+
+        // Desktop uses white-space: pre with no wrapping, so a single very
+        // long line forces the whole song's font size down (or overflows).
+        // Break long lines at a comma/space near the midpoint to keep lines
+        // a reasonable width. Mobile already wraps naturally, so it's left as-is.
+        const lyricsLines = isMobile
+            ? (lyrics || '').split('\n')
+            : (lyrics || '').split('\n').flatMap(line => splitLongLine(line));
+
         lyricsLines.forEach(line => {
             const lineDiv = document.createElement('div');
             lineDiv.style.whiteSpace = 'pre';
@@ -814,6 +827,7 @@ function displayLyrics(song, artist, lyrics) {
             lyricsContainer.setAttribute('data-original-lyrics', lyrics || '');
             lyricsContainer.setAttribute('data-song-title', song || '');
             lyricsContainer.setAttribute('data-lyrics-mode', 'original');
+            lyricsContainer.classList.remove('chords-aligned-mode');
         }
 
         if (chordDiagramsMode !== 'off') {
@@ -1311,6 +1325,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             lyrics = cleanLyrics(songData.lyrics) || songData.lyrics;
                         } else if (mode === 'chordsAboveLine') {
                             lyrics = moveChordsAboveLines(songData.lyrics);
+                        } else if (mode === 'chordsAligned') {
+                            lyrics = alignChordsToLyrics(songData.lyrics);
                         }
                         autoFitLyrics(currentSong, songData.artist, lyrics, true);
                     }

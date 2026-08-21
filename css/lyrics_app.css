@@ -459,6 +459,12 @@ body {
     transition: opacity 0.25s ease;
 }
 
+/* Chords-aligned-to-lyrics mode needs a monospace font so chord characters
+   line up over the exact lyric character they were positioned above. */
+.lyrics.chords-aligned-mode {
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+}
+
 @keyframes autofit-pulse {
     0%, 100% { opacity: 0.25; }
     50% { opacity: 0.1; }
