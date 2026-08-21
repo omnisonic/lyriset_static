@@ -228,6 +228,9 @@ function importSongData(file) {
                     if (key.startsWith('metronome-bpm-')) {
                         return;
                     }
+                    if (value && typeof value.lyrics === 'string' && typeof window.moveChordsAboveLines === 'function') {
+                        value.lyrics = window.moveChordsAboveLines(value.lyrics);
+                    }
                     localStorage.setItem(key, JSON.stringify(value));
                 });
 

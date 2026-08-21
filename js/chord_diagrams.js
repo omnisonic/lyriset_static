@@ -196,6 +196,30 @@ export function extractChords(text) {
     return chords;
 }
 
+// Moves inline [Chord] tags onto their own line directly above the line they
+// were found in, joined with " | ", and strips the brackets from the lyric line.
+export function moveChordsAboveLines(text) {
+    if (!text) return text;
+
+    return text.split('\n').map(line => {
+        const chords = [];
+        let m;
+        BRACKET_RE.lastIndex = 0;
+        while ((m = BRACKET_RE.exec(line)) !== null) {
+            chords.push(m[1]);
+        }
+        if (chords.length === 0) return line;
+
+        const strippedLine = line
+            .replace(new RegExp(BRACKET_RE.source, 'gi'), ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        const chordLine = chords.join(' | ');
+        return strippedLine ? `${chordLine}\n${strippedLine}` : chordLine;
+    }).join('\n');
+}
+
 export function renderChordSummary(chords, instrument = 'guitar') {
     const isUke = instrument === 'ukulele';
     const numStrings = isUke ? 4 : 6;
