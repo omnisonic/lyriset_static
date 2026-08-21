@@ -213,7 +213,7 @@ export function loadNextSong() {
                 const item = localStorage.getItem(key);
                 if (item) {
                     const songData = JSON.parse(item);
-                    if (songData && songData.set === window.currentSetNumber) {
+                    if (songData && typeof songData.lyrics === 'string' && songData.set === window.currentSetNumber) {
                         songs.push(key);
                     }
                 }
@@ -253,7 +253,7 @@ export function loadPrevSong() {
                 const item = localStorage.getItem(key);
                 if (item) {
                     const songData = JSON.parse(item);
-                    if (songData && songData.set === window.currentSetNumber) {
+                    if (songData && typeof songData.lyrics === 'string' && songData.set === window.currentSetNumber) {
                         songs.push(key);
                     }
                 }
@@ -874,7 +874,10 @@ function loadLastViewedSong() {
         if (localStorage.getItem(lastViewedSong)) {
             try {
                 const songData = JSON.parse(localStorage.getItem(lastViewedSong));
-                if (songData) {
+                if (songData && typeof songData.lyrics === 'string') {
+                    // Restore the set the song actually belongs to, so the
+                    // dropdown/context match what's displayed after refresh.
+                    window.currentSetNumber = songData.set || 1;
                     // Use auto-fit directly to ensure optimal sizing on initial load
                     autoFitLyrics(lastViewedSong, songData.artist, songData.lyrics);
                 } else {
@@ -904,6 +907,15 @@ document.addEventListener('DOMContentLoaded', function() {
     setupMobileTouchHandlers();
     
     const lyricsContainer = document.getElementById('lyricsDisplay');
+
+    // Render the last-viewed song immediately from localStorage so refresh
+    // doesn't flash "Select a Song" while waiting on the default-songs fetch.
+    loadLastViewedSong();
+    if (typeof refreshSetDropdownItems === 'function') refreshSetDropdownItems();
+    const lastViewedSongAtStart = localStorage.getItem('lastViewedSong');
+    if (lastViewedSongAtStart !== 'Select a Song' && typeof updateSongDropdown === 'function') {
+        updateSongDropdown(window.currentSetNumber, true);
+    }
 
     loadDefaultSongs().then(() => {
         loadLastViewedSong();
@@ -1268,11 +1280,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAutoScrollButtonVisibility();
     window.addEventListener('resize', updateAutoScrollButtonVisibility);
 
-    // Initialize with Set 1
-    window.currentSetNumber = 1;
-    updateSongDropdown(1);
-
-    
     if (lyricsContainer) {
         let resizeDebounceTimer = null;
         let lastObservedWidth = null;
@@ -1419,10 +1426,14 @@ function deleteSong() {
     const remainingSongs = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key !== 'lyrics-font-size') {
-            const songData = JSON.parse(localStorage.getItem(key));
-            if (songData.set === window.currentSetNumber) {
-                remainingSongs.push(key);
+        if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
+            try {
+                const songData = JSON.parse(localStorage.getItem(key));
+                if (songData && typeof songData.lyrics === 'string' && songData.set === window.currentSetNumber) {
+                    remainingSongs.push(key);
+                }
+            } catch (e) {
+                // Skip items that aren't valid song JSON
             }
         }
     }

@@ -1,10 +1,4 @@
 {
-  "lyrics-layout-Old MacDonald Had a Farm": {
-    "columns": 4,
-    "fontSize": 18,
-    "lineHeight": 1.4,
-    "gap": 2
-  },
   "The Elements": {
     "artist": "Tom Lehrer",
     "lyrics": "There's antimony, arsenic, aluminum, selenium\nAnd hydrogen, oxygen, nitrogen, rhenium\nAnd nickel, neodymium, neptunium, germanium\nAnd iron, americium, ruthenium, uranium\nAnd indium, gallium, iodine, thorium, uranium\nAnd chromium, plutonium, lanthanum, molybdenum\nAnd bromine, carbon, cobalt, copper, tungsten, tin, and sodium\nAnd platinum, plutonium, polonium, potassium, tantalum, technetium, titanium\nAnd tellurium, vanadium, zirconium, zinc, and xenon\nAnd scandium, cerium, cesium, lead, praseodymium, and platinum\nAnd gold, protactinium, palladium, promethium, and magnesium\nAnd radium, radon, rhenium, rhodium, and selenium\nAnd antimony, arsenic, aluminum, selenium\nAnd hydrogen, oxygen, nitrogen, rhenium\nAnd nickel, neodymium, neptunium, germanium\nAnd iron, americium, ruthenium, uranium\nAnd indium, gallium, iodine, thorium, uranium\nAnd chromium, plutonium, lanthanum, molybdenum\nAnd bromine, carbon, cobalt, copper, tungsten, tin, and sodium\nAnd platinum, plutonium, polonium, potassium, tantalum, technetium, titanium\nAnd tellurium, vanadium, zirconium, zinc, and xenon\nAnd scandium, cerium, cesium, lead, praseodymium, and platinum\nAnd gold, protactinium, palladium, promethium, and magnesium\nAnd radium, radon, rhenium, rhodium, and selenium",
@@ -19,12 +13,6 @@
     "artist": "Bog Dylan",
     "lyrics": "G|C/g|G\nEm9|D7/f#|G|C/g|G\n\nOh, I’m sailin' away my own true love\nI’m a-sailin' away in the morning\nIs there somethin' I can send you from across the sea\nFrom the place that I’ll be landing?\n\nNo, there’s nothin' you can send me, my own true love\nThere’s nothin' I'm a-wishing to be ownin'\nJust a-carry yourself back to me unspoiled\nFrom across that lonesome ocean\n\nAh, but I just thought you might want somethin' fine\nMade of silver or of golden\nEither from the mountains of Madrid\nOr from the coast of Barcelona\n\nWell, if I had the stars from the darkest night\nAnd the diamonds from the deepest ocean\nI’d forsake them all for your sweet kiss\nFor that’s all I’m a-wishin' to be ownin'\n\nWell I might be gone a long old time\nAnd it’s only that I’m asking\nIs there somethin' I can send you to remember me by\nTo make your time more easy passing\n\nOh, how can, how can you ask me again\nIt only brings me sorrow\nThe same thing I would want today\nI want again tomorrow\n\nI got a letter on a lonesome day\nIt was from her ship a'sailin'\nSayin' I don’t know when I’ll be comin' back again\nIt depends on how I’m a'feelin'\n\nIf a-you, my love, must think that-a-way\nI’m sure your mind is a'roamin'\nI’m sure your thoughts are not with me\nBut with the country to where you’re goin'\n\nSo take heed, take heed of the western winds\nTake heed of the stormy weather\nAnd yes, there’s somethin' you can send back to me\nSpanish boots of Spanish leather",
     "set": 1
-  },
-  "lyrics-layout-Oh, Susanna": {
-    "columns": 12,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
   },
   "Old MacDonald Had a Farm": {
     "artist": "Traditional",
@@ -41,12 +29,6 @@
     "lyrics": "I came from Alabama,\nWith my banjo on my knee,\nI’m going to Louisiana,\nMy true love for to see;\nIt rained all night the day I left,\nThe weather it was dry,\nThe sun so hot I froze to death,\nSusanna, don’t you cry.\n\nOh! Susanna, Oh don’t you cry for me,\nFor I’ve come from Alabama\nWith my banjo on my knee.\n\nI had a dream the other night,\nWhen everything was still;\nI thought I saw Susanna,\nA coming down the hill;\nThe buckwheat cake was in her mouth,\nThe tear was in her eye;\nSays I, \"I’m coming from the south,\nSusanna, don’t you cry.\"\n\nOh! Susanna, Oh don’t you cry for me,\nFor I’ve come from Alabama\nWith my banjo on my knee.\n\nI soon will be in New Orleans,\nAnd then I'll look around,\nAnd when I find Susanna,\nI'll fall upon the ground.\nBut if I do not find her,\nThen I will surely die,\nAnd when I'm dead and buried,\nOh, Susanna, don't you cry.\n\nOh! Susanna, Oh don’t you cry for me,\nFor I’ve come from Alabama\nWith my banjo on my knee.",
     "set": 1
   },
-  "lyrics-layout-Bury Me Not on the Lone Prairie": {
-    "columns": 12,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
-  },
   "Do Re Me": {
     "artist": "Woody Guthrie",
     "lyrics": "Do Re Me\n\nLots of folks back East, they say, is leavin’ home every day\nBeatin’ the hot old dusty way to the California line\n\n‘Cross the desert sands they roll, gettin’ out of that old dust bowl\nThey think they're goin’ to a sugar bowl, but here's what they find\n\nNow, the police at the port of entry say\n\"You're number fourteen thousand for today\"\n\nOh, if you ain't got the do re mi, folks\nYou ain't got the do re mi\nWhy, you better go back to beautiful Texas\n‘Oklahoma, Kansas, Georgia, Tennessee\n\nCalifornia is a garden of Eden\nA paradise to live in or see\nBut believe it or not, you won't find it so hot\nIf you ain't got the do re mi\n\n‘You want to buy you a home or a farm, that can't deal nobody harm\n‘Or take your vacation by the mountains or sea\n\nDon't swap your old cow for a car, you better stay right where you are\nYou better take this little tip from me\n\nCause I look through the want ads every day\nBut the headlines on the papers always say\n\nif you ain't got the do re mi, kids\nif You ain't got the do re mi\nWhy, you better go back to beautiful Texas\n‘Oklahoma, Kansas, Georgia, Tennessee\n\nCalifornia is a garden of Eden\nA paradise to live in or see\nBut believe it or not, you won't find it so hot\nIf you ain't got the do re mi",
@@ -61,12 +43,6 @@
     "artist": "Unknown",
     "lyrics": "\"O bury me not on the lone prairie.\"\nThese words came low and mournfully\nFrom the pallid lips of the youth who lay\nOn his dying bed at the close of day.\n\nHe had wasted and pined 'til o'er his brow\nDeath's shades were slowly gathering now\nHe thought of home and loved ones nigh,\nAs the cowboys gathered to see him die.\n\n\"O bury me not on the lone prairie\nWhere coyotes howl and the wind blows free\nIn a narrow grave just six by three—\nO bury me not on the lone prairie\"\n\n\"It matters not, I've been told,\nWhere the body lies when the heart grows cold\nYet grant, o grant, this wish to me\nO bury me not on the lone prairie.\"\n\n\"I've always wished to be laid when I died\nIn a little churchyard on the green hillside\nBy my father's grave, there let me be,\nO bury me not on the lone prairie.\"\n\n\"I wish to lie where a mother's prayer\nAnd a sister's tear will mingle there.\nWhere friends can come and weep o'er me.\nO bury me not on the lone prairie.\"\n\n\"For there's another whose tears will shed.\nFor the one who lies in a prairie bed.\nIt breaks me heart to think of her now,\nShe has curled these locks, she has kissed this brow.\"\n\n\"O bury me not...\" And his voice failed there.\nBut they took no heed to his dying prayer.\nIn a narrow grave, just six by three\nThey buried him there on the lone prairie.\n\nAnd the cowboys now as they roam the plain,\nFor they marked the spot where his bones were lain,\nFling a handful o' roses o'er his grave\nWith a prayer to God his soul to save.",
     "set": 1
-  },
-  "lyrics-layout-Amazing Grace": {
-    "columns": 12,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
   },
   "Freight Train": {
     "artist": "Elizabeth Cotton",
@@ -83,22 +59,10 @@
     "lyrics": "There ain’t no grave gonna hold my body down\n    There ain’t no grave gonna hold my body down\n    When I hear the trumpet sound\n    Gonna get up outa the ground\n    There ain’t no grave gonna hold my body down\n \n\nWell go down yonder Gabriel\nPut your foot on the land and sea\nBut don’t you blow that trumpet until you hear from me\n \nWell look way over yonder\nSee people dressed in white\nI know it was God’s people I seen ’em doin right\n\nOh look way over Jordan\nWhat do you think I see\nI see a band of angels and they’re comin’ after me\n\nWell I goin to the river of Jordan\nBury my knees in the sand\nGonna holler high Hosanna til I reach that promised land\n\nOh look way over yonder\nWhat do you think I see\nI see a band of angels and they’re comin’ after me\n\nWell meet me Jesus meet me\nMeet me in the middle of the air\nAnd if these wings should fail me there won’t be no other pair",
     "set": 2
   },
-  "lyrics-layout-Shady Grove": {
-    "columns": 8,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
-  },
   "Paint it Black": {
     "artist": "Rolling Stones",
     "lyrics": "INTRO\n\nN.C.\n\nDm  |  Dm\n\nVERSE ONE\n\nDm\t\t           A\n   I see a red door and I want it painted black\nDm\t\t           A\n   No colours anymore I want them to turn black\n\nCHROUS ONE\n\nF    C\t      F\t         C\t    Dm\n   I see the girls walk by dressed in their summer clothes\nF    C        F\t      C      G\t             A\n   I have to turn my head until my darkness goes\n\nVERSE TWO\n\nDm\t\t\t     A\n   I see a line of cars and theyre all painted black\nDm\t\t\t          A\n   With flowers and my love both never to come back\n\n\n\nCHROUS TWO\n\nF    C           F\t    C\t      Dm\n   I see people turn their heads and quickly look away\nF          C\t   F    C        G\t       A\n   Like a new born baby it just happens every day\n\nVERSE THREE\n\nDm\t\t            A\n  I look inside myself and see my heart is black\nDm\t\t          A\n  I see my red door and I want it painted black\n\nCHROUS THREE\n\nF         C\t    F\t  C       Dm\n   Maybe then I'll fade away and not have to face the facts\nF           C      F    C\t G\t\t    A\n   It's not easy facing up when your whole world is black\n\nVERSE FOUR\n\nDm\t\t\t\tA\n  No more will my green sea go turn a deeper blue\nDm\t\t\t          A\n  I could not foresee this thing happening to you\n\nCHROUS FOUR\n\nF    C       F     C  \t   Dm\n  If I look hard enough in to the setting sun\nF       C              F\t     C        G\t\t       A\n  My love will laugh with me before the morning comes\n\nOUTRO\n\nDm\t\t\t\t\t\t       A\t\nHmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm\nDm\t\t\t\t\t\t       A\nHmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm\n\t        Dm\nI wanna see it painted, painted black\nA\nBlack as night, black as coal\n   Dm\t\t            A\nI wanna see the sun blotted out in the sun\n\t       Dm\nI wanna see it painted, painted, painted\n         A\nPainted black,   yeah!\nDm\t\t\t\t\t     A\t\nhmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm, hmm  (REPEAT TO FADE)",
     "set": 1
-  },
-  "lyrics-layout-Worried Man Blues": {
-    "columns": 12,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
   },
   "Suzanne": {
     "artist": "Leonard Cohen",
@@ -140,12 +104,6 @@
     "lyrics": "G                   F\nSome folks are born made wave the flag,\nC                        G\nOoh, that red, white and blue, dog\nG                       F\nAnd when the band plays hail to the chief,\nC                             G\nOoh, they point the cannon at you, lord\nG            D            C                    G\nIt ain't me, it ain't me, I ain't no senator's son, son\nG            D            C                    G\nIt ain't me, it ain't me, I ain't no fortunate one, no\n\nG                   F\nSome folks are born silver spoon in hand,\nC                     G\nLord, don't they help themselves, oh\nG                   F\nBut when the taxman comes to the door,\nC                                      G\nLord, the house lookin' like a rummage sale, yeah.\nG            D            C                        G\nIt ain't me, it ain't me, I ain't no millionaire's son, dog\nG            D            C                    G\nIt ain't me, it ain't me, I ain't no fortunate one, no.\n\n--6-------------------------|\n--7---5-----5h1-----1h3-----|\n------6-----6h2-----2h4-----|\n----------------------------|\n----------------------------|\n----------------------------|\n\nG                 F\nSome folks inherit star spangled eyes,\nC                              G\nOoh, and they send you down to war, lord,\nG                     F\nAnd when you ask them, how much should we give?\nC                       G\nOoh, the only answer is more! more! more! yeah!\nG            D            C                   G\nIt ain't me, it ain't me, I ain't no military son, dog\nG            D            C                    G\nIt ain't me, it ain't me, I ain't no fortunate one, one\nG            D            C                    G\nIt ain't me, it ain't me, I ain't no fortunate one, dog\nG            D            C                    G\nIt ain't me, it ain't me, I ain't no fortunate one, dog",
     "set": 1
   },
-  "lyrics-layout-She'll Be Coming 'Round the Mountain": {
-    "columns": 6,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
-  },
   "Shady Grove": {
     "artist": "Traditional",
     "lyrics": "Shady grove, my little love,\nShady grove, my darling;\nShady grove, my little love,\nGoing back to Harlan.\n\nFly around, my blue-eyed girl,\nFly around, my daisy;\nFly around, my blue-eyed girl;\nNearly drive me crazy.\n\nThe very next time I go that road.\nAnd it don't look so dark and grazy;\nThe  very next  time I come that road,\nStop and see my daisy.\n\nI once had a mulie cow,\nMulie when she was born;\nTook a jay-bird forty year\nTo fly from  horn to horn.\n\nApples in the summer.\nPeaches in the fall;\nIf I can't marry the girl I want,\nI won't have none at all.",
@@ -155,12 +113,6 @@
     "artist": "Woody",
     "lyrics": "G---/C--G/----/D--G\n\nI went across the river I lay down to sleep (3x)\nWhen I woke up Had shackles on my feet\n\nIt takes a worried one to sing a worried song\nI’m worried now but I won’t be worried long\n\nThe shackles on my feet each had, 21 links of chain\nAnd on each link, was the initials of my name\n\nI asked that judge, What's gonna be my fine\nTwenty one years On the Rocky Mountain line\n\nThat train pulled out Twenty one coaches long\nAnd the one I love Is on that train and gone\n\nI looked down the track as far as I could see\nA little bitty hand was waving after me.\n\nIf anyone should ask you who made up this song\nTell'em 'twas I and I sing it all day long",
     "set": 1
-  },
-  "lyrics-layout-On Top of Old Smoky": {
-    "columns": 12,
-    "fontSize": 24,
-    "lineHeight": 1.4,
-    "gap": 2
   },
   "Guaranteed": {
     "artist": "Eddie Vedder",

@@ -40,6 +40,10 @@ async function loadDefaultSongs() {
             keysToRemove.forEach(key => localStorage.removeItem(key));
             
             Object.entries(songs).forEach(([song, data]) => {
+                // Skip malformed/non-song entries (e.g. stale layout-cache data)
+                if (!data || typeof data.lyrics !== 'string') {
+                    return;
+                }
                 // Add set property if not present
                 if (!data.set) {
                     data.set = 1;
@@ -102,7 +106,7 @@ window.updateSongDropdown = function(setNumber = 1, skipAutoDisplay = false) {
             if (key !== 'lyrics-font-size' && key !== 'lastViewedSong') {
                 try {
                     const songData = JSON.parse(localStorage.getItem(key));
-                    if (songData.set === setNumber) {
+                    if (songData && typeof songData.lyrics === 'string' && songData.set === setNumber) {
                         songs.push({
                             title: key,
                             ...songData
@@ -226,6 +230,10 @@ function importSongData(file) {
                     }
                     // Skip metronome-bpm entries since metronome is removed
                     if (key.startsWith('metronome-bpm-')) {
+                        return;
+                    }
+                    // Skip stale layout-cache entries from old exports (not real songs)
+                    if (key.startsWith('lyrics-layout-')) {
                         return;
                     }
                     localStorage.setItem(key, JSON.stringify(value));
