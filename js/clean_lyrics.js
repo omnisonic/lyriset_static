@@ -42,8 +42,9 @@ export function cleanLyrics(text) {
             continue;
         }
 
-        // Remove chords from the line
-        line = line.replace(/\[[A-G][#b]?(?:m|maj|min|aug|dim|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?\]/g, '').trim();
+        // Remove chords from the line, collapsing back-to-back chord tags into a single space
+        // so words on either side (e.g. "within[G][D]the") don't get glued together
+        line = line.replace(/(?:\[[A-G][#b]?(?:m|maj|min|aug|dim|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?\])+/g, ' ').replace(/\s+/g, ' ').trim();
 
         // Remove lines that have no meaningful words, only one or two alphanumeric characters,
         // or contain only symbols/numbers (including lines like "==============2=0==========").
