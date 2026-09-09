@@ -267,6 +267,31 @@ export function moveChordsAboveLines(text) {
     }).join('\n');
 }
 
+// Strips all inline [Chord] tags from the lyrics and collects them, in the
+// order they appeared (duplicates kept), into a single chord line placed
+// above the plain lyrics.
+export function moveChordsToTop(text) {
+    if (!text) return text;
+
+    const chords = [];
+    const strippedLines = text.split('\n').map(line => {
+        let m;
+        BRACKET_RE.lastIndex = 0;
+        while ((m = BRACKET_RE.exec(line)) !== null) {
+            chords.push(m[1]);
+        }
+        return line
+            .replace(new RegExp(BRACKET_RE.source, 'gi'), ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    });
+
+    if (chords.length === 0) return strippedLines.join('\n');
+
+    const chordLine = chords.join(' | ');
+    return `${chordLine}\n\n${strippedLines.join('\n')}`;
+}
+
 // Renders inline [Chord] tags as a chord row positioned directly above the
 // lyric line, with each chord starting at the column of the character it
 // preceded (ChordPro-style). When chords would overlap in the chord row

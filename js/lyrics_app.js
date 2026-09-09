@@ -1,7 +1,8 @@
 import { cleanLyrics } from './clean_lyrics.js';
-import { extractChords, renderChordSummary, moveChordsAboveLines, alignChordsToLyrics, splitLongLine } from './chord_diagrams.js';
+import { extractChords, renderChordSummary, moveChordsAboveLines, moveChordsToTop, alignChordsToLyrics, splitLongLine } from './chord_diagrams.js';
 window.cleanLyrics = cleanLyrics;
 window.moveChordsAboveLines = moveChordsAboveLines;
+window.moveChordsToTop = moveChordsToTop;
 window.alignChordsToLyrics = alignChordsToLyrics;
 
 // Auto-scroll functionality for mobile
@@ -948,7 +949,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const song = document.getElementById('songInput').value.trim();
                 const artist = document.getElementById('artistInput').value.trim();
-                const lyrics = document.getElementById('lyricsText').value.trim();
+                const lyrics = moveChordsToTop(document.getElementById('lyricsText').value.trim());
 
                 if (!song || !lyrics) return;
 
